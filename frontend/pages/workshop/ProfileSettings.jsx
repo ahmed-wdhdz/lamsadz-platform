@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { wilayas } from '../../utils/wilayas';
 import { User, MapPin, Phone, Briefcase, FileText, Save, CheckCircle, Mail } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileSettings = () => {
+    const navigate = useNavigate();
     const { token, user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -59,7 +61,7 @@ const ProfileSettings = () => {
                     setSaved(false);
                     // Redirect to subscription if query param exists or by default
                     // Or just give a choice. For now, let's redirect to subscription as it's the main blocker.
-                    window.location.href = '/dashboard/workshop/subscribe';
+                    navigate('/dashboard/workshop/subscribe');
                 }, 1500);
             } else {
                 const err = await res.json();
