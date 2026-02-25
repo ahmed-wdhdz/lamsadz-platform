@@ -4,6 +4,7 @@
   "description": "Furniture Marketplace API Server",
   "main": "index.js",
   "scripts": {
+    "postinstall": "prisma generate",
     "start": "node index.js",
     "dev": "node --watch index.js",
     "seed": "node seedAdmin.js"
