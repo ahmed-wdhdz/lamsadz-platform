@@ -11,6 +11,7 @@ const WorkshopHome = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const API_URL = import.meta.env.VITE_API_URL || `${API_URL}';
 
     useEffect(() => {
         fetchStats();
@@ -19,12 +20,15 @@ const WorkshopHome = () => {
     const fetchStats = async () => {
         setError(null);
         try {
-            const res = await fetch('http://localhost:3000/api/workshop/home', {
+            const res = await fetch(`${API_URL}/workshop/home`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
                 const result = await res.json();
                 setData(result);
+            } else if (res.status === 404) {
+                // User has no workshop profile yet - this is fine, show setup screen
+                setData(null);
             } else {
                 throw new Error('Failed to load dashboard data');
             }

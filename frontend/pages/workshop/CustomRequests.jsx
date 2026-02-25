@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Clock, DollarSign, MapPin, Send, MessageSquare, Image as ImageIcon, Ruler, Archive, Phone, User } from 'lucide-react';
@@ -22,7 +23,7 @@ const CustomRequests = () => {
 
     const updateStatus = async (leadId, status) => {
         try {
-            const res = await fetch(`http://localhost:3000/api/workshop/custom-leads/${leadId}/status`, {
+            const res = await fetch(`${API_URL}/workshop/custom-leads/${leadId}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -50,7 +51,7 @@ const CustomRequests = () => {
 
     const fetchLeads = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/workshop/leads?type=custom', {
+            const res = await fetch(`${API_URL}/workshop/leads?type=custom', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {

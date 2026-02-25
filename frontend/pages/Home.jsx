@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -14,7 +15,7 @@ const Home = () => {
     React.useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await fetch('http://localhost:3000/api/products?limit=8');
+                const res = await fetch(`${API_URL}/products?limit=8`);
                 const data = await res.json();
                 if (res.ok) {
                     const products = data.products || data || [];

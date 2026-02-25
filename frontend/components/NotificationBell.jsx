@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect, useRef } from 'react';
 import { Bell } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -13,7 +14,7 @@ const NotificationBell = () => {
 
     const fetchNotifications = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/notifications', {
+            const res = await fetch(`${API_URL}/notifications', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
@@ -47,7 +48,7 @@ const NotificationBell = () => {
 
     const markAsRead = async (id, link) => {
         try {
-            await fetch(`http://localhost:3000/api/notifications/${id}/read`, {
+            await fetch(`${API_URL}/notifications/${id}/read`, {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token}` }
             });

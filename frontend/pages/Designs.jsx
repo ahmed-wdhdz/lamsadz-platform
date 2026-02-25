@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FurnitureCard from '../components/FurnitureCard';
@@ -19,7 +20,7 @@ const Designs = () => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                let url = 'http://localhost:3000/api/products';
+                let url = `${API_URL}/products';
                 // If filtering by category (and backend supports it), we could do it server-side.
                 // Assuming backend doesn't support filter query for now, filtering client side.
                 // Wait, typically we want server side. Let's try client side first as per Home.jsx behavior

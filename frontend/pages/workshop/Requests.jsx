@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Clock, CheckCircle, ChevronDown, ChevronUp, Send, Inbox, MapPin, DollarSign, Calendar, MessageSquare, Image as ImageIcon, User, Phone, Filter, Truck, Package, Check, XCircle, AlertCircle } from 'lucide-react';
@@ -17,7 +18,7 @@ const Requests = () => {
     const updateStatus = async (id, status) => {
         try {
             setSubmitting(true);
-            const res = await fetch(`http://localhost:3000/api/workshops/deliveries/${id}/status`, {
+            const res = await fetch(`${API_URL}/workshops/deliveries/${id}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -45,7 +46,7 @@ const Requests = () => {
 
     const fetchLeads = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/workshops/leads', {
+            const res = await fetch(`${API_URL}/workshops/leads', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
@@ -66,7 +67,7 @@ const Requests = () => {
             setExpandedLead(delivery.id);
             if (!delivery.viewStatus) {
                 try {
-                    await fetch(`http://localhost:3000/api/deliveries/${delivery.id}/view`, {
+                    await fetch(`${API_URL}/deliveries/${delivery.id}/view`, {
                         method: 'POST',
                         headers: { Authorization: `Bearer ${token}` }
                     });
@@ -87,7 +88,7 @@ const Requests = () => {
                 message: offerForm.message
             };
 
-            const res = await fetch(`http://localhost:3000/api/deliveries/${deliveryId}/offer`, {
+            const res = await fetch(`${API_URL}/deliveries/${deliveryId}/offer`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

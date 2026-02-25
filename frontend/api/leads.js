@@ -3,7 +3,7 @@
  * Handles: submitLead, getWorkshopLeads, respondToLead
  */
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || `${API_URL}';
 
 /**
  * Submit a new lead/request (public)

@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Eye, CheckCircle, XCircle, Search, Calendar, CreditCard, X } from 'lucide-react';
@@ -36,7 +37,7 @@ const Subscriptions = () => {
 
     const fetchPayments = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/admin/payments', {
+            const res = await fetch(`${API_URL}/admin/payments', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
@@ -56,7 +57,7 @@ const Subscriptions = () => {
         const endpoint = action === 'approve' ? 'approve' : 'reject';
 
         try {
-            const res = await fetch(`http://localhost:3000/api/admin/payments/${selectedPayment.id}/${endpoint}`, {
+            const res = await fetch(`${API_URL}/admin/payments/${selectedPayment.id}/${endpoint}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

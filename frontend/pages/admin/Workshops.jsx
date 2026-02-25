@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Store, Check, X, Ban } from 'lucide-react';
@@ -13,7 +14,7 @@ const Workshops = () => {
 
     const fetchWorkshops = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/admin/workshops', {
+            const res = await fetch(`${API_URL}/admin/workshops', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -29,7 +30,7 @@ const Workshops = () => {
         if (!confirm(`هل أنت متأكد من تغيير الحالة إلى ${status}؟`)) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/admin/workshops/${id}/status`, {
+            const res = await fetch(`${API_URL}/admin/workshops/${id}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

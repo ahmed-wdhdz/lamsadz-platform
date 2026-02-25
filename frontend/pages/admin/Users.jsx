@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { User, Ban, CheckCircle } from 'lucide-react';
@@ -13,7 +14,7 @@ const UsersList = () => {
 
     const fetchUsers = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/admin/users', {
+            const res = await fetch(`${API_URL}/admin/users', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -29,7 +30,7 @@ const UsersList = () => {
         if (!confirm(currentStatus ? 'هل أنت متأكد من فك الحظر؟' : 'هل أنت متأكد من حظر المستخدم؟')) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/admin/users/${userId}/block`, {
+            const res = await fetch(`${API_URL}/admin/users/${userId}/block`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

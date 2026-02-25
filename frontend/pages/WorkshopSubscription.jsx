@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Check, Upload, Clock, AlertCircle, CreditCard, ShieldCheck, Star } from 'lucide-react';
@@ -19,7 +20,7 @@ const WorkshopSubscription = () => {
     const fetchWorkshop = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch('http://localhost:3000/api/workshops/me', {
+            const res = await fetch(`${API_URL}/workshops/me', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
@@ -51,7 +52,7 @@ const WorkshopSubscription = () => {
         setLoading(true);
         const token = localStorage.getItem('token');
         try {
-            await fetch(`http://localhost:3000/api/workshops/${workshop.id}/subscribe`, {
+            await fetch(`${API_URL}/workshops/${workshop.id}/subscribe`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,7 +88,7 @@ const WorkshopSubscription = () => {
             const formData = new FormData();
             formData.append('proof', file);
 
-            const res = await fetch(`http://localhost:3000/api/workshops/${workshop.id}/payment-proof`, {
+            const res = await fetch(`${API_URL}/workshops/${workshop.id}/payment-proof`, {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token}` },
                 body: formData

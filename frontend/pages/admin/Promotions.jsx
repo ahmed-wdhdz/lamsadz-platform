@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Eye, CheckCircle, XCircle, Search, Rocket, X } from 'lucide-react';
@@ -32,7 +33,7 @@ const Promotions = () => {
 
     const fetchPromotions = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/promotions/admin', {
+            const res = await fetch(`${API_URL}/promotions/admin', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
@@ -52,7 +53,7 @@ const Promotions = () => {
         if (!selectedPromo) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/promotions/${selectedPromo.id}/status`, {
+            const res = await fetch(`${API_URL}/promotions/${selectedPromo.id}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

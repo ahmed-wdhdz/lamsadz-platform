@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { MessageSquare, MapPin } from 'lucide-react';
@@ -18,7 +19,7 @@ const Requests = () => {
 
     const fetchLeads = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/admin/leads', {
+            const res = await fetch(`${API_URL}/admin/leads', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();

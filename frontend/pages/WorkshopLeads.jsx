@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Clock, CheckCircle, XCircle, ChevronDown, ChevronUp, Send } from 'lucide-react';
@@ -18,7 +19,7 @@ const WorkshopLeads = () => {
 
     const fetchLeads = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/workshops/leads', {
+            const res = await fetch(`${API_URL}/workshops/leads', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
@@ -40,7 +41,7 @@ const WorkshopLeads = () => {
             // Mark as viewed if not already
             if (!delivery.viewStatus) {
                 try {
-                    await fetch(`http://localhost:3000/api/deliveries/${delivery.id}/view`, {
+                    await fetch(`${API_URL}/deliveries/${delivery.id}/view`, {
                         method: 'POST',
                         headers: { Authorization: `Bearer ${token}` }
                     });
@@ -56,7 +57,7 @@ const WorkshopLeads = () => {
     const submitOffer = async (deliveryId) => {
         setSubmitting(true);
         try {
-            const res = await fetch(`http://localhost:3000/api/deliveries/${deliveryId}/offer`, {
+            const res = await fetch(`${API_URL}/deliveries/${deliveryId}/offer`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

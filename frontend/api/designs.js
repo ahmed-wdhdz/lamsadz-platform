@@ -3,7 +3,7 @@
  * Handles: getDesigns, getDesign, createDesign, updateDesign, deleteDesign
  */
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || `${API_URL}';
 
 /**
  * Get all published designs (public)

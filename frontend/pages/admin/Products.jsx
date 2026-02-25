@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Package, Trash2, Eye } from 'lucide-react';
@@ -13,7 +14,7 @@ const Products = () => {
 
     const fetchProducts = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/admin/products', {
+            const res = await fetch(`${API_URL}/admin/products', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -29,7 +30,7 @@ const Products = () => {
         if (!confirm('هل أنت متأكد من حذف هذا التصميم؟')) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/admin/products/${id}`, {
+            const res = await fetch(`${API_URL}/admin/products/${id}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${token}` }
             });

@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { wilayas } from '../../utils/wilayas';
@@ -18,7 +19,7 @@ const ProfileSettings = () => {
 
     const fetchProfile = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/workshops/me', {
+            const res = await fetch(`${API_URL}/workshops/me', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
@@ -44,7 +45,7 @@ const ProfileSettings = () => {
         e.preventDefault();
         setSaving(true);
         try {
-            const res = await fetch('http://localhost:3000/api/workshops', {
+            const res = await fetch(`${API_URL}/workshops', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Plus, Edit, Trash2, Image as ImageIcon, X, Eye, EyeOff, Package, Filter, Grid, List, Search, CheckCircle, Rocket } from 'lucide-react';
@@ -36,7 +37,7 @@ const MyDesigns = () => {
 
     const fetchProducts = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/workshop/products?page=${page}&limit=12`, {
+            const res = await fetch(`${API_URL}/workshop/products?page=${page}&limit=12`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
@@ -72,7 +73,7 @@ const MyDesigns = () => {
     const handleDelete = async (id) => {
         if (!confirm('هل أنت متأكد من حذف هذا التصميم؟')) return;
         try {
-            const res = await fetch(`http://localhost:3000/api/workshop/products/${id}`, {
+            const res = await fetch(`${API_URL}/workshop/products/${id}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -105,8 +106,8 @@ const MyDesigns = () => {
         });
 
         const url = editingProduct
-            ? `http://localhost:3000/api/workshop/products/${editingProduct.id}`
-            : 'http://localhost:3000/api/workshop/products';
+            ? `${API_URL}/workshop/products/${editingProduct.id}`
+            : `${API_URL}/workshop/products';
 
         const method = editingProduct ? 'PUT' : 'POST';
 

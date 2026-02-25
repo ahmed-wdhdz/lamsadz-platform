@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
@@ -10,7 +11,7 @@ const WorkshopsList = () => {
     useEffect(() => {
         const fetchWorkshops = async () => {
             try {
-                const res = await fetch('http://localhost:3000/api/workshops');
+                const res = await fetch(`${API_URL}/workshops`);
                 const data = await res.json();
                 setWorkshops(data.workshops || []);
             } catch (error) {

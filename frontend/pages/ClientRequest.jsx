@@ -12,7 +12,7 @@ const algeriaWilayas = [
     "51 - أولاد جلال", "52 - بني عباس", "53 - إن صالح", "54 - إن قزام", "55 - تقرت", "56 - جانت", "57 - المغير", "58 - المنيعة"
 ];
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || `${API_URL}';
 
 const ClientRequest = () => {
     const { user, token } = useAuth();

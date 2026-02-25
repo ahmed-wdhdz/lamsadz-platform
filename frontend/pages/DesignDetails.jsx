@@ -6,7 +6,7 @@ import ReviewList from '../components/ReviewList';
 import ReviewForm from '../components/ReviewForm';
 import { useAuth } from '../context/AuthContext';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || `${API_URL}';
 
 const DesignDetails = () => {
     const { id } = useParams();
@@ -37,7 +37,7 @@ const DesignDetails = () => {
 
     const fetchDesign = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/designs/${id}`);
+            const res = await fetch(`${API_URL}/designs/${id}`);
             if (res.ok) {
                 const data = await res.json();
                 setDesign(data);
