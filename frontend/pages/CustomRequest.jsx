@@ -4,7 +4,7 @@ import { Upload, MapPin, DollarSign, Ruler, Palette, FileText, Send } from 'luci
 import { wilayas } from '../utils/wilayas';
 import { useAuth } from '../context/AuthContext';
 
-const API_URL = import.meta.env.VITE_API_URL || `${API_URL}';
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const CustomRequest = () => {
     const navigate = useNavigate();
