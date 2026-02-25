@@ -397,7 +397,7 @@ async function forgotPassword(req, res) {
         });
 
         // Send Email
-        const emailSent = await sendEmail(
+        const emailResult = await sendEmail(
             email,
             'استعادة كلمة المرور - Lamsadz',
             `<div style="font-family: Arial, sans-serif; text-align: center; color: #333;">
@@ -408,8 +408,8 @@ async function forgotPassword(req, res) {
              </div>`
         );
 
-        if (!emailSent) {
-            return res.status(500).json({ message: 'تعذر إرسال البريد الإلكتروني. يرجى التأكد من إعدادات الخادم.' });
+        if (!emailResult || !emailResult.success) {
+            return res.status(500).json({ message: 'تعذر إرسال البريد الإلكتروني: ' + (emailResult?.error || 'Unknown error') });
         }
 
         res.json({ message: 'تم إرسال رمز الاستعادة إلى بريدك الإلكتروني بنجاح' });

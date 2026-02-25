@@ -22,10 +22,10 @@ const sendEmail = async (to, subject, html) => {
             html
         });
         console.log("Message sent: %s", info.messageId);
-        return true;
+        return { success: true };
     } catch (error) {
         console.error("Error sending email: ", error);
-        return false;
+        return { success: false, error: error.message || 'Unknown SMTP error' };
     }
 };
 
