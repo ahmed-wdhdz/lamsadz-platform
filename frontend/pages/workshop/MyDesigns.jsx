@@ -1,7 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Plus, Edit, Trash2, Image as ImageIcon, X, Eye, EyeOff, Package, Filter, Grid, List, Search, CheckCircle, Rocket } from 'lucide-react';
+import { Plus, Edit, Trash2, Image as ImageIcon, X, Eye, EyeOff, Package, Filter, Grid, List, Search, CheckCircle, Rocket, AlertCircle } from 'lucide-react';
 import { categories } from '../../utils/categories';
 import PromoteModal from '../../components/PromoteModal';
 
