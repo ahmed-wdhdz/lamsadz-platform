@@ -411,7 +411,7 @@ async function forgotPassword(req, res) {
         res.json({ message: 'تم إرسال رمز الاستعادة إلى بريدك الإلكتروني بنجاح' });
     } catch (error) {
         console.error('ForgotPassword error:', error);
-        res.status(500).json({ message: 'حدث خطأ في الخادم أثناء المحاولة' });
+        res.status(500).json({ message: 'حدث خطأ في الخادم أثناء المحاولة: ' + (error.message || 'Unknown error') });
     }
 }
 
