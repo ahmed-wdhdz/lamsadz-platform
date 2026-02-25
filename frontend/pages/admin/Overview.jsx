@@ -16,7 +16,7 @@ const Overview = () => {
     const fetchStats = async () => {
         try {
             setError(null);
-            const res = await fetch(`${API_URL}/admin/overview', {
+            const res = await fetch(`${API_URL}/admin/overview`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

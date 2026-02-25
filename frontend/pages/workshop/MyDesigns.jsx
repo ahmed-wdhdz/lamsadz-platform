@@ -107,7 +107,7 @@ const MyDesigns = () => {
 
         const url = editingProduct
             ? `${API_URL}/workshop/products/${editingProduct.id}`
-            : `${API_URL}/workshop/products';
+            : `${API_URL}/workshop/products`;
 
         const method = editingProduct ? 'PUT' : 'POST';
 

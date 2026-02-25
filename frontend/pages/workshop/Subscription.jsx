@@ -20,7 +20,7 @@ const Subscription = () => {
 
     const fetchWorkshop = async () => {
         try {
-            const res = await fetch(`${API_URL}/workshops/me', {
+            const res = await fetch(`${API_URL}/workshops/me`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {

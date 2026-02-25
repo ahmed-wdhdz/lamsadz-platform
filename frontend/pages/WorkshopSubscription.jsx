@@ -20,7 +20,7 @@ const WorkshopSubscription = () => {
     const fetchWorkshop = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`${API_URL}/workshops/me', {
+            const res = await fetch(`${API_URL}/workshops/me`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {

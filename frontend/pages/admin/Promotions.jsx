@@ -33,7 +33,7 @@ const Promotions = () => {
 
     const fetchPromotions = async () => {
         try {
-            const res = await fetch(`${API_URL}/promotions/admin', {
+            const res = await fetch(`${API_URL}/promotions/admin`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {

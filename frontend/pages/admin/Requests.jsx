@@ -19,7 +19,7 @@ const Requests = () => {
 
     const fetchLeads = async () => {
         try {
-            const res = await fetch(`${API_URL}/admin/leads', {
+            const res = await fetch(`${API_URL}/admin/leads`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();

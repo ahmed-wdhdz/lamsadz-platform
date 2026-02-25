@@ -37,7 +37,7 @@ const Subscriptions = () => {
 
     const fetchPayments = async () => {
         try {
-            const res = await fetch(`${API_URL}/admin/payments', {
+            const res = await fetch(`${API_URL}/admin/payments`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {

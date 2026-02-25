@@ -20,7 +20,7 @@ const Designs = () => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                let url = `${API_URL}/products';
+                let url = `${API_URL}/products`;
                 // If filtering by category (and backend supports it), we could do it server-side.
                 // Assuming backend doesn't support filter query for now, filtering client side.
                 // Wait, typically we want server side. Let's try client side first as per Home.jsx behavior

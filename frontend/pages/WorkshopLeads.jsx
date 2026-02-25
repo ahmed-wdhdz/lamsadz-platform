@@ -19,7 +19,7 @@ const WorkshopLeads = () => {
 
     const fetchLeads = async () => {
         try {
-            const res = await fetch(`${API_URL}/workshops/leads', {
+            const res = await fetch(`${API_URL}/workshops/leads`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {

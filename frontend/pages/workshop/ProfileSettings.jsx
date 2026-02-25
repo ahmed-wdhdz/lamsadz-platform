@@ -19,7 +19,7 @@ const ProfileSettings = () => {
 
     const fetchProfile = async () => {
         try {
-            const res = await fetch(`${API_URL}/workshops/me', {
+            const res = await fetch(`${API_URL}/workshops/me`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
@@ -45,7 +45,7 @@ const ProfileSettings = () => {
         e.preventDefault();
         setSaving(true);
         try {
-            const res = await fetch(`${API_URL}/workshops', {
+            const res = await fetch(`${API_URL}/workshops`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

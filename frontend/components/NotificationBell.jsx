@@ -14,7 +14,7 @@ const NotificationBell = () => {
 
     const fetchNotifications = async () => {
         try {
-            const res = await fetch(`${API_URL}/notifications', {
+            const res = await fetch(`${API_URL}/notifications`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {

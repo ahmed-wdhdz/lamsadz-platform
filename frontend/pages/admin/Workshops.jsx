@@ -14,7 +14,7 @@ const Workshops = () => {
 
     const fetchWorkshops = async () => {
         try {
-            const res = await fetch(`${API_URL}/admin/workshops', {
+            const res = await fetch(`${API_URL}/admin/workshops`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();

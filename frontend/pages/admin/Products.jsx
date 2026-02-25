@@ -14,7 +14,7 @@ const Products = () => {
 
     const fetchProducts = async () => {
         try {
-            const res = await fetch(`${API_URL}/admin/products', {
+            const res = await fetch(`${API_URL}/admin/products`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
