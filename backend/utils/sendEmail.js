@@ -1,11 +1,15 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         user: process.env.EMAIL_USER || 'test@gmail.com',
         pass: process.env.EMAIL_PASS || 'testpassword'
     },
+    // Force Node.js to use IPv4 (family: 4) instead of IPv6 to prevent ENETUNREACH in Render
+    family: 4,
     connectionTimeout: 10000,
     greetingTimeout: 10000,
     socketTimeout: 10000
