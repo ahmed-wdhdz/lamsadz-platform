@@ -17,6 +17,8 @@ router.post('/auth/login', authController.login);
 router.post('/auth/verify-email', authController.verifyEmail);
 router.post('/auth/resend-otp', authController.resendOtp);
 router.post('/auth/google', authController.googleLogin);
+router.post('/auth/forgot-password', authController.forgotPassword);
+router.post('/auth/reset-password', authController.resetPassword);
 
 // Protected routes
 router.get('/me', authenticate, authController.getMe);

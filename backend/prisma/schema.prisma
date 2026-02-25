@@ -18,6 +18,8 @@ model User {
   emailVerificationOtp String?
   authProvider         String         @default("LOCAL") // LOCAL, GOOGLE
   googleId             String?        @unique
+  resetPasswordOtp       String?
+  resetPasswordExpiresAt DateTime?
   createdAt            DateTime       @default(now())
   workshop             Workshop?
   notifications        Notification[]

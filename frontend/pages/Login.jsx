@@ -151,7 +151,7 @@ const Login = () => {
                                     <label style={{ display: 'flex', gap: '0.5rem', cursor: 'pointer' }}>
                                         <input type="checkbox" /> تذكرني
                                     </label>
-                                    <a href="#" style={{ color: 'var(--primary)' }}>نسيت كلمة المرور؟</a>
+                                    <Link to="/forgot-password" style={{ color: 'var(--primary)', textDecoration: 'none' }}>نسيت كلمة المرور؟</Link>
                                 </div>
 
                                 <Button variant="primary" style={{ width: '100%' }}>تسجيل الدخول</Button>

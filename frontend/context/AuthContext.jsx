@@ -139,6 +139,38 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const forgotPassword = async (email) => {
+        try {
+            const response = await fetch(`${API_URL}/auth/forgot-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw data;
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    const resetPassword = async (email, otp, newPassword) => {
+        try {
+            const response = await fetch(`${API_URL}/auth/reset-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp, newPassword }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw data;
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    };
+
     const logout = () => {
         setUser(null);
         setToken(null);
@@ -147,7 +179,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, login, register, logout, verifyEmail, resendOtp, googleLogin, loading }}>
+        <AuthContext.Provider value={{ user, token, login, register, logout, verifyEmail, resendOtp, googleLogin, forgotPassword, resetPassword, loading }}>
             {!loading && children}
         </AuthContext.Provider>
     );

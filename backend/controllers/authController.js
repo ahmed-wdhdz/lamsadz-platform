@@ -370,6 +370,96 @@ async function updateProfile(req, res) {
     }
 }
 
+/**
+ * POST /api/auth/forgot-password
+ */
+async function forgotPassword(req, res) {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ message: 'الرجاء إدخال البريد الإلكتروني' });
+
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) {
+            // We just return success even if not found to prevent email enumeration
+            return res.json({ message: 'إذا كان البريد الإلكتروني مسجلاً، ستتلقى رمز استعادة المرور قريباً' });
+        }
+
+        // Generate 6 digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Save OTP to DB (valid for 15 minutes)
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                resetPasswordOtp: otp,
+                resetPasswordExpiresAt: new Date(Date.now() + 15 * 60 * 1000)
+            }
+        });
+
+        // Send Email
+        const emailSent = await sendEmail(
+            email,
+            'استعادة كلمة المرور - Lamsadz',
+            `<div style="font-family: Arial, sans-serif; text-align: center; color: #333;">
+                <h2>طلب استعادة كلمة المرور</h2>
+                <p>لقد طلبتم استعادة كلمة المرور لحسابكم. الرجاء استخدام الرمز التالي لإعادة تعيين كلمة المرور:</p>
+                <h1 style="color: #d97706; letter-spacing: 5px;">${otp}</h1>
+                <p>هذا الرمز صالح لمدة 15 دقيقة فقط. إذا لم تطلب هذا، يمكنك تجاهل هذه الرسالة.</p>
+             </div>`
+        );
+
+        res.json({ message: 'تم إرسال رمز الاستعادة إلى بريدك الإلكتروني بنجاح' });
+    } catch (error) {
+        console.error('ForgotPassword error:', error);
+        res.status(500).json({ message: 'حدث خطأ في الخادم أثناء المحاولة' });
+    }
+}
+
+/**
+ * POST /api/auth/reset-password
+ */
+async function resetPassword(req, res) {
+    try {
+        const { email, otp, newPassword } = req.body;
+
+        if (!email || !otp || !newPassword) {
+            return res.status(400).json({ message: 'الرجاء إدخال البريد الإلكتروني، رمز التفعيل، وكلمة المرور الجديدة' });
+        }
+
+        const user = await prisma.user.findUnique({ where: { email } });
+
+        if (!user) {
+            return res.status(400).json({ message: 'البريد الإلكتروني أو رمز التحقق غير صحيح' });
+        }
+
+        if (user.resetPasswordOtp !== otp || new Date() > new Date(user.resetPasswordExpiresAt)) {
+            return res.status(400).json({ message: 'رمز التحقق غير صحيح أو انتهت صلاحيته' });
+        }
+
+        // Strong password check
+        const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\W]{8,}$/;
+        if (!strongPasswordRegex.test(newPassword)) {
+            return res.status(400).json({ message: 'كلمة المرور ضعيفة. يجب أن تتكون من 8 أحرف على الأقل، تحتوي على حرف كبير، حرف صغير، ورقم.' });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                password: hashedPassword,
+                resetPasswordOtp: null,
+                resetPasswordExpiresAt: null
+            }
+        });
+
+        res.json({ message: 'تم إعادة تعيين كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول' });
+    } catch (error) {
+        console.error('ResetPassword error:', error);
+        res.status(500).json({ message: 'حدث خطأ في الخادم' });
+    }
+}
+
 module.exports = {
     register,
     login,
@@ -377,5 +467,7 @@ module.exports = {
     resendOtp,
     googleLogin,
     getMe,
-    updateProfile
+    updateProfile,
+    forgotPassword,
+    resetPassword
 };

@@ -8,6 +8,8 @@ import About from './pages/About';
 import CustomRequest from './pages/CustomRequest';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 // Workshop Dashboard Imports
 import WorkshopLayout from './layouts/WorkshopLayout';
@@ -35,7 +37,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Wrapper to conditionally render Layout
 const AppContent = () => {
   const location = useLocation();
-  const hideLayout = ['/login', '/register'].includes(location.pathname);
+  const hideLayout = ['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname);
 
   // Workshop Layout handles its own structure, so we might want to hide the Main Layout when in /dashboard/workshop
   // BUT: The new WorkshopLayout *is* the layout.
@@ -73,6 +75,8 @@ const AppContent = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Workshop Dashboard Routes (Standalone Layout) */}
           <Route
