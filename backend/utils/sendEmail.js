@@ -1,33 +1,43 @@
-const nodemailer = require('nodemailer');
-
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // Use STARTTLS on port 587
-    auth: {
-        user: process.env.EMAIL_USER || 'test@gmail.com',
-        pass: process.env.EMAIL_PASS || 'testpassword'
-    },
-    // Force Node.js to use IPv4 (family: 4) instead of IPv6 to prevent ENETUNREACH in Render
-    family: 4,
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000
-});
+/**
+ * sendEmail.js
+ * Sends emails using a Google Apps Script Web App to bypass Render's strict SMTP Port blocking.
+ */
 
 const sendEmail = async (to, subject, html) => {
     try {
-        const info = await transporter.sendMail({
-            from: `"Lamsadz Auth" <${process.env.EMAIL_USER}>`,
-            to,
-            subject,
-            html
+        const scriptUrl = process.env.GOOGLE_SCRIPT_URL;
+
+        if (!scriptUrl) {
+            console.error("ERROR: GOOGLE_SCRIPT_URL is not set in environment variables.");
+            return { success: false, error: 'Email service is not configured correctly on the server.' };
+        }
+
+        // We use fetch to call our custom serverless Google Apps Script API
+        const response = await fetch(scriptUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                to: to,
+                subject: subject,
+                html: html
+            })
         });
-        console.log("Message sent: %s", info.messageId);
-        return { success: true };
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            console.log("Message sent successfully via Google Apps Script");
+            return { success: true };
+        } else {
+            console.error("Google Script API returned an error:", result);
+            return { success: false, error: result.message || 'Unknown API error' };
+        }
+
     } catch (error) {
-        console.error("Error sending email: ", error);
-        return { success: false, error: error.message || 'Unknown SMTP error' };
+        console.error("Error connecting to Google Script API: ", error);
+        return { success: false, error: error.message || 'Network/Fetch error' };
     }
 };
 
