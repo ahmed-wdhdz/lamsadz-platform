@@ -390,6 +390,12 @@ async function rejectPayment(req, res) {
             }
         });
 
+        // Reject workshop
+        await prisma.workshop.update({
+            where: { id: payment.workshopId },
+            data: { status: 'REJECTED' }
+        });
+
         res.json(payment);
     } catch (error) {
         console.error('RejectPayment error:', error);

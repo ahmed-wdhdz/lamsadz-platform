@@ -217,8 +217,8 @@ const WorkshopHome = () => {
                     </h3>
                     <p style={{ color: stats.status === 'APPROVED' ? '#15803d' : '#b45309', marginBottom: '0.5rem' }}>
                         {isArabic
-                            ? `حالة حسابك: ${stats.status === 'PENDING_PAYMENT' ? 'بانتظار الدفع' : stats.status}. `
-                            : `Account Status: ${stats.status}. `}
+                            ? `حالة حسابك: ${stats.status === 'PENDING_PAYMENT' ? 'بانتظار الدفع' : stats.status === 'WAITING_APPROVAL' ? 'قيد المراجعة' : stats.status === 'REJECTED' ? 'مرفوض - يرجى مراجعة السبب' : stats.status}. `
+                            : `Account Status: ${stats.status === 'WAITING_APPROVAL' ? 'Pending Approval' : stats.status === 'PENDING_PAYMENT' ? 'Pending Payment' : stats.status}. `}
 
                         {stats.subscriptionEndsAt && (
                             <span style={{ fontWeight: 'bold' }}>
