@@ -369,22 +369,30 @@ const MyDesigns = () => {
                             </p>
                             <button
                                 onClick={() => handleOpenModal()}
+                                disabled={workshopStatus !== 'APPROVED'}
                                 style={{
                                     display: 'inline-flex',
                                     alignItems: 'center',
                                     gap: '0.5rem',
                                     padding: '0.875rem 1.5rem',
-                                    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                                    color: 'white',
+                                    background: workshopStatus === 'APPROVED' ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : '#d1d5db',
+                                    color: workshopStatus === 'APPROVED' ? 'white' : '#6b7280',
                                     border: 'none',
                                     borderRadius: '12px',
                                     fontSize: '1rem',
                                     fontWeight: '700',
-                                    cursor: 'pointer'
+                                    cursor: workshopStatus === 'APPROVED' ? 'pointer' : 'not-allowed'
                                 }}
+                                title={workshopStatus !== 'APPROVED' ? 'يجب تفعيل اشتراكك لإضافة منتجات' : ''}
                             >
                                 <Plus size={20} /> أضف أول تصميم
                             </button>
+                            {workshopStatus !== 'APPROVED' && (
+                                <div style={{ marginTop: '1rem', color: '#ef4444', fontSize: '0.85rem', fontWeight: '600' }}>
+                                    <AlertCircle size={14} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
+                                    يجب تفعيل اشتراكك أولاً أو انتظار الإدارة
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <div style={{
