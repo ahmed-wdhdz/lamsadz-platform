@@ -36,8 +36,10 @@ const Login = () => {
             if (data?.requireOtp) {
                 setRequireOtp(true);
                 setSuccessMessage('يرجى التحقق من بريدك الإلكتروني وإدخال رمز التفعيل المعطى.');
-            } else if (data?.id) {
-                handleRedirect(data);
+            } else if (data?.user?.id) {
+                handleRedirect(data.user);
+            } else {
+                setError('حدث خطأ غير متوقع أثناء تسجيل الدخول.');
             }
         } catch (err) {
             setError(err.message || 'فشل تسجيل الدخول');
