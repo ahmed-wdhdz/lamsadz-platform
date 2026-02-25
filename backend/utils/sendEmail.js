@@ -5,7 +5,10 @@ const transporter = nodemailer.createTransport({
     auth: {
         user: process.env.EMAIL_USER || 'test@gmail.com', // Will be read from .env
         pass: process.env.EMAIL_PASS || 'testpassword'    // Will be read from .env
-    }
+    },
+    connectionTimeout: 5000,
+    greetingTimeout: 5000,
+    socketTimeout: 5000
 });
 
 const sendEmail = async (to, subject, html) => {

@@ -408,6 +408,10 @@ async function forgotPassword(req, res) {
              </div>`
         );
 
+        if (!emailSent) {
+            return res.status(500).json({ message: 'تعذر إرسال البريد الإلكتروني. يرجى التأكد من إعدادات الخادم.' });
+        }
+
         res.json({ message: 'تم إرسال رمز الاستعادة إلى بريدك الإلكتروني بنجاح' });
     } catch (error) {
         console.error('ForgotPassword error:', error);
