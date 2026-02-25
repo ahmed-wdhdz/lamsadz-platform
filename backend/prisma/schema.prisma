@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   Int            @id @default(autoincrement())
+  email                String         @unique
+  password             String?
+  name                 String
+  role                 String         @default("CLIENT") // ADMIN, CLIENT, WORKSHOP
+  blocked              Boolean        @default(false)
+  isEmailVerified      Boolean        @default(false)
+  emailVerificationOtp String?
+  authProvider         String         @default("LOCAL") // LOCAL, GOOGLE
+  googleId             String?        @unique
+  createdAt            DateTime       @default(now())
+  workshop             Workshop?
+  notifications        Notification[]
+  leads                Lead[]
+}
+
+model Workshop {
+  id                 Int               @id @default(autoincrement())
+  name               String
+  description        String
+  location           String // Wilaya
+  phone              String
+  skills             String // Stored as comma separated string or JSON
+  scope              String            @default("LOCAL") // LOCAL, NATIONWIDE
+  status             String            @default("PENDING_PAYMENT") // PENDING_PAYMENT, WAITING_APPROVAL, APPROVED, REJECTED
+  ownerId            Int               @unique
+  owner              User              @relation(fields: [ownerId], references: [id])
+  portfolio          PortfolioImage[]
+  payments           WorkshopPayment[]
+  leadDeliveries     LeadDelivery[]
+  leadSales          LeadSale[]
+  products           Product[]
+  reviews            Review[]
+  promotionRequests  PromotionRequest[]
+  subscriptionEndsAt DateTime?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+}
+
+model WorkshopPayment {
+  id          Int       @id @default(autoincrement())
+  workshopId  Int
+  workshop    Workshop  @relation(fields: [workshopId], references: [id])
+  plan        String // MONTHLY, YEARLY
+  amount      Float
+  currency    String    @default("DZD")
+  proofUrl    String?
+  uploadedAt  DateTime?
+  status      String    @default("PENDING") // PENDING, UPLOADED, VALIDATED, REJECTED
+  adminId     Int?
+  adminNote   String?
+  validatedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model PortfolioImage {
+  id         Int      @id @default(autoincrement())
+  url        String
+  workshopId Int
+  workshop   Workshop @relation(fields: [workshopId], references: [id])
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  workshopId  Int
+  workshop    Workshop @relation(fields: [workshopId], references: [id])
+  title         String
+  category      String
+  description   String?
+  price         Float
+  images        String // JSON string of image filenames
+  status        String   @default("PUBLISHED") // PUBLISHED, DRAFT, ARCHIVED (Soft Delete)
+  featuredUntil DateTime? // Null means not featured
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  leads         Lead[]
+  promotions    PromotionRequest[]
+}
+
+model Lead {
+  id          Int            @id @default(autoincrement())
+  clientId    Int?
+  client      User?          @relation(fields: [clientId], references: [id])
+  clientName  String?
+  clientPhone String?
+  designId    Int?
+  design      Product?       @relation(fields: [designId], references: [id])
+  category    String? // Snapshot of category
+  dimensions  String?
+  type        String // e.g. "Kitchen", "Sofa"
+  description String
+  wilaya      String
+  budgetMin   Float?
+  budgetMax   Float?
+  images      String // Stored as JSON string
+  status      String         @default("NEW") // NEW, SENT, RESPONDED, SOLD, CLOSED
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  deliveries  LeadDelivery[]
+  sales       LeadSale[]
+}
+
+model LeadDelivery {
+  id          Int      @id @default(autoincrement())
+  leadId      Int
+  lead        Lead     @relation(fields: [leadId], references: [id])
+  workshopId  Int
+  workshop    Workshop @relation(fields: [workshopId], references: [id])
+  viewStatus  Boolean  @default(false)
+  status      String   @default("PENDING") // PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED, NO_RESPONSE, REJECTED
+  deliveredAt DateTime @default(now())
+  offers      Offer[]
+
+  @@unique([leadId, workshopId])
+}
+
+model Offer {
+  id             Int          @id @default(autoincrement())
+  leadDeliveryId Int
+  leadDelivery   LeadDelivery @relation(fields: [leadDeliveryId], references: [id])
+  price          Float
+  leadTimeDays   Int
+  message        String?
+  status         String       @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt      DateTime     @default(now())
+}
+
+model LeadSale {
+  id         Int      @id @default(autoincrement())
+  leadId     Int
+  lead       Lead     @relation(fields: [leadId], references: [id])
+  workshopId Int
+  workshop   Workshop @relation(fields: [workshopId], references: [id])
+  price      Float
+  adminId    Int
+  saleDate   DateTime @default(now())
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  type      String // LEAD_DELIVERED, OFFER_RECEIVED, PAYMENT_APPROVED, PAYMENT_REJECTED
+  message   String
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id            Int      @id @default(autoincrement())
+  rating        Int      // 1 to 5 stars
+  comment       String?
+  reviewerName  String
+  reviewerEmail String?  // Optional email
+  workshopId    Int
+  workshop      Workshop @relation(fields: [workshopId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model PromotionRequest {
+  id           Int      @id @default(autoincrement())
+  workshopId   Int
+  workshop     Workshop @relation(fields: [workshopId], references: [id])
+  productId    Int
+  product      Product  @relation(fields: [productId], references: [id])
+  amount       Float
+  durationDays Int
+  proofUrl     String
+  status       String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  adminNote    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
