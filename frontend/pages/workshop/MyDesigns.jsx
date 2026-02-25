@@ -14,6 +14,7 @@ const MyDesigns = () => {
     const [viewMode, setViewMode] = useState('grid');
     const [searchTerm, setSearchTerm] = useState('');
     const [filterCategory, setFilterCategory] = useState('ALL');
+    const [workshopStatus, setWorkshopStatus] = useState('PENDING');
 
     // Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,7 +34,24 @@ const MyDesigns = () => {
 
     useEffect(() => {
         fetchProducts();
+        fetchWorkshopStatus();
     }, [page]);
+
+    const fetchWorkshopStatus = async () => {
+        try {
+            const res = await fetch(`${API_URL}/workshop/home`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (data && data.stats) {
+                    setWorkshopStatus(data.stats.status);
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
     const fetchProducts = async () => {
         try {
@@ -172,25 +190,36 @@ const MyDesigns = () => {
                         إدارة كتالوج المنتجات والأعمال السابقة ({products.length} تصميم)
                     </p>
                 </div>
-                <button
-                    onClick={() => handleOpenModal()}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        padding: '0.875rem 1.5rem',
-                        background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '12px',
-                        fontSize: '1rem',
-                        fontWeight: '700',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 15px rgba(59, 130, 246, 0.4)'
-                    }}
-                >
-                    <Plus size={20} /> إضافة تصميم جديد
-                </button>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                    <button
+                        onClick={() => handleOpenModal()}
+                        disabled={workshopStatus !== 'APPROVED'}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            padding: '0.875rem 1.5rem',
+                            background: workshopStatus === 'APPROVED' ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : '#d1d5db',
+                            color: workshopStatus === 'APPROVED' ? 'white' : '#6b7280',
+                            border: 'none',
+                            borderRadius: '12px',
+                            fontSize: '1rem',
+                            fontWeight: '700',
+                            cursor: workshopStatus === 'APPROVED' ? 'pointer' : 'not-allowed',
+                            boxShadow: workshopStatus === 'APPROVED' ? '0 4px 15px rgba(59, 130, 246, 0.4)' : 'none',
+                            transition: 'all 0.2s ease'
+                        }}
+                        title={workshopStatus !== 'APPROVED' ? 'يجب تفعيل اشتراكك لإضافة منتجات' : ''}
+                    >
+                        <Plus size={20} /> إضافة تصميم جديد
+                    </button>
+                    {workshopStatus !== 'APPROVED' && (
+                        <span style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: '600' }}>
+                            <AlertCircle size={14} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
+                            يجب تفعيل اشتراكك أولاً
+                        </span>
+                    )}
+                </div>
             </div>
 
             {/* Success Message */}
@@ -675,7 +704,8 @@ const MyDesigns = () => {
                         </div>
                     )}
                 </>
-            )}
+            )
+            }
 
             <PromoteModal
                 product={promotingProduct}
@@ -684,225 +714,227 @@ const MyDesigns = () => {
             />
 
             {/* Modal */}
-            {isModalOpen && (
-                <div style={{
-                    position: 'fixed',
-                    inset: 0,
-                    background: 'rgba(0, 0, 0, 0.5)',
-                    zIndex: 1000,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '1rem'
-                }}>
+            {
+                isModalOpen && (
                     <div style={{
-                        background: 'white',
-                        borderRadius: '20px',
-                        maxWidth: '550px',
-                        width: '100%',
-                        maxHeight: '90vh',
-                        overflow: 'hidden',
+                        position: 'fixed',
+                        inset: 0,
+                        background: 'rgba(0, 0, 0, 0.5)',
+                        zIndex: 1000,
                         display: 'flex',
-                        flexDirection: 'column'
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '1rem'
                     }}>
-                        {/* Modal Header */}
                         <div style={{
-                            padding: '1.5rem',
-                            borderBottom: '1px solid #f3f4f6',
+                            background: 'white',
+                            borderRadius: '20px',
+                            maxWidth: '550px',
+                            width: '100%',
+                            maxHeight: '90vh',
+                            overflow: 'hidden',
                             display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center'
+                            flexDirection: 'column'
                         }}>
-                            <h2 style={{ fontSize: '1.25rem', fontWeight: '700' }}>
-                                {editingProduct ? '✏️ تعديل التصميم' : '➕ إضافة تصميم جديد'}
-                            </h2>
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                style={{
-                                    background: '#f3f4f6',
-                                    border: 'none',
-                                    borderRadius: '50%',
-                                    width: '36px',
-                                    height: '36px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        {/* Modal Body */}
-                        <form onSubmit={handleSubmit} style={{
-                            padding: '1.5rem',
-                            overflowY: 'auto',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '1.25rem'
-                        }}>
-                            {/* Title */}
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                                    عنوان التصميم
-                                </label>
-                                <input
-                                    style={inputStyle}
-                                    placeholder="مثال: مطبخ عصري أبيض"
-                                    value={formData.title}
-                                    onChange={e => setFormData({ ...formData, title: e.target.value })}
-                                    required
-                                />
-                            </div>
-
-                            {/* Category & Price */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                                        الفئة
-                                    </label>
-                                    <select
-                                        style={{ ...inputStyle, cursor: 'pointer' }}
-                                        value={formData.category}
-                                        onChange={e => setFormData({ ...formData, category: e.target.value })}
-                                    >
-                                        {categories.map(cat => (
-                                            <option key={cat.value} value={cat.value}>
-                                                {cat.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                                        السعر (د.ج)
-                                    </label>
-                                    <input
-                                        type="number"
-                                        style={inputStyle}
-                                        placeholder="45000"
-                                        value={formData.price}
-                                        onChange={e => setFormData({ ...formData, price: e.target.value })}
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Description */}
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                                    الوصف
-                                </label>
-                                <textarea
-                                    style={{ ...inputStyle, minHeight: '100px', resize: 'vertical' }}
-                                    placeholder="وصف تفصيلي للتصميم، المواد المستعملة، الأبعاد..."
-                                    value={formData.description}
-                                    onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                />
-                            </div>
-
-                            {/* Images */}
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                                    صور التصميم
-                                </label>
-                                <div style={{
-                                    border: '2px dashed #e5e7eb',
-                                    borderRadius: '12px',
-                                    padding: '2rem',
-                                    textAlign: 'center',
-                                    background: '#f9fafb',
-                                    cursor: 'pointer'
-                                }}>
-                                    <input
-                                        type="file"
-                                        multiple
-                                        accept="image/*"
-                                        onChange={handleFileChange}
-                                        style={{ display: 'none' }}
-                                        id="image-upload"
-                                    />
-                                    <label htmlFor="image-upload" style={{ cursor: 'pointer' }}>
-                                        <ImageIcon size={36} style={{ color: '#9ca3af', margin: '0 auto 0.5rem' }} />
-                                        <p style={{ color: '#6b7280', marginBottom: '0.25rem' }}>
-                                            اضغط لرفع الصور أو اسحبها هنا
-                                        </p>
-                                        <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>
-                                            PNG, JPG حتى 5 صور (بحد أقصى 5MB لكل صورة)
-                                        </p>
-                                    </label>
-                                </div>
-                                {previewUrls.length > 0 && (
-                                    <div style={{
-                                        display: 'flex',
-                                        gap: '0.5rem',
-                                        marginTop: '1rem',
-                                        flexWrap: 'wrap'
-                                    }}>
-                                        {previewUrls.map((url, idx) => (
-                                            <img
-                                                key={idx}
-                                                src={url}
-                                                alt="Preview"
-                                                style={{
-                                                    width: '70px',
-                                                    height: '70px',
-                                                    objectFit: 'cover',
-                                                    borderRadius: '8px',
-                                                    border: '2px solid #e5e7eb'
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Submit */}
+                            {/* Modal Header */}
                             <div style={{
+                                padding: '1.5rem',
+                                borderBottom: '1px solid #f3f4f6',
                                 display: 'flex',
-                                gap: '0.75rem',
-                                paddingTop: '0.5rem'
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
                             }}>
+                                <h2 style={{ fontSize: '1.25rem', fontWeight: '700' }}>
+                                    {editingProduct ? '✏️ تعديل التصميم' : '➕ إضافة تصميم جديد'}
+                                </h2>
                                 <button
-                                    type="button"
                                     onClick={() => setIsModalOpen(false)}
                                     style={{
-                                        flex: 1,
-                                        padding: '0.875rem',
                                         background: '#f3f4f6',
                                         border: 'none',
-                                        borderRadius: '12px',
-                                        fontSize: '1rem',
-                                        fontWeight: '600',
+                                        borderRadius: '50%',
+                                        width: '36px',
+                                        height: '36px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
                                         cursor: 'pointer'
                                     }}
                                 >
-                                    إلغاء
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={submitting}
-                                    style={{
-                                        flex: 2,
-                                        padding: '0.875rem',
-                                        background: submitting ? '#9ca3af' : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '12px',
-                                        fontSize: '1rem',
-                                        fontWeight: '700',
-                                        cursor: submitting ? 'not-allowed' : 'pointer'
-                                    }}
-                                >
-                                    {submitting ? 'جاري الحفظ...' : (editingProduct ? 'تحديث التصميم' : 'إضافة التصميم')}
+                                    <X size={20} />
                                 </button>
                             </div>
-                        </form>
+
+                            {/* Modal Body */}
+                            <form onSubmit={handleSubmit} style={{
+                                padding: '1.5rem',
+                                overflowY: 'auto',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '1.25rem'
+                            }}>
+                                {/* Title */}
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                                        عنوان التصميم
+                                    </label>
+                                    <input
+                                        style={inputStyle}
+                                        placeholder="مثال: مطبخ عصري أبيض"
+                                        value={formData.title}
+                                        onChange={e => setFormData({ ...formData, title: e.target.value })}
+                                        required
+                                    />
+                                </div>
+
+                                {/* Category & Price */}
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                    <div>
+                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                                            الفئة
+                                        </label>
+                                        <select
+                                            style={{ ...inputStyle, cursor: 'pointer' }}
+                                            value={formData.category}
+                                            onChange={e => setFormData({ ...formData, category: e.target.value })}
+                                        >
+                                            {categories.map(cat => (
+                                                <option key={cat.value} value={cat.value}>
+                                                    {cat.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                                            السعر (د.ج)
+                                        </label>
+                                        <input
+                                            type="number"
+                                            style={inputStyle}
+                                            placeholder="45000"
+                                            value={formData.price}
+                                            onChange={e => setFormData({ ...formData, price: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Description */}
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                                        الوصف
+                                    </label>
+                                    <textarea
+                                        style={{ ...inputStyle, minHeight: '100px', resize: 'vertical' }}
+                                        placeholder="وصف تفصيلي للتصميم، المواد المستعملة، الأبعاد..."
+                                        value={formData.description}
+                                        onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                    />
+                                </div>
+
+                                {/* Images */}
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                                        صور التصميم
+                                    </label>
+                                    <div style={{
+                                        border: '2px dashed #e5e7eb',
+                                        borderRadius: '12px',
+                                        padding: '2rem',
+                                        textAlign: 'center',
+                                        background: '#f9fafb',
+                                        cursor: 'pointer'
+                                    }}>
+                                        <input
+                                            type="file"
+                                            multiple
+                                            accept="image/*"
+                                            onChange={handleFileChange}
+                                            style={{ display: 'none' }}
+                                            id="image-upload"
+                                        />
+                                        <label htmlFor="image-upload" style={{ cursor: 'pointer' }}>
+                                            <ImageIcon size={36} style={{ color: '#9ca3af', margin: '0 auto 0.5rem' }} />
+                                            <p style={{ color: '#6b7280', marginBottom: '0.25rem' }}>
+                                                اضغط لرفع الصور أو اسحبها هنا
+                                            </p>
+                                            <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>
+                                                PNG, JPG حتى 5 صور (بحد أقصى 5MB لكل صورة)
+                                            </p>
+                                        </label>
+                                    </div>
+                                    {previewUrls.length > 0 && (
+                                        <div style={{
+                                            display: 'flex',
+                                            gap: '0.5rem',
+                                            marginTop: '1rem',
+                                            flexWrap: 'wrap'
+                                        }}>
+                                            {previewUrls.map((url, idx) => (
+                                                <img
+                                                    key={idx}
+                                                    src={url}
+                                                    alt="Preview"
+                                                    style={{
+                                                        width: '70px',
+                                                        height: '70px',
+                                                        objectFit: 'cover',
+                                                        borderRadius: '8px',
+                                                        border: '2px solid #e5e7eb'
+                                                    }}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Submit */}
+                                <div style={{
+                                    display: 'flex',
+                                    gap: '0.75rem',
+                                    paddingTop: '0.5rem'
+                                }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsModalOpen(false)}
+                                        style={{
+                                            flex: 1,
+                                            padding: '0.875rem',
+                                            background: '#f3f4f6',
+                                            border: 'none',
+                                            borderRadius: '12px',
+                                            fontSize: '1rem',
+                                            fontWeight: '600',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        إلغاء
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={submitting}
+                                        style={{
+                                            flex: 2,
+                                            padding: '0.875rem',
+                                            background: submitting ? '#9ca3af' : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '12px',
+                                            fontSize: '1rem',
+                                            fontWeight: '700',
+                                            cursor: submitting ? 'not-allowed' : 'pointer'
+                                        }}
+                                    >
+                                        {submitting ? 'جاري الحفظ...' : (editingProduct ? 'تحديث التصميم' : 'إضافة التصميم')}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

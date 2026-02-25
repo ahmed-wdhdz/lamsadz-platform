@@ -344,10 +344,15 @@ async function updateDeliveryStatus(req, res) {
             return res.status(400).json({ message: 'حالة غير صالحة' });
         }
 
-        const workshopId = (await prisma.workshop.findUnique({ where: { ownerId: req.user.id } }))?.id;
+        const workshop = await prisma.workshop.findUnique({ where: { ownerId: req.user.id } });
+        const workshopId = workshop?.id;
 
         if (!workshopId) {
             return res.status(404).json({ message: 'الورشة غير موجودة' });
+        }
+
+        if (workshop.status !== 'APPROVED') {
+            return res.status(403).json({ message: 'حساب الورشة غير مفعل، لا يمكنك التفاعل مع الطلبات' });
         }
 
         // Verify ownership and update

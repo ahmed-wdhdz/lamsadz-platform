@@ -143,6 +143,10 @@ async function createDesign(req, res) {
             return res.status(404).json({ message: 'الورشة غير موجودة' });
         }
 
+        if (workshop.status !== 'APPROVED') {
+            return res.status(403).json({ message: 'حساب الورشة غير مفعل، لا يمكنك إضافة منتجات' });
+        }
+
         const product = await prisma.product.create({
             data: {
                 workshopId: workshop.id,
@@ -170,6 +174,18 @@ async function updateDesign(req, res) {
         const productId = parseInt(req.params.id);
         const { title, category, description, price, existingImages } = req.body;
         const newImages = req.files ? req.files.map(f => f.filename) : [];
+
+        const workshop = await prisma.workshop.findUnique({
+            where: { ownerId: req.user.id }
+        });
+
+        if (!workshop) {
+            return res.status(404).json({ message: 'الورشة غير موجودة' });
+        }
+
+        if (workshop.status !== 'APPROVED') {
+            return res.status(403).json({ message: 'حساب الورشة غير مفعل، لا يمكنك تعديل منتجات' });
+        }
 
         // Merge existing and new images
         let existing = [];
