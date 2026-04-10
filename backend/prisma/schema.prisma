@@ -88,6 +88,9 @@ model Product {
   updatedAt     DateTime @updatedAt
   leads         Lead[]
   promotions    PromotionRequest[]
+
+  @@index([category, status])
+  @@index([featuredUntil])
 }
 
 model Lead {
@@ -111,6 +114,8 @@ model Lead {
   updatedAt   DateTime       @updatedAt
   deliveries  LeadDelivery[]
   sales       LeadSale[]
+
+  @@index([status, wilaya])
 }
 
 model LeadDelivery {

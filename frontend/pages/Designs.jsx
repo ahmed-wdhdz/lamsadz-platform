@@ -9,6 +9,8 @@ import { getOptimizedImage } from '../utils/optimizeImage';
 const Designs = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const location = useLocation();
     const navigate = useNavigate();
     const { isArabic } = useLanguage();
@@ -18,16 +20,24 @@ const Designs = () => {
     const activeCategory = queryParams.get('category') || 'ALL';
 
     useEffect(() => {
+        // Reset page to 1 when category changes
+        setPage(1);
+    }, [activeCategory]);
+
+    useEffect(() => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                let url = `${API_URL}/products`;
+                let url = `${API_URL}/products?page=${page}&limit=12`;
+                if (activeCategory !== 'ALL') {
+                    url += `&category=${activeCategory}`;
+                }
 
                 const res = await fetch(url);
                 const data = await res.json();
                 if (res.ok) {
                     const productsReceived = data.products || data || [];
-                    let mappedProducts = productsReceived.map(p => ({
+                    const mappedProducts = productsReceived.map(p => ({
                         id: p.id,
                         title: p.title,
                         price: p.price,
@@ -39,11 +49,8 @@ const Designs = () => {
                         featuredUntil: p.featuredUntil
                     }));
 
-                    if (activeCategory !== 'ALL') {
-                        mappedProducts = mappedProducts.filter(p => p.category === activeCategory);
-                    }
-
                     setProducts(mappedProducts);
+                    setTotalPages(data.pages || 1);
                 }
             } catch (error) {
                 console.error("Failed to fetch products", error);
@@ -53,7 +60,7 @@ const Designs = () => {
         };
 
         fetchProducts();
-    }, [activeCategory]);
+    }, [activeCategory, page]);
 
     const handleCategoryClick = (categoryVal) => {
         if (categoryVal === 'ALL') {
@@ -146,6 +153,33 @@ const Designs = () => {
                             {isArabic ? 'عرض كل المنتجات' : 'View all products'}
                         </button>
                     )}
+                </div>
+            {/* Pagination Controls */}
+            {!loading && totalPages > 1 && (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', marginTop: '3rem' }}>
+                    <button
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        style={{
+                            padding: '0.6rem 1.2rem', borderRadius: '8px', border: '1px solid #e5e7eb', background: 'white',
+                            cursor: page === 1 ? 'not-allowed' : 'pointer', opacity: page === 1 ? 0.5 : 1, fontWeight: '600'
+                        }}
+                    >
+                        {isArabic ? 'السابق' : 'Previous'}
+                    </button>
+                    <span style={{ fontWeight: '700', color: '#4b5563' }}>
+                        {page} / {totalPages}
+                    </span>
+                    <button
+                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
+                        style={{
+                            padding: '0.6rem 1.2rem', borderRadius: '8px', border: '1px solid #e5e7eb', background: 'white',
+                            cursor: page === totalPages ? 'not-allowed' : 'pointer', opacity: page === totalPages ? 0.5 : 1, fontWeight: '600'
+                        }}
+                    >
+                        {isArabic ? 'التالي' : 'Next'}
+                    </button>
                 </div>
             )}
         </div>

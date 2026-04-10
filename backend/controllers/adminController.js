@@ -309,12 +309,22 @@ async function validatePayment(req, res) {
  */
 async function getProducts(req, res) {
     try {
-        const products = await prisma.product.findMany({
-            where: { status: { not: 'ARCHIVED' } },
-            include: { workshop: { select: { name: true } } },
-            orderBy: { createdAt: 'desc' }
-        });
-        res.json(products);
+        const { page = 1, limit = 20 } = req.query;
+        const skip = (page - 1) * limit;
+        const where = { status: { not: 'ARCHIVED' } };
+
+        const [products, total] = await Promise.all([
+            prisma.product.findMany({
+                where,
+                skip,
+                take: parseInt(limit),
+                include: { workshop: { select: { name: true } } },
+                orderBy: { createdAt: 'desc' }
+            }),
+            prisma.product.count({ where })
+        ]);
+        
+        res.json({ products, total, pages: Math.ceil(total / limit) });
     } catch (error) {
         console.error('GetProducts error:', error);
         res.status(500).json({ message: 'حدث خطأ في الخادم' });
