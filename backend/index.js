@@ -50,6 +50,8 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
+const https = require('https');
+
 app.listen(config.port, () => {
     console.log(`
 ╔════════════════════════════════════════════╗
@@ -58,4 +60,25 @@ app.listen(config.port, () => {
 ║   Environment: ${config.nodeEnv}              ║
 ╚════════════════════════════════════════════╝
     `);
+
+    // --- Startup Trick: Keep Server Awake ---
+    // Only start pinging in production so we don't spam it in local dev
+    if (config.nodeEnv !== 'development') {
+        const PING_URL = 'https://lamsadz-api.onrender.com/health';
+        const PING_INTERVAL = 14 * 60 * 1000; // 14 minutes
+        
+        console.log(`[Ping] Keep-alive mechanism started for: ${PING_URL}`);
+        
+        setInterval(() => {
+            https.get(PING_URL, (res) => {
+                if (res.statusCode === 200) {
+                    console.log(`[Ping] Server kept alive at ${new Date().toISOString()}`);
+                } else {
+                    console.error(`[Ping] Failed with status: ${res.statusCode}`);
+                }
+            }).on('error', (err) => {
+                console.error('[Ping] Error:', err.message);
+            });
+        }, PING_INTERVAL);
+    }
 });
