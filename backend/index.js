@@ -22,7 +22,24 @@ setDefaults();
 const app = express();
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+    'https://lamsadz-platform.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://localhost:4173'
+];
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        callback(new Error(`CORS: Origin ${origin} not allowed`));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
