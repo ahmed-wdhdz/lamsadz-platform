@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Plus, Edit, Trash2, Image as ImageIcon, X, Eye, EyeOff, Package, Filter, Grid, List, Search, CheckCircle, Rocket, AlertCircle } from 'lucide-react';
 import { categories } from '../../utils/categories';
+import { getOptimizedImage } from '../../utils/optimizeImage';
 import PromoteModal from '../../components/PromoteModal';
 
 const MyDesigns = () => {
@@ -405,7 +406,7 @@ const MyDesigns = () => {
                             {filteredProducts.map(product => {
                                 const images = JSON.parse(product.images || '[]');
                                 const thumbnail = images.length > 0
-                                    ? (String(images[0]).startsWith('http') ? images[0] : `${API_URL.replace('/api', '')}/uploads/${images[0]}`)
+                                    ? getOptimizedImage(images[0], 400, 300)
                                     : 'https://placehold.co/400x300?text=No+Image';
                                 const category = categories.find(c => c.value === product.category);
 

@@ -6,6 +6,7 @@ import HeroSection from '../components/HeroSection';
 import FurnitureCard from '../components/FurnitureCard';
 import { useLanguage } from '../context/LanguageContext';
 import { categories } from '../utils/categories';
+import { getOptimizedImage } from '../utils/optimizeImage';
 
 const Home = () => {
     const [products, setProducts] = React.useState([]);
@@ -24,7 +25,7 @@ const Home = () => {
                         title: p.title,
                         price: p.price,
                         image: p.images && p.images !== '[]'
-                            ? (String(JSON.parse(p.images)[0]).startsWith('http') ? JSON.parse(p.images)[0] : `${API_URL.replace('/api', '')}/uploads/${JSON.parse(p.images)[0]}`)
+                            ? getOptimizedImage(JSON.parse(p.images)[0], 400)
                             : 'https://placehold.co/600x400?text=No+Image',
                         category: p.category,
                         workshop: p.workshop?.name || 'ورشة',

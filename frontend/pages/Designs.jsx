@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import FurnitureCard from '../components/FurnitureCard';
 import { categories } from '../utils/categories';
 import { useLanguage } from '../context/LanguageContext';
+import { getOptimizedImage } from '../utils/optimizeImage';
 
 const Designs = () => {
     const [products, setProducts] = useState([]);
@@ -31,7 +32,7 @@ const Designs = () => {
                         title: p.title,
                         price: p.price,
                         image: p.images && p.images !== '[]'
-                            ? (String(JSON.parse(p.images)[0]).startsWith('http') ? JSON.parse(p.images)[0] : `${API_URL.replace('/api', '')}/uploads/${JSON.parse(p.images)[0]}`)
+                            ? getOptimizedImage(JSON.parse(p.images)[0], 400)
                             : 'https://placehold.co/600x400?text=No+Image',
                         category: p.category,
                         workshop: p.workshop?.name || 'ورشة',

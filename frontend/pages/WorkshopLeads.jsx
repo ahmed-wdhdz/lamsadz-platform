@@ -2,6 +2,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.co
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Clock, CheckCircle, XCircle, ChevronDown, ChevronUp, Send } from 'lucide-react';
+import { getOptimizedImage } from '../utils/optimizeImage';
 
 const WorkshopLeads = () => {
     const { token } = useAuth();
@@ -153,9 +154,9 @@ const WorkshopLeads = () => {
                                                         <h5 className="font-bold text-sm text-gray-600 mb-2">الصور المرفقة:</h5>
                                                         <div className="flex gap-2 overflow-x-auto pb-2">
                                                             {JSON.parse(delivery.lead.images).map((img, idx) => (
-                                                                <a key={idx} href={(String(img).startsWith('http') ? img : `${API_URL.replace('/api', '')}/uploads/${img}`)} target="_blank" rel="noreferrer">
-                                                                    <img src={(String(img).startsWith('http') ? img : `${API_URL.replace('/api', '')}/uploads/${img}`)} alt="Lead" className="h-20 w-20 object-cover rounded border" />
-                                                                </a>
+                                                                    <a key={idx} href={(String(img).startsWith('http') ? img : `${API_URL.replace('/api', '')}/uploads/${img}`)} target="_blank" rel="noreferrer">
+                                                                        <img src={getOptimizedImage(img, 100)} alt="Lead" className="h-20 w-20 object-cover rounded border" />
+                                                                    </a>
                                                             ))}
                                                         </div>
                                                     </div>

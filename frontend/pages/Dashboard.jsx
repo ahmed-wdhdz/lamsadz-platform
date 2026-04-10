@@ -3,6 +3,7 @@ import { User, Package, Settings, LogOut, FileText } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
+import { getOptimizedImage } from '../utils/optimizeImage';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
@@ -173,7 +174,7 @@ const Dashboard = () => {
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                                         {isDesignLead && mainImage && (
                                                             <div style={{ width: '60px', height: '60px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
-                                                                <img src={(String(mainImage).startsWith('http') ? mainImage : `${API_URL.replace('/api', '')}/uploads/${mainImage}`)} alt={lead.design.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                                <img src={getOptimizedImage(mainImage, 100)} alt={lead.design.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                                             </div>
                                                         )}
                                                         <div>
@@ -220,7 +221,7 @@ const Dashboard = () => {
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                                             {isDesignLead && mainImage && (
                                                                 <div style={{ width: '80px', height: '80px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
-                                                                    <img src={(String(mainImage).startsWith('http') ? mainImage : `${API_URL.replace('/api', '')}/uploads/${mainImage}`)} alt={lead.design.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                                    <img src={getOptimizedImage(mainImage, 100)} alt={lead.design.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                                                 </div>
                                                             )}
                                                             <div>

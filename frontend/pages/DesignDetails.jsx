@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import ReviewList from '../components/ReviewList';
 import ReviewForm from '../components/ReviewForm';
 import { useAuth } from '../context/AuthContext';
+import { getOptimizedImage } from '../utils/optimizeImage';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
@@ -121,7 +122,7 @@ const DesignDetails = () => {
         </div>
     );
 
-    const mainImagePath = images.length > 0 ? (String(images[activeImage]).startsWith('http') ? images[activeImage] : `${API_URL.replace('/api', '')}/uploads/${images[activeImage]}`) : 'https://placehold.co/800x600';
+    const mainImagePath = images.length > 0 ? getOptimizedImage(images[activeImage], 800) : 'https://placehold.co/800x600';
 
     return (
         <div style={{ background: '#f8fafc', minHeight: '100vh', paddingBottom: '4rem' }}>
@@ -190,7 +191,7 @@ const DesignDetails = () => {
                                         }}
                                     >
                                         <img
-                                            src={(String(img).startsWith('http') ? img : `${API_URL.replace('/api', '')}/uploads/${img}`)}
+                                            src={getOptimizedImage(img, 100)}
                                             alt="thumbnail"
                                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                         />
