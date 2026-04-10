@@ -136,7 +136,7 @@ const arTranslations = {
     'admin.workshops': 'الورش',
     'admin.users': 'المستخدمين',
     'admin.products': 'المنتجات',
-    'admin.payments': 'إدارة الاشتراكات',
+    'admin.payments': 'المدفوعات',
     'admin.requests': 'طلبات التسجيل',
 
     // Forms
@@ -279,7 +279,7 @@ const enTranslations = {
     'admin.workshops': 'Workshops',
     'admin.users': 'Users',
     'admin.products': 'Products',
-    'admin.payments': 'Subscriptions',
+    'admin.payments': 'Payments',
     'admin.requests': 'Requests',
 
     // Forms

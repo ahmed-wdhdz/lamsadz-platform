@@ -6,11 +6,21 @@ import { User, Ban, CheckCircle } from 'lucide-react';
 const UsersList = () => {
     const { token } = useAuth();
     const [users, setUsers] = useState([]);
+    const [filteredUsers, setFilteredUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [roleFilter, setRoleFilter] = useState('ALL');
 
     useEffect(() => {
         fetchUsers();
     }, []);
+
+    useEffect(() => {
+        if (roleFilter === 'ALL') {
+            setFilteredUsers(users);
+        } else {
+            setFilteredUsers(users.filter(u => u.role === roleFilter));
+        }
+    }, [users, roleFilter]);
 
     const fetchUsers = async () => {
         try {
@@ -53,6 +63,28 @@ const UsersList = () => {
         <div>
             <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>إدارة المستخدمين</h1>
 
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+                {['ALL', 'CLIENT', 'WORKSHOP', 'ADMIN'].map(role => (
+                    <button
+                        key={role}
+                        onClick={() => setRoleFilter(role)}
+                        style={{
+                            padding: '0.4rem 1rem',
+                            borderRadius: '999px',
+                            border: roleFilter === role ? 'none' : '1px solid var(--gray-200)',
+                            background: roleFilter === role ? '#0f172a' : 'white',
+                            color: roleFilter === role ? 'white' : 'var(--text-color)',
+                            cursor: 'pointer',
+                            fontSize: '0.9rem',
+                            fontWeight: roleFilter === role ? 'bold' : 'normal',
+                            transition: 'all 0.2s ease'
+                        }}
+                    >
+                        {role === 'ALL' ? 'الكل' : role === 'CLIENT' ? 'الزبائن المعملاء' : role === 'WORKSHOP' ? 'أصحاب الورش' : 'الإدارة'}
+                    </button>
+                ))}
+            </div>
+
             <div className="card" style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', minWidth: '800px', borderCollapse: 'collapse' }}>
                     <thead>
@@ -66,7 +98,7 @@ const UsersList = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map(user => (
+                        {filteredUsers.map(user => (
                             <tr key={user.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
                                 <td style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                     <div style={{ background: 'var(--gray-100)', padding: '0.5rem', borderRadius: '50%' }}>

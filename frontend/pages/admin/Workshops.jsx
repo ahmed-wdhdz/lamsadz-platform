@@ -1,12 +1,13 @@
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Store, Check, X, Ban } from 'lucide-react';
+import { Store, Check, X, Ban, Eye } from 'lucide-react';
 
 const Workshops = () => {
     const { token } = useAuth();
     const [workshops, setWorkshops] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedWorkshop, setSelectedWorkshop] = useState(null);
 
     useEffect(() => {
         fetchWorkshops();
@@ -104,6 +105,13 @@ const Workshops = () => {
                                     </span>
                                 </td>
                                 <td style={{ padding: '1rem', display: 'flex', gap: '0.5rem' }}>
+                                    <button
+                                        onClick={() => setSelectedWorkshop(workshop)}
+                                        style={{ color: '#3b82f6', background: '#eff6ff', padding: '0.4rem', borderRadius: '4px', border: 'none', cursor: 'pointer' }}
+                                        title="معاينة التفاصيل"
+                                    >
+                                        <Eye size={16} />
+                                    </button>
                                     {workshop.status !== 'APPROVED' && (
                                         <button
                                             onClick={() => updateStatus(workshop.id, 'APPROVED')}
@@ -137,6 +145,77 @@ const Workshops = () => {
                     </tbody>
                 </table>
             </div>
+
+            {selectedWorkshop && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+                    <div className="card" style={{ width: '100%', maxWidth: '600px', padding: '0', overflow: 'hidden' }}>
+                        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--gray-200)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <Store size={20} />
+                                تفاصيل الورشة - {selectedWorkshop.name}
+                            </h3>
+                            <button onClick={() => setSelectedWorkshop(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={24} /></button>
+                        </div>
+                        <div style={{ padding: '1.5rem', maxHeight: '70vh', overflowY: 'auto' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+                                <div>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>اسم المالك</label>
+                                    <div style={{ fontWeight: 'bold' }}>{selectedWorkshop.owner?.name}</div>
+                                </div>
+                                <div>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>البريد الإلكتروني</label>
+                                    <div style={{ fontWeight: 'bold' }}>{selectedWorkshop.owner?.email}</div>
+                                </div>
+                                <div>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>رقم الهاتف</label>
+                                    <div style={{ fontWeight: 'bold', direction: 'ltr', textAlign: 'right' }}>{selectedWorkshop.phone || 'غير متوفر'}</div>
+                                </div>
+                                <div>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>الولاية</label>
+                                    <div style={{ fontWeight: 'bold' }}>{selectedWorkshop.location}</div>
+                                </div>
+                            </div>
+                            
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>وصف الورشة</label>
+                                <div style={{ background: '#f9fafb', padding: '1rem', borderRadius: '8px', marginTop: '0.5rem' }}>
+                                    {selectedWorkshop.description || 'لا يوجد وصف مقدّم.'}
+                                </div>
+                            </div>
+
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>المهارات والاختصاصات</label>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
+                                    {selectedWorkshop.skills ? selectedWorkshop.skills.split(',').map(s => (
+                                        <span key={s} style={{ background: '#e0f2fe', color: '#0369a1', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.85rem' }}>
+                                            {s.trim()}
+                                        </span>
+                                    )) : <span style={{ color: 'var(--text-muted)' }}>لا توجد مهارات محددة</span>}
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', background: '#eff6ff', padding: '1rem', borderRadius: '8px' }}>
+                                <div>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>إجمالي التصاميم</label>
+                                    <div style={{ fontWeight: '800', fontSize: '1.2rem', color: '#1d4ed8' }}>{selectedWorkshop._count?.products || 0}</div>
+                                </div>
+                                <div>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>الطلبيات المُستلمة</label>
+                                    <div style={{ fontWeight: '800', fontSize: '1.2rem', color: '#1d4ed8' }}>{selectedWorkshop._count?.leadDeliveries || 0}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style={{ padding: '1.5rem', borderTop: '1px solid var(--gray-200)', display: 'flex', justifyContent: 'flex-end' }}>
+                            <button
+                                onClick={() => setSelectedWorkshop(null)}
+                                style={{ padding: '0.75rem 1.5rem', borderRadius: '6px', background: 'var(--gray-200)', color: 'black', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+                            >
+                                إغلاق
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

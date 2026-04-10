@@ -80,7 +80,7 @@ const Subscriptions = () => {
 
     return (
         <div>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>إدارة الاشتراكات</h1>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>مراجعة المدفوعات</h1>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
                 <div style={{ position: 'relative', maxWidth: '400px' }}>
