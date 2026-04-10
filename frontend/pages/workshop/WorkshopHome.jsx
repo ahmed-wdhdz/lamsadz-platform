@@ -342,9 +342,7 @@ const WorkshopHome = () => {
                             </div>
                             {t('workshop.recentActivity') || 'آخر النشاطات'}
                         </h3>
-                        <Link to="/dashboard/workshop/requests" style={{ color: '#3b82f6', fontSize: '0.9rem', fontWeight: '600' }}>
-                            {t('general.viewall') || 'عرض الكل'}
-                        </Link>
+
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
