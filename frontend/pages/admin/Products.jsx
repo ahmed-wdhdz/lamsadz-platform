@@ -8,18 +8,23 @@ const Products = () => {
     const { token } = useAuth();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
         fetchProducts();
-    }, []);
+    }, [page]);
 
     const fetchProducts = async () => {
         try {
-            const res = await fetch(`${API_URL}/admin/products`, {
+            const res = await fetch(`${API_URL}/admin/products?page=${page}&limit=20`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
-            if (res.ok) setProducts(data);
+            if (res.ok) {
+                setProducts(data.products || data || []);
+                setTotalPages(data.pages || 1);
+            }
         } catch (error) {
             console.error(error);
         } finally {
@@ -102,6 +107,35 @@ const Products = () => {
                     </tbody>
                 </table>
             </div>
+
+            {/* Pagination Controls */}
+            {!loading && totalPages > 1 && (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', marginTop: '2rem' }}>
+                    <button
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        style={{
+                            padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid #e5e7eb', background: 'white',
+                            cursor: page === 1 ? 'not-allowed' : 'pointer', opacity: page === 1 ? 0.5 : 1, fontWeight: 'bold'
+                        }}
+                    >
+                        السابق
+                    </button>
+                    <span style={{ fontWeight: 'bold', color: '#4b5563' }}>
+                        {page} / {totalPages}
+                    </span>
+                    <button
+                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
+                        style={{
+                            padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid #e5e7eb', background: 'white',
+                            cursor: page === totalPages ? 'not-allowed' : 'pointer', opacity: page === totalPages ? 0.5 : 1, fontWeight: 'bold'
+                        }}
+                    >
+                        التالي
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
