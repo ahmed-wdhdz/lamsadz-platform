@@ -316,63 +316,7 @@ const ProfileSettings = () => {
                         </div>
                     </div>
 
-                    {/* Skills */}
-                    <div style={{ marginBottom: '2rem' }}>
-                        <label style={labelStyle}>
-                            <Briefcase size={16} style={{ display: 'inline', marginLeft: '0.5rem', verticalAlign: 'middle' }} />
-                            المهارات والتخصصات
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="نجارة، تنجيد، صباغة، تصميم داخلي..."
-                            value={formData.skills}
-                            onChange={e => setFormData({ ...formData, skills: e.target.value })}
-                            required
-                            style={inputStyle}
-                            onFocus={e => {
-                                e.target.style.borderColor = '#3b82f6';
-                                e.target.style.background = 'white';
-                            }}
-                            onBlur={e => {
-                                e.target.style.borderColor = '#e5e7eb';
-                                e.target.style.background = '#f9fafb';
-                            }}
-                        />
-                        <div style={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            gap: '0.5rem',
-                            marginTop: '0.75rem'
-                        }}>
-                            {['نجارة', 'تنجيد', 'صباغة', 'مطابخ', 'غرف نوم'].map(skill => (
-                                <button
-                                    key={skill}
-                                    type="button"
-                                    onClick={() => {
-                                        const currentSkills = formData.skills ? formData.skills.split(',').map(s => s.trim()) : [];
-                                        if (!currentSkills.includes(skill)) {
-                                            setFormData({
-                                                ...formData,
-                                                skills: currentSkills.length ? `${formData.skills}, ${skill}` : skill
-                                            });
-                                        }
-                                    }}
-                                    style={{
-                                        padding: '0.4rem 0.8rem',
-                                        borderRadius: '999px',
-                                        border: '1px solid #e5e7eb',
-                                        background: formData.skills?.includes(skill) ? '#dbeafe' : 'white',
-                                        color: formData.skills?.includes(skill) ? '#1d4ed8' : '#6b7280',
-                                        fontSize: '0.85rem',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s ease'
-                                    }}
-                                >
-                                    + {skill}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+
 
                     {/* Submit Button */}
                     <button
