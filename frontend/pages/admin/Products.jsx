@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Package, Trash2, Eye } from 'lucide-react';
@@ -67,7 +67,7 @@ const Products = () => {
                                 <td style={{ padding: '1rem' }}>
                                     <img
                                         src={product.images && product.images !== '[]'
-                                            ? `http://localhost:3000/uploads/${JSON.parse(product.images)[0]}`
+                                            ? (String(JSON.parse(product.images)[0]).startsWith('http') ? JSON.parse(product.images)[0] : `${API_URL.replace('/api', '')}/uploads/${JSON.parse(product.images)[0]}`)
                                             : 'https://placehold.co/100'}
                                         alt={product.title}
                                         style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }}

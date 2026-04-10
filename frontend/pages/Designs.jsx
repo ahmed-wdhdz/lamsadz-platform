@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FurnitureCard from '../components/FurnitureCard';
@@ -21,9 +21,6 @@ const Designs = () => {
             setLoading(true);
             try {
                 let url = `${API_URL}/products`;
-                // If filtering by category (and backend supports it), we could do it server-side.
-                // Assuming backend doesn't support filter query for now, filtering client side.
-                // Wait, typically we want server side. Let's try client side first as per Home.jsx behavior
 
                 const res = await fetch(url);
                 const data = await res.json();
@@ -34,7 +31,7 @@ const Designs = () => {
                         title: p.title,
                         price: p.price,
                         image: p.images && p.images !== '[]'
-                            ? `http://localhost:3000/uploads/${JSON.parse(p.images)[0]}`
+                            ? (String(JSON.parse(p.images)[0]).startsWith('http') ? JSON.parse(p.images)[0] : `${API_URL.replace('/api', '')}/uploads/${JSON.parse(p.images)[0]}`)
                             : 'https://placehold.co/600x400?text=No+Image',
                         category: p.category,
                         workshop: p.workshop?.name || 'ورشة',

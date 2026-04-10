@@ -133,7 +133,7 @@ async function getMyDesigns(req, res) {
 async function createDesign(req, res) {
     try {
         const { title, category, description, price } = req.body;
-        const images = req.files ? req.files.map(f => f.filename) : [];
+        const images = req.files ? req.files.map(f => f.path) : [];
 
         const workshop = await prisma.workshop.findUnique({
             where: { ownerId: req.user.id }
@@ -173,7 +173,7 @@ async function updateDesign(req, res) {
     try {
         const productId = parseInt(req.params.id);
         const { title, category, description, price, existingImages } = req.body;
-        const newImages = req.files ? req.files.map(f => f.filename) : [];
+        const newImages = req.files ? req.files.map(f => f.path) : [];
 
         const workshop = await prisma.workshop.findUnique({
             where: { ownerId: req.user.id }

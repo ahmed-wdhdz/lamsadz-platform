@@ -52,7 +52,7 @@ exports.requestPromotion = async (req, res) => {
                 productId: product.id,
                 amount: amount,
                 durationDays: parsedDuration,
-                proofUrl: req.file.filename,
+                proofUrl: req.file.path,
                 status: 'PENDING'
             }
         });

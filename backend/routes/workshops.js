@@ -11,22 +11,9 @@
 
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
+const { upload } = require('../config');
 const { workshopController } = require('../controllers');
 const { authenticate, requireWorkshop } = require('../middleware');
-
-// Multer config for payment proofs
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../uploads'));
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'payment-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
-const upload = multer({ storage });
 
 // Workshop owner routes (protected) - MUST be before /:id routes
 router.get('/workshops/me', authenticate, requireWorkshop, workshopController.getMyWorkshop);

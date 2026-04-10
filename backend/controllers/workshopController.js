@@ -287,9 +287,9 @@ async function uploadPaymentProof(req, res) {
             console.log('No file in request');
             return res.status(400).json({ message: 'يرجى رفع ملف الإيصال' });
         }
-        console.log('File uploaded:', req.file.filename);
+        console.log('File uploaded:', req.file.path);
 
-        const proofUrl = req.file.filename;
+        const proofUrl = req.file.path;
 
         // Find the pending payment and update it
         const pendingPayment = await prisma.workshopPayment.findFirst({

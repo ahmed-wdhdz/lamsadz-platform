@@ -25,7 +25,7 @@ async function submitLead(req, res) {
             dimensions
         } = req.body;
 
-        const images = req.files ? req.files.map(f => f.filename) : [];
+        const images = req.files ? req.files.map(f => f.path) : [];
 
         // Get category and workshop from design if linked
         let category = null;

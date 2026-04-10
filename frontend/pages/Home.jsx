@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -24,7 +24,7 @@ const Home = () => {
                         title: p.title,
                         price: p.price,
                         image: p.images && p.images !== '[]'
-                            ? `http://localhost:3000/uploads/${JSON.parse(p.images)[0]}`
+                            ? (String(JSON.parse(p.images)[0]).startsWith('http') ? JSON.parse(p.images)[0] : `${API_URL.replace('/api', '')}/uploads/${JSON.parse(p.images)[0]}`)
                             : 'https://placehold.co/600x400?text=No+Image',
                         category: p.category,
                         workshop: p.workshop?.name || 'ورشة',

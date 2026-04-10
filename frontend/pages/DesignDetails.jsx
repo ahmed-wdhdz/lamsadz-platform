@@ -121,7 +121,7 @@ const DesignDetails = () => {
         </div>
     );
 
-    const mainImagePath = images.length > 0 ? `http://localhost:3000/uploads/${images[activeImage]}` : 'https://placehold.co/800x600';
+    const mainImagePath = images.length > 0 ? (String(images[activeImage]).startsWith('http') ? images[activeImage] : `${API_URL.replace('/api', '')}/uploads/${images[activeImage]}`) : 'https://placehold.co/800x600';
 
     return (
         <div style={{ background: '#f8fafc', minHeight: '100vh', paddingBottom: '4rem' }}>
@@ -190,7 +190,7 @@ const DesignDetails = () => {
                                         }}
                                     >
                                         <img
-                                            src={`http://localhost:3000/uploads/${img}`}
+                                            src={(String(img).startsWith('http') ? img : `${API_URL.replace('/api', '')}/uploads/${img}`)}
                                             alt="thumbnail"
                                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                         />

@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Clock, CheckCircle, ChevronDown, ChevronUp, Send, Inbox, MapPin, DollarSign, Calendar, MessageSquare, Image as ImageIcon, User, Phone, Filter, Truck, Package, Check, XCircle, AlertCircle } from 'lucide-react';
@@ -539,12 +539,12 @@ const Requests = () => {
                                                             {JSON.parse(delivery.lead.images).map((img, idx) => (
                                                                 <a
                                                                     key={idx}
-                                                                    href={`http://localhost:3000/uploads/${img}`}
+                                                                    href={(String(img).startsWith('http') ? img : `${API_URL.replace('/api', '')}/uploads/${img}`)}
                                                                     target="_blank"
                                                                     rel="noreferrer"
                                                                 >
                                                                     <img
-                                                                        src={`http://localhost:3000/uploads/${img}`}
+                                                                        src={(String(img).startsWith('http') ? img : `${API_URL.replace('/api', '')}/uploads/${img}`)}
                                                                         alt="Lead"
                                                                         style={{
                                                                             width: '80px',

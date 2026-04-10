@@ -173,7 +173,7 @@ const Dashboard = () => {
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                                         {isDesignLead && mainImage && (
                                                             <div style={{ width: '60px', height: '60px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
-                                                                <img src={`${API_URL.replace('/api', '')}/uploads/${mainImage}`} alt={lead.design.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                                <img src={(String(mainImage).startsWith('http') ? mainImage : `${API_URL.replace('/api', '')}/uploads/${mainImage}`)} alt={lead.design.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                                             </div>
                                                         )}
                                                         <div>
@@ -220,7 +220,7 @@ const Dashboard = () => {
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                                             {isDesignLead && mainImage && (
                                                                 <div style={{ width: '80px', height: '80px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
-                                                                    <img src={`${API_URL.replace('/api', '')}/uploads/${mainImage}`} alt={lead.design.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                                    <img src={(String(mainImage).startsWith('http') ? mainImage : `${API_URL.replace('/api', '')}/uploads/${mainImage}`)} alt={lead.design.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                                                 </div>
                                                             )}
                                                             <div>

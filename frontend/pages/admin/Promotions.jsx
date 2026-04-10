@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Eye, CheckCircle, XCircle, Search, Rocket, X } from 'lucide-react';
@@ -176,9 +176,9 @@ const Promotions = () => {
                         <div style={{ padding: '1.5rem', maxHeight: '70vh', overflowY: 'auto' }}>
                             <div style={{ marginBottom: '1.5rem', textAlign: 'center', background: '#f9fafb', padding: '1rem', borderRadius: '8px' }}>
                                 {selectedPromo.proofUrl ? (
-                                    <a href={`http://localhost:3000/uploads/${selectedPromo.proofUrl}`} target="_blank" rel="noreferrer">
+                                    <a href={(String(selectedPromo.proofUrl).startsWith('http') ? selectedPromo.proofUrl : `${API_URL.replace('/api', '')}/uploads/${selectedPromo.proofUrl}`)} target="_blank" rel="noreferrer">
                                         <img
-                                            src={`http://localhost:3000/uploads/${selectedPromo.proofUrl}`}
+                                            src={(String(selectedPromo.proofUrl).startsWith('http') ? selectedPromo.proofUrl : `${API_URL.replace('/api', '')}/uploads/${selectedPromo.proofUrl}`)}
                                             alt="Proof"
                                             style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
                                         />

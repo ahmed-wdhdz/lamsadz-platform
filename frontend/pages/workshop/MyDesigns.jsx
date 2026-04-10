@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Plus, Edit, Trash2, Image as ImageIcon, X, Eye, EyeOff, Package, Filter, Grid, List, Search, CheckCircle, Rocket, AlertCircle } from 'lucide-react';
@@ -405,7 +405,7 @@ const MyDesigns = () => {
                             {filteredProducts.map(product => {
                                 const images = JSON.parse(product.images || '[]');
                                 const thumbnail = images.length > 0
-                                    ? `http://localhost:3000/uploads/${images[0]}`
+                                    ? (String(images[0]).startsWith('http') ? images[0] : `${API_URL.replace('/api', '')}/uploads/${images[0]}`)
                                     : 'https://placehold.co/400x300?text=No+Image';
                                 const category = categories.find(c => c.value === product.category);
 
