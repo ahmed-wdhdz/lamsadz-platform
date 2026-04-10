@@ -310,6 +310,7 @@ async function validatePayment(req, res) {
 async function getProducts(req, res) {
     try {
         const products = await prisma.product.findMany({
+            where: { status: { not: 'ARCHIVED' } },
             include: { workshop: { select: { name: true } } },
             orderBy: { createdAt: 'desc' }
         });
@@ -327,7 +328,13 @@ async function getProducts(req, res) {
 async function deleteProduct(req, res) {
     try {
         const productId = parseInt(req.params.id);
-        await prisma.product.delete({ where: { id: productId } });
+        
+        // Soft delete (Archive) to prevent Foreign Key constraints from failing
+        await prisma.product.update({ 
+            where: { id: productId },
+            data: { status: 'ARCHIVED' }
+        });
+        
         res.json({ success: true });
     } catch (error) {
         console.error('DeleteProduct error:', error);
