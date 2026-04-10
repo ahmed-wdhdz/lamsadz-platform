@@ -137,9 +137,21 @@ async function updateWorkshopStatus(req, res) {
         const workshopId = parseInt(req.params.id);
         const { status, note } = req.body;
 
+        const dataToUpdate = { status };
+
+        // If manually approved, give them a default 30-day subscription
+        if (status === 'APPROVED') {
+            const currentWorkshop = await prisma.workshop.findUnique({ where: { id: workshopId } });
+            if (!currentWorkshop.subscriptionEndsAt || new Date(currentWorkshop.subscriptionEndsAt) < new Date()) {
+                const endsAt = new Date();
+                endsAt.setDate(endsAt.getDate() + 30);
+                dataToUpdate.subscriptionEndsAt = endsAt;
+            }
+        }
+
         const workshop = await prisma.workshop.update({
             where: { id: workshopId },
-            data: { status }
+            data: dataToUpdate
         });
 
         res.json(workshop);
