@@ -232,11 +232,6 @@ const Dashboard = () => {
                                                         </div>
                                                         <span style={{ background: status.bg, color: status.col, padding: '0.4rem 1rem', borderRadius: '999px', fontSize: '0.85rem', fontWeight: '700' }}>
                                                             {status.text}
-                                                        </span>
-                                                    </div>
-                                                    <div style={{ background: 'var(--bg-secondary)', padding: '1rem', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '0.95rem' }}>
-                                                        <strong style={{ color: 'var(--text-primary)' }}>{t('client.details')}:</strong> {lead.description}
-                                                    </div>
                                                 </div>
                                             )
                                         })}
