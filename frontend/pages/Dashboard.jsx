@@ -232,6 +232,8 @@ const Dashboard = () => {
                                                         </div>
                                                         <span style={{ background: status.bg, color: status.col, padding: '0.4rem 1rem', borderRadius: '999px', fontSize: '0.85rem', fontWeight: '700' }}>
                                                             {status.text}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             )
                                         })}
