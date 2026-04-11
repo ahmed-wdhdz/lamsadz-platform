@@ -18,6 +18,7 @@ const CustomRequests = () => {
 
     const filteredLeads = leads.filter(entry => {
         if (activeFilter === 'all') return true;
+        if (activeFilter === 'NEW') return entry.lead.status === 'NEW' || entry.lead.status === 'SENT';
         return entry.lead.status === activeFilter;
     });
 
@@ -84,7 +85,7 @@ const CustomRequests = () => {
                     <span style={{ color: '#3b82f6', fontWeight: '600' }}>إجمالي الطلبات</span>
                 </div>
                 <div style={{ background: '#fef3c7', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '2.5rem', fontWeight: '800', color: '#92400e' }}>{leads.filter(l => l.lead.status === 'NEW').length}</span>
+                    <span style={{ fontSize: '2.5rem', fontWeight: '800', color: '#92400e' }}>{leads.filter(l => l.lead.status === 'NEW' || l.lead.status === 'SENT').length}</span>
                     <span style={{ color: '#d97706', fontWeight: '600' }}>طلبات جديدة</span>
                 </div>
             </div>
@@ -116,7 +117,7 @@ const CustomRequests = () => {
                     >
                         {tab.label}
                         <span style={{ marginRight: '0.5rem', fontSize: '0.8rem', opacity: 0.8 }}>
-                            {tab.id === 'all' ? leads.length : leads.filter(l => l.lead.status === tab.id).length}
+                            {tab.id === 'all' ? leads.length : (tab.id === 'NEW' ? leads.filter(l => l.lead.status === 'NEW' || l.lead.status === 'SENT').length : leads.filter(l => l.lead.status === tab.id).length)}
                         </span>
                     </button>
                 ))}
