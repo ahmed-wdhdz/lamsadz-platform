@@ -203,7 +203,12 @@ async function getLeads(req, res) {
         }
 
         const deliveries = await prisma.leadDelivery.findMany({
-            where: { workshopId: workshop.id },
+        where: { 
+             workshopId: workshop.id,
+             lead: {
+                 designId: { not: null }
+             }
+         },
             include: {
                 lead: {
                     include: {
