@@ -100,11 +100,8 @@ async function submitLead(req, res) {
                     data: deliveries
                 });
 
-                // Update status to SENT
-                await prisma.lead.update({
-                    where: { id: lead.id },
-                    data: { status: 'SENT' }
-                });
+                                // Keep status as NEW
+
             }
         }
 
