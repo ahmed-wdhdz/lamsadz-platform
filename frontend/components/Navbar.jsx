@@ -77,7 +77,7 @@ const Navbar = () => {
                 >
                     <Link to="/" className="nav-link" style={navLinkStyle}>{t('nav.home')}</Link>
                     <Link to="/designs" className="nav-link" style={navLinkStyle}>{t('nav.designs')}</Link>
-                    <Link to="/custom-request" className="nav-link" style={{ ...navLinkStyle, color: '#3b82f6', fontWeight: '700' }}>تصميم خاص</Link>
+                    <Link to="/custom-request" className="nav-link" style={{ ...navLinkStyle, color: '#3b82f6', fontWeight: '700' }}>{t('nav.customDesign')}</Link>
                     <Link to="/workshops" className="nav-link" style={navLinkStyle}>{t('nav.workshops')}</Link>
                     <Link to="/about" className="nav-link" style={navLinkStyle}>{t('nav.about')}</Link>
 

@@ -48,6 +48,7 @@ const arTranslations = {
     'nav.about': 'من نحن',
     'nav.designs': 'المنتجات',
     'nav.workshops': 'الورش',
+    'nav.customDesign': 'تصميم خاص',
     'nav.login': 'دخول',
     'nav.register': 'تسجيل',
     'nav.logout': 'خروج',
@@ -138,6 +139,7 @@ const arTranslations = {
     'admin.products': 'المنتجات',
     'admin.payments': 'المدفوعات',
     'admin.requests': 'طلبات التسجيل',
+    'admin.promotions': 'الترقيات',
 
     // Forms
     'form.name': 'الاسم',
@@ -176,6 +178,10 @@ const arTranslations = {
     'general.noData': 'لا توجد بيانات',
     'general.loading': 'جاري التحميل...',
     'general.viewall': 'عرض الكل',
+    'general.back': 'رجوع',
+    'general.close': 'إغلاق',
+    'general.save': 'حفظ',
+    'general.send': 'إرسال',
 
     // Footer
     'footer.about': 'عن Lamsadz',
@@ -192,6 +198,7 @@ const enTranslations = {
     'nav.about': 'About Us',
     'nav.designs': 'Products',
     'nav.workshops': 'Workshops',
+    'nav.customDesign': 'Custom Design',
     'nav.login': 'Login',
     'nav.register': 'Register',
     'nav.logout': 'Logout',
@@ -275,12 +282,14 @@ const enTranslations = {
 
     // Admin Dashboard
     'admin.dashboard': 'Admin Dashboard',
+    'admin.overview': 'Overview',
     'admin.statistics': 'Statistics',
     'admin.workshops': 'Workshops',
     'admin.users': 'Users',
     'admin.products': 'Products',
     'admin.payments': 'Payments',
     'admin.requests': 'Requests',
+    'admin.promotions': 'Promotions',
 
     // Forms
     'form.name': 'Name',
@@ -317,6 +326,12 @@ const enTranslations = {
     'general.error': 'An error occurred',
     'general.success': 'Success',
     'general.noData': 'No data available',
+    'general.loading': 'Loading...',
+    'general.viewall': 'View All',
+    'general.back': 'Back',
+    'general.close': 'Close',
+    'general.save': 'Save',
+    'general.send': 'Send',
 
     // Footer
     'footer.about': 'About Athath.com',
