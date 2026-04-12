@@ -1,15 +1,16 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Clock, CheckCircle, ChevronDown, ChevronUp, Send, Inbox, MapPin, DollarSign, Calendar, MessageSquare, Image as ImageIcon, User, Phone, Filter, Truck, Package, Check, XCircle, AlertCircle } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const Requests = () => {
     const { token } = useAuth();
-    const [leads, setLeads] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [expandedLead, setExpandedLead] = useState(null);
     const [filterStatus, setFilterStatus] = useState('ALL');
     const [successMessage, setSuccessMessage] = useState('');
+    const queryClient = useQueryClient();
 
     // Offer Form State
     const [offerForm, setOfferForm] = useState({ price: '', leadTimeDays: '', message: '' });
@@ -28,8 +29,10 @@ const Requests = () => {
             });
 
             if (res.ok) {
-                const updated = await res.json();
-                setLeads(prev => prev.map(l => l.id === id ? { ...l, status: status } : l));
+                // Update local cache optimistically
+                queryClient.setQueryData(['workshopLeads', token], (oldLeads) => 
+                    oldLeads ? oldLeads.map(l => l.id === id ? { ...l, status: status } : l) : oldLeads
+                );
                 setSuccessMessage('تم تحديث حالة الطلب بنجاح');
                 setTimeout(() => setSuccessMessage(''), 3000);
             }
@@ -40,25 +43,18 @@ const Requests = () => {
         }
     };
 
-    useEffect(() => {
-        fetchLeads();
-    }, []);
-
-    const fetchLeads = async () => {
-        try {
+    const { data: leads = [], isLoading: loading, refetch: refetchLeads } = useQuery({
+        queryKey: ['workshopLeads', token],
+        queryFn: async () => {
+            if (!token) return [];
             const res = await fetch(`${API_URL}/workshops/leads`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            if (res.ok) {
-                const data = await res.json();
-                setLeads(data);
-            }
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
+            if (!res.ok) throw new Error('Failed to fetch leads');
+            return res.json();
+        },
+        enabled: !!token
+    });
 
     const toggleExpand = async (delivery) => {
         if (expandedLead === delivery.id) {
@@ -71,7 +67,9 @@ const Requests = () => {
                         method: 'POST',
                         headers: { Authorization: `Bearer ${token}` }
                     });
-                    setLeads(prev => prev.map(l => l.id === delivery.id ? { ...l, viewStatus: true } : l));
+                    queryClient.setQueryData(['workshopLeads', token], (oldLeads) => 
+                        oldLeads ? oldLeads.map(l => l.id === delivery.id ? { ...l, viewStatus: true } : l) : oldLeads
+                    );
                 } catch (e) {
                     console.error(e);
                 }
@@ -102,7 +100,7 @@ const Requests = () => {
                 setTimeout(() => setSuccessMessage(''), 4000);
                 setOfferForm({ price: '', leadTimeDays: '', message: '' });
                 setExpandedLead(null);
-                fetchLeads();
+                refetchLeads();
             } else {
                 alert('حدث خطأ أثناء إرسال العرض');
             }

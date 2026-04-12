@@ -1,36 +1,28 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Package, Trash2, Eye } from 'lucide-react';
 import { getOptimizedImage } from '../../utils/optimizeImage';
+import { useQuery } from '@tanstack/react-query';
+
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const Products = () => {
     const { token } = useAuth();
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-
-    useEffect(() => {
-        fetchProducts();
-    }, [page]);
-
-    const fetchProducts = async () => {
-        try {
+    const { data: { products = [], totalPages = 1 } = {}, isLoading: loading, refetch: refetchProducts, isFetching } = useQuery({
+        queryKey: ['adminProducts', page, token],
+        queryFn: async () => {
+            if (!token) return { products: [], totalPages: 1 };
             const res = await fetch(`${API_URL}/admin/products?page=${page}&limit=20`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            if (!res.ok) throw new Error('Failed to fetch products');
             const data = await res.json();
-            if (res.ok) {
-                setProducts(data.products || data || []);
-                setTotalPages(data.pages || 1);
-            }
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
+            return { products: data.products || data || [], totalPages: data.pages || 1 };
+        },
+        enabled: !!token,
+        placeholderData: (previousData) => previousData
+    });
 
     const deleteProduct = async (id) => {
         if (!confirm('هل أنت متأكد من حذف هذا التصميم؟')) return;
@@ -42,7 +34,7 @@ const Products = () => {
             });
 
             if (res.ok) {
-                setProducts(products.filter(p => p.id !== id));
+                refetchProducts();
             }
         } catch (error) {
             console.error(error);
@@ -121,8 +113,8 @@ const Products = () => {
                     >
                         السابق
                     </button>
-                    <span style={{ fontWeight: 'bold', color: '#4b5563' }}>
-                        {page} / {totalPages}
+                    <span style={{ fontWeight: 'bold', color: '#4b5563', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        {page} / {totalPages} {isFetching && <span style={{fontSize: '0.8rem', color: '#9ca3af'}}>(...)</span>}
                     </span>
                     <button
                         onClick={() => setPage(p => Math.min(totalPages, p + 1))}

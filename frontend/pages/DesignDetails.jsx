@@ -6,6 +6,7 @@ import ReviewList from '../components/ReviewList';
 import ReviewForm from '../components/ReviewForm';
 import { useAuth } from '../context/AuthContext';
 import { getOptimizedImage } from '../utils/optimizeImage';
+import { useQuery } from '@tanstack/react-query';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
@@ -13,9 +14,6 @@ const DesignDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { user, token } = useAuth();
-    const [design, setDesign] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [images, setImages] = useState([]);
     const [activeImage, setActiveImage] = useState(0);
     const [showReviewForm, setShowReviewForm] = useState(false);
 
@@ -32,41 +30,33 @@ const DesignDetails = () => {
     const [submitting, setSubmitting] = useState(false);
     const [submitResult, setSubmitResult] = useState(null);
 
-    useEffect(() => {
-        fetchDesign();
-    }, [id]);
-
-    const fetchDesign = async () => {
-        try {
+    const { data: { design = null, images = [] } = {}, isLoading: loading } = useQuery({
+        queryKey: ['design', id],
+        queryFn: async () => {
             const res = await fetch(`${API_URL}/designs/${id}`);
-            if (res.ok) {
-                const data = await res.json();
-                setDesign(data);
-
-                // Parse images
-                let imgs = [];
-                try {
-                    imgs = data.images && data.images !== '[]' ? JSON.parse(data.images) : [];
-                } catch (e) {
-                    imgs = [];
-                }
-                setImages(imgs);
-
-                // Prefill form
-                setFormData(prev => ({
-                    ...prev,
-                    description: `أنا مهتم بتصميم "${data.title}" وأرغب في معرفة المزيد من التفاصيل والسعر النهائي.`,
-                    wilaya: data.workshop?.location || ''
-                }));
-            } else {
-                setDesign(null);
+            if (!res.ok) throw new Error('Failed to fetch design');
+            const data = await res.json();
+            
+            let imgs = [];
+            try {
+                imgs = data.images && data.images !== '[]' ? JSON.parse(data.images) : [];
+            } catch (e) {
+                imgs = [];
             }
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
+            
+            return { design: data, images: imgs };
         }
-    };
+    });
+
+    useEffect(() => {
+        if (design) {
+            setFormData(prev => ({
+                ...prev,
+                description: `أنا مهتم بتصميم "${design.title}" وأرغب في معرفة المزيد من التفاصيل والسعر النهائي.`,
+                wilaya: design.workshop?.location || ''
+            }));
+        }
+    }, [design]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;

@@ -1,21 +1,17 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Users, FileText, CheckCircle, TrendingUp, Activity } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const Overview = () => {
     const { token } = useAuth();
-    const [stats, setStats] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
-    useEffect(() => {
-        fetchStats();
-    }, []);
-
-    const fetchStats = async () => {
-        try {
-            setError(null);
+    const { data: stats = null, isLoading: loading, error } = useQuery({
+        queryKey: ['adminOverview', token],
+        queryFn: async () => {
+            if (!token) return null;
             const res = await fetch(`${API_URL}/admin/overview`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -26,8 +22,7 @@ const Overview = () => {
             }
 
             const data = await res.json();
-            // Transform response to match expected format
-            setStats({
+            return {
                 metrics: {
                     totalLeads: data.stats?.totalLeads || 0,
                     activeWorkshops: data.stats?.totalWorkshops || 0,
@@ -35,17 +30,13 @@ const Overview = () => {
                     conversionRate: 0
                 },
                 leadsByWilaya: []
-            });
-        } catch (e) {
-            console.error(e);
-            setError(e.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+            };
+        },
+        enabled: !!token
+    });
 
     if (loading) return <div>جاري التحميل...</div>;
-    if (error) return <div className="text-red-500">Error: {error}</div>;
+    if (error) return <div className="text-red-500">Error: {error.message}</div>;
 
     return (
         <div>

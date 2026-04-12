@@ -1,9 +1,10 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { wilayas } from '../../utils/wilayas';
 import { User, MapPin, Phone, Briefcase, FileText, Save, CheckCircle, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const ProfileSettings = () => {
     const navigate = useNavigate();

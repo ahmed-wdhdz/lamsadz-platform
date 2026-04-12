@@ -4,50 +4,44 @@ import { useLanguage } from '../../context/LanguageContext';
 import { Package, Inbox, AlertCircle, Clock, Plus, ArrowLeft, Settings, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../../components/Button';
+import { useQuery } from '@tanstack/react-query';
 
 const WorkshopHome = () => {
     const { token, user } = useAuth();
     const { t, isArabic } = useLanguage();
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
-    useEffect(() => {
-        fetchStats();
-    }, []);
-
-    const fetchStats = async () => {
-        setError(null);
-        try {
-            const res = await fetch(`${API_URL}/workshop/home`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (res.ok) {
-                const result = await res.json();
-                setData(result);
-            } else if (res.status === 404) {
-                // User has no workshop profile yet - this is fine, show setup screen
-                setData(null);
-            } else {
-                throw new Error('Failed to load dashboard data');
+    const { data: { data = null, error = null } = {}, isLoading: loading, refetch: fetchStats } = useQuery({
+        queryKey: ['workshopHomeStats', token],
+        queryFn: async () => {
+            if (!token) return { data: null, error: null };
+            try {
+                const res = await fetch(`${API_URL}/workshop/home`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const result = await res.json();
+                    return { data: result, error: null };
+                } else if (res.status === 404) {
+                    // User has no workshop profile yet - this is fine, show setup screen
+                    return { data: null, error: null };
+                } else {
+                    return { data: null, error: 'Failed to load dashboard data' };
+                }
+            } catch (e) {
+                console.error(e);
+                return { data: null, error: e.message };
             }
-        } catch (e) {
-            console.error(e);
-            setError(e.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-
+        },
+        enabled: !!token
+    });
 
     if (error) return (
         <div style={{ padding: '4rem', textAlign: 'center' }}>
             <div style={{ color: '#ef4444', marginBottom: '1rem' }}><AlertCircle size={48} style={{ margin: '0 auto' }} /></div>
             <h2>حدث خطأ في تحميل البيانات</h2>
             <p style={{ color: '#6b7280', marginBottom: '2rem' }}>يرجى التحقق من اتصالك بالخادم أو إعادة المحاولة.</p>
-            <Button onClick={fetchStats} variant="outline">إعادة المحاولة</Button>
+            <Button onClick={() => fetchStats()} variant="outline">إعادة المحاولة</Button>
         </div>
     );
 

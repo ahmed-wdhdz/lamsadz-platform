@@ -1,21 +1,19 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Plus, Edit, Trash2, Image as ImageIcon, X, Eye, EyeOff, Package, Filter, Grid, List, Search, CheckCircle, Rocket, AlertCircle } from 'lucide-react';
 import { categories } from '../../utils/categories';
 import { getOptimizedImage } from '../../utils/optimizeImage';
 import PromoteModal from '../../components/PromoteModal';
+import { useQuery } from '@tanstack/react-query';
+
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const MyDesigns = () => {
     const { token } = useAuth();
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
     const [viewMode, setViewMode] = useState('grid');
     const [searchTerm, setSearchTerm] = useState('');
     const [filterCategory, setFilterCategory] = useState('ALL');
-    const [workshopStatus, setWorkshopStatus] = useState('PENDING');
 
     // Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,43 +31,34 @@ const MyDesigns = () => {
 
 
 
-    useEffect(() => {
-        fetchProducts();
-        fetchWorkshopStatus();
-    }, [page]);
-
-    const fetchWorkshopStatus = async () => {
-        try {
+    const { data: workshopStatus = 'PENDING' } = useQuery({
+        queryKey: ['workshopStatus', token],
+        queryFn: async () => {
+            if (!token) return 'PENDING';
             const res = await fetch(`${API_URL}/workshop/home`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            if (res.ok) {
-                const data = await res.json();
-                if (data && data.stats) {
-                    setWorkshopStatus(data.stats.status);
-                }
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    };
+            if (!res.ok) return 'PENDING';
+            const data = await res.json();
+            return data?.stats?.status || 'PENDING';
+        },
+        enabled: !!token
+    });
 
-    const fetchProducts = async () => {
-        try {
+    const { data: { products = [], totalPages = 1 } = {}, isLoading: loading, refetch: refetchProducts, isFetching } = useQuery({
+        queryKey: ['workshopProducts', page, token],
+        queryFn: async () => {
+            if (!token) return { products: [], totalPages: 1 };
             const res = await fetch(`${API_URL}/workshop/products?page=${page}&limit=12`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            if (res.ok) {
-                const data = await res.json();
-                setProducts(data.products || []);
-                setTotalPages(data.pages || 1);
-            }
-        } catch (e) {
-            console.error(e);
-        } finally {
-            setLoading(false);
-        }
-    };
+            if (!res.ok) throw new Error('Failed to fetch products');
+            const data = await res.json();
+            return { products: data.products || [], totalPages: data.pages || 1 };
+        },
+        enabled: !!token,
+        placeholderData: (previousData) => previousData
+    });
 
     const handleOpenModal = (product = null) => {
         if (product) {
@@ -99,7 +88,7 @@ const MyDesigns = () => {
             if (res.ok) {
                 setSuccessMessage('تم حذف التصميم بنجاح');
                 setTimeout(() => setSuccessMessage(''), 3000);
-                fetchProducts();
+                refetchProducts();
             }
         } catch (e) { console.error(e); }
     };
@@ -141,7 +130,7 @@ const MyDesigns = () => {
                 setIsModalOpen(false);
                 setSuccessMessage(editingProduct ? 'تم تحديث التصميم بنجاح' : 'تم إضافة التصميم بنجاح');
                 setTimeout(() => setSuccessMessage(''), 3000);
-                fetchProducts();
+                refetchProducts();
             } else {
                 alert('حدث خطأ أثناء الحفظ');
             }
@@ -695,7 +684,7 @@ const MyDesigns = () => {
                             >
                                 السابق
                             </button>
-                            <span style={{ fontWeight: '600' }}>{page} / {totalPages}</span>
+                            <span style={{ fontWeight: '600' }}>{page} / {totalPages} {isFetching && <span style={{fontSize: '0.8rem', color: '#9ca3af'}}>(...)</span>}</span>
                             <button
                                 disabled={page === totalPages}
                                 onClick={() => setPage(p => p + 1)}

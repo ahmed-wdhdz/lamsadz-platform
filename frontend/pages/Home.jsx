@@ -1,4 +1,3 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -7,40 +6,34 @@ import FurnitureCard from '../components/FurnitureCard';
 import { useLanguage } from '../context/LanguageContext';
 import { categories } from '../utils/categories';
 import { getOptimizedImage } from '../utils/optimizeImage';
+import { useQuery } from '@tanstack/react-query';
+
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const Home = () => {
-    const [products, setProducts] = React.useState([]);
-    const [loading, setLoading] = React.useState(true);
     const { t, isArabic } = useLanguage();
 
-    React.useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const res = await fetch(`${API_URL}/products?limit=8`);
-                const data = await res.json();
-                if (res.ok) {
-                    const products = data.products || data || [];
-                    setProducts(products.map(p => ({
-                        id: p.id,
-                        title: p.title,
-                        price: p.price,
-                        image: p.images && p.images !== '[]'
-                            ? getOptimizedImage(JSON.parse(p.images)[0], 400)
-                            : 'https://placehold.co/600x400?text=No+Image',
-                        category: p.category,
-                        workshop: p.workshop?.name || 'ورشة',
-                        featuredUntil: p.featuredUntil
-                    })));
-                }
-            } catch (error) {
-                console.error("Failed to fetch products", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProducts();
-    }, []);
+    const { data: products = [], isLoading: loading } = useQuery({
+        queryKey: ['products', 'home'],
+        queryFn: async () => {
+            const res = await fetch(`${API_URL}/products?limit=8`);
+            if (!res.ok) throw new Error('Failed to fetch products');
+            const data = await res.json();
+            const productsData = data.products || data || [];
+            
+            return productsData.map(p => ({
+                id: p.id,
+                title: p.title,
+                price: p.price,
+                image: p.images && p.images !== '[]'
+                    ? getOptimizedImage(JSON.parse(p.images)[0], 400)
+                    : 'https://placehold.co/600x400?text=No+Image',
+                category: p.category,
+                workshop: p.workshop?.name || 'ورشة',
+                featuredUntil: p.featuredUntil
+            }));
+        }
+    });
 
     return (
         <div>

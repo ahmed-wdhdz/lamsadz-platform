@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { getOptimizedImage } from '../utils/optimizeImage';
+import { useQuery } from '@tanstack/react-query';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
@@ -12,8 +13,6 @@ const Dashboard = () => {
     const { t, isArabic } = useLanguage();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('overview');
-    const [leads, setLeads] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     // Profile update states
     const [name, setName] = useState('');
@@ -25,25 +24,19 @@ const Dashboard = () => {
         if (user) setName(user.name);
     }, [user]);
 
-    useEffect(() => {
-        if (token) fetchLeads();
-    }, [token]);
-
-    const fetchLeads = async () => {
-        try {
+    const { data: leads = [], isLoading: loading } = useQuery({
+        queryKey: ['clientLeads', token],
+        queryFn: async () => {
+            if (!token) return [];
             const res = await fetch(`${API_URL}/client/leads`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            if (res.ok) {
-                const data = await res.json();
-                setLeads(data.leads || []);
-            }
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
+            if (!res.ok) throw new Error('Failed to fetch leads');
+            const data = await res.json();
+            return data.leads || [];
+        },
+        enabled: !!token
+    });
 
     const handleUpdateProfile = async (e) => {
         e.preventDefault();

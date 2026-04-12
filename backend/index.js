@@ -31,6 +31,7 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: (origin, callback) => {
+        // Allow requests with no origin (curl, Postman, Render health checks)
         if (!origin) return callback(null, true);
         if (allowedOrigins.includes(origin)) return callback(null, true);
         callback(new Error(`CORS: Origin ${origin} not allowed`));
@@ -39,7 +40,6 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

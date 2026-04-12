@@ -1,8 +1,9 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Clock, CheckCircle, XCircle, ChevronDown, ChevronUp, Send } from 'lucide-react';
 import { getOptimizedImage } from '../utils/optimizeImage';
+
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const WorkshopLeads = () => {
     const { token } = useAuth();

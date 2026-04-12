@@ -203,12 +203,21 @@ async function getLeads(req, res) {
         }
 
         const deliveries = await prisma.leadDelivery.findMany({
+<<<<<<< Updated upstream
         where: { 
              workshopId: workshop.id,
              lead: {
                  designId: { not: null }
              }
          },
+=======
+            where: { 
+                workshopId: workshop.id,
+                lead: {
+                    designId: { not: null }
+                }
+            },
+>>>>>>> Stashed changes
             include: {
                 lead: {
                     include: {

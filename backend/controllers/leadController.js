@@ -100,8 +100,12 @@ async function submitLead(req, res) {
                     data: deliveries
                 });
 
+<<<<<<< Updated upstream
                                 // Keep status as NEW
 
+=======
+                // Keep status as NEW so workshop dashboard shows them as new requests
+>>>>>>> Stashed changes
             }
         }
 

@@ -1,16 +1,15 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FurnitureCard from '../components/FurnitureCard';
 import { categories } from '../utils/categories';
 import { useLanguage } from '../context/LanguageContext';
 import { getOptimizedImage } from '../utils/optimizeImage';
+import { useQuery } from '@tanstack/react-query';
+
+const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const Designs = () => {
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
     const location = useLocation();
     const navigate = useNavigate();
     const { isArabic } = useLanguage();
@@ -24,43 +23,38 @@ const Designs = () => {
         setPage(1);
     }, [activeCategory]);
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            setLoading(true);
-            try {
-                let url = `${API_URL}/products?page=${page}&limit=12`;
-                if (activeCategory !== 'ALL') {
-                    url += `&category=${activeCategory}`;
-                }
-
-                const res = await fetch(url);
-                const data = await res.json();
-                if (res.ok) {
-                    const productsReceived = data.products || data || [];
-                    const mappedProducts = productsReceived.map(p => ({
-                        id: p.id,
-                        title: p.title,
-                        price: p.price,
-                        image: p.images && p.images !== '[]'
-                            ? getOptimizedImage(JSON.parse(p.images)[0], 400)
-                            : 'https://placehold.co/600x400?text=No+Image',
-                        category: p.category,
-                        workshop: p.workshop?.name || 'ورشة',
-                        featuredUntil: p.featuredUntil
-                    }));
-
-                    setProducts(mappedProducts);
-                    setTotalPages(data.pages || 1);
-                }
-            } catch (error) {
-                console.error("Failed to fetch products", error);
-            } finally {
-                setLoading(false);
+    const { data: { products = [], totalPages = 1 } = {}, isLoading: loading, isFetching } = useQuery({
+        queryKey: ['products', page, activeCategory],
+        queryFn: async () => {
+            let url = `${API_URL}/products?page=${page}&limit=12`;
+            if (activeCategory !== 'ALL') {
+                url += `&category=${activeCategory}`;
             }
-        };
 
-        fetchProducts();
-    }, [activeCategory, page]);
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('Failed to fetch designs');
+            const data = await res.json();
+            
+            const productsReceived = data.products || data || [];
+            const mappedProducts = productsReceived.map(p => ({
+                id: p.id,
+                title: p.title,
+                price: p.price,
+                image: p.images && p.images !== '[]'
+                    ? getOptimizedImage(JSON.parse(p.images)[0], 400)
+                    : 'https://placehold.co/600x400?text=No+Image',
+                category: p.category,
+                workshop: p.workshop?.name || 'ورشة',
+                featuredUntil: p.featuredUntil
+            }));
+
+            return {
+                products: mappedProducts,
+                totalPages: data.pages || 1
+            };
+        },
+        placeholderData: (previousData) => previousData, // keepPreviousData
+    });
 
     const handleCategoryClick = (categoryVal) => {
         if (categoryVal === 'ALL') {
@@ -154,6 +148,7 @@ const Designs = () => {
                         </button>
                     )}
                 </div>
+            )}
             {/* Pagination Controls */}
             {!loading && totalPages > 1 && (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', marginTop: '3rem' }}>
@@ -167,8 +162,8 @@ const Designs = () => {
                     >
                         {isArabic ? 'السابق' : 'Previous'}
                     </button>
-                    <span style={{ fontWeight: '700', color: '#4b5563' }}>
-                        {page} / {totalPages}
+                    <span style={{ fontWeight: '700', color: '#4b5563', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        {page} / {totalPages}  {isFetching && <span style={{fontSize: '0.8rem', color: '#9ca3af'}}>(...)</span>}
                     </span>
                     <button
                         onClick={() => setPage(p => Math.min(totalPages, p + 1))}
