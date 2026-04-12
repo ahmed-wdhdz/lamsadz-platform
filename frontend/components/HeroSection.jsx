@@ -128,7 +128,7 @@ const HeroSection = () => {
                                     fontSize: '1rem',
                                 }}
                             >
-                                {isArabic ? 'تصميم خاص' : 'Custom Design'}
+                                {t('nav.customDesign')}
                                 <PenTool size={18} />
                             </Link>
                         </div>
