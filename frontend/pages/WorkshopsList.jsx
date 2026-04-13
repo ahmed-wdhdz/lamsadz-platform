@@ -64,16 +64,6 @@ const WorkshopsList = () => {
                             {workshop.description ? workshop.description.substring(0, 100) + '...' : (isArabic ? 'لا يوجد وصف' : 'No description')}
                         </p>
 
-                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-                            {workshop.skills && workshop.skills.split(',').slice(0, 3).map((skill, index) => (
-                                <span key={index} style={{
-                                    background: 'var(--gray-100)',
-                                    fontSize: '0.8rem',
-                                    padding: '0.2rem 0.5rem',
-                                    borderRadius: '4px'
-                                }}>{skill.trim()}</span>
-                            ))}
-                        </div>
 
                         <button
                             onClick={() => setSelectedWorkshop(workshop)}
