@@ -293,7 +293,7 @@ const MyDesigns = () => {
                                 cursor: 'pointer'
                             }}
                         >
-                            <cat.icon size={16} /> {isArabic ? cat.label : (cat.labelEn || cat.translationKey ? t(cat.translationKey) : cat.label)}
+                            <cat.icon size={16} /> {isArabic ? cat.label : cat.labelEn}
                         </button>
                     ))}
                 </div>
@@ -445,7 +445,7 @@ const MyDesigns = () => {
                                                 gap: '0.25rem',
                                                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
                                             }}>
-                                                {category && category.icon && React.createElement(category.icon, { size: 14 })} {isArabic ? category?.label : (category?.labelEn || category?.translationKey ? t(category?.translationKey) : category?.label)}
+                                                {category && category.icon && React.createElement(category.icon, { size: 14 })} {isArabic ? category?.label : category?.labelEn}
                                             </div>
                                             <div style={{
                                                 position: 'absolute',
@@ -614,7 +614,7 @@ const MyDesigns = () => {
                                                         alignItems: 'center',
                                                         gap: '0.25rem'
                                                     }}>
-                                                        {category && category.icon && React.createElement(category.icon, { size: 14 })} {category?.label}
+                                                        {category && category.icon && React.createElement(category.icon, { size: 14 })} {isArabic ? category?.label : category?.labelEn}
                                                     </span>
                                                 </div>
                                                 <span style={{ fontWeight: '800', color: '#3b82f6' }}>
@@ -800,7 +800,7 @@ const MyDesigns = () => {
                                         >
                                             {categories.map(cat => (
                                                 <option key={cat.value} value={cat.value}>
-                                                    {isArabic ? cat.label : (cat.labelEn || cat.translationKey ? t(cat.translationKey) : cat.label)}
+                                                    {isArabic ? cat.label : cat.labelEn}
                                                 </option>
                                             ))}
                                         </select>
