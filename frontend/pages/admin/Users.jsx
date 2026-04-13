@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { User, Ban, CheckCircle } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const UsersList = () => {
     const { token } = useAuth();
+    const { isArabic, t } = useLanguage();
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -38,7 +40,7 @@ const UsersList = () => {
     };
 
     const toggleBlock = async (userId, currentStatus) => {
-        if (!confirm(currentStatus ? 'هل أنت متأكد من فك الحظر؟' : 'هل أنت متأكد من حظر المستخدم؟')) return;
+        if (!confirm(currentStatus ? (isArabic ? 'هل أنت متأكد من فك الحظر؟' : 'Are you sure you want to unblock this user?') : (isArabic ? 'هل أنت متأكد من حظر المستخدم؟' : 'Are you sure you want to block this user?'))) return;
 
         try {
             const res = await fetch(`${API_URL}/admin/users/${userId}/block`, {
@@ -58,11 +60,11 @@ const UsersList = () => {
         }
     };
 
-    if (loading) return <div>جاري التحميل...</div>;
+    if (loading) return <div>{t('form.loading') || (isArabic ? 'جاري التحميل...' : 'Loading...')}</div>;
 
     return (
         <div>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>إدارة المستخدمين</h1>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>{isArabic ? 'إدارة المستخدمين' : 'Users Management'}</h1>
 
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
                 {['ALL', 'CLIENT', 'WORKSHOP', 'ADMIN'].map(role => (
@@ -81,7 +83,7 @@ const UsersList = () => {
                             transition: 'all 0.2s ease'
                         }}
                     >
-                        {role === 'ALL' ? 'الكل' : role === 'CLIENT' ? 'الزبائن المعملاء' : role === 'WORKSHOP' ? 'أصحاب الورش' : 'الإدارة'}
+                        {role === 'ALL' ? (isArabic ? 'الكل' : 'All') : role === 'CLIENT' ? (isArabic ? 'الزبائن' : 'Clients') : role === 'WORKSHOP' ? (isArabic ? 'أصحاب الورش' : 'Workshops') : (isArabic ? 'الإدارة' : 'Admins')}
                     </button>
                 ))}
             </div>
@@ -90,12 +92,12 @@ const UsersList = () => {
                 <table style={{ width: '100%', minWidth: '800px', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr style={{ textAlign: 'right', borderBottom: '1px solid var(--gray-200)' }}>
-                            <th style={{ padding: '1rem' }}>الاسم</th>
-                            <th style={{ padding: '1rem' }}>البريد الإلكتروني</th>
-                            <th style={{ padding: '1rem' }}>الدور</th>
-                            <th style={{ padding: '1rem' }}>تاريخ التسجيل</th>
-                            <th style={{ padding: '1rem' }}>الحالة</th>
-                            <th style={{ padding: '1rem' }}>إجراءات</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'الاسم' : 'Name'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'البريد الإلكتروني' : 'Email'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'الدور' : 'Role'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'تاريخ التسجيل' : 'Registration Date'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'الحالة' : 'Status'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'إجراءات' : 'Actions'}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -123,11 +125,11 @@ const UsersList = () => {
                                 <td style={{ padding: '1rem' }}>
                                     {user.blocked ? (
                                         <span style={{ color: 'red', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                                            <Ban size={14} /> محظور
+                                            <Ban size={14} /> {isArabic ? 'محظور' : 'Blocked'}
                                         </span>
                                     ) : (
                                         <span style={{ color: 'green', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                                            <CheckCircle size={14} /> نشط
+                                            <CheckCircle size={14} /> {isArabic ? 'نشط' : 'Active'}
                                         </span>
                                     )}
                                 </td>
@@ -142,7 +144,7 @@ const UsersList = () => {
                                                 color: user.blocked ? 'green' : 'red',
                                                 cursor: 'pointer'
                                             }}
-                                            title={user.blocked ? 'فك الحظر' : 'حظر'}
+                                            title={user.blocked ? (isArabic ? 'فك الحظر' : 'Unblock') : (isArabic ? 'حظر' : 'Block')}
                                         >
                                             {user.blocked ? <CheckCircle size={18} /> : <Ban size={18} />}
                                         </button>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Users, FileText, CheckCircle, TrendingUp, Activity } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 
@@ -7,6 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.co
 
 const Overview = () => {
     const { token } = useAuth();
+    const { isArabic, t } = useLanguage();
 
     const { data: stats = null, isLoading: loading, error } = useQuery({
         queryKey: ['adminOverview', token],
@@ -35,12 +37,12 @@ const Overview = () => {
         enabled: !!token
     });
 
-    if (loading) return <div>جاري التحميل...</div>;
+    if (loading) return <div>{t('form.loading') || (isArabic ? 'جاري التحميل...' : 'Loading...')}</div>;
     if (error) return <div className="text-red-500">Error: {error.message}</div>;
 
     return (
         <div>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>نظرة عامة</h1>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>{isArabic ? 'نظرة عامة' : 'Overview'}</h1>
 
             {stats && (
                 <>
@@ -51,7 +53,7 @@ const Overview = () => {
                                 <FileText size={24} />
                             </div>
                             <div>
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>إجمالي الطلبات</p>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{isArabic ? 'إجمالي الطلبات' : 'Total Requests'}</p>
                                 <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{stats.metrics.totalLeads}</h3>
                             </div>
                         </div>
@@ -61,7 +63,7 @@ const Overview = () => {
                                 <Users size={24} />
                             </div>
                             <div>
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>الورش النشطة</p>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{isArabic ? 'الورش النشطة' : 'Active Workshops'}</p>
                                 <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{stats.metrics.activeWorkshops}</h3>
                             </div>
                         </div>
@@ -71,7 +73,7 @@ const Overview = () => {
                                 <CheckCircle size={24} />
                             </div>
                             <div>
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>طلبات مكتملة</p>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{isArabic ? 'طلبات مكتملة' : 'Completed Requests'}</p>
                                 <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{stats.metrics.soldLeads}</h3>
                             </div>
                         </div>
@@ -81,7 +83,7 @@ const Overview = () => {
                                 <TrendingUp size={24} />
                             </div>
                             <div>
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>معدل التحويل</p>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{isArabic ? 'معدل التحويل' : 'Conversion Rate'}</p>
                                 <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{stats.metrics.conversionRate}%</h3>
                             </div>
                         </div>
@@ -90,7 +92,7 @@ const Overview = () => {
                     {/* Charts Details */}
                     <div className="card" style={{ padding: '2rem', maxWidth: '600px' }}>
                         <h3 style={{ fontWeight: 'bold', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <Activity size={20} /> المناطق الأكثر طلباً
+                            <Activity size={20} /> {isArabic ? 'المناطق الأكثر طلباً' : 'Most Requested Regions'}
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             {stats.leadsByWilaya.map((item, index) => (
@@ -109,7 +111,7 @@ const Overview = () => {
                                     </div>
                                 </div>
                             ))}
-                            {stats.leadsByWilaya.length === 0 && <p style={{ color: 'var(--text-muted)' }}>لا توجد بيانات كافية</p>}
+                            {stats.leadsByWilaya.length === 0 && <p style={{ color: 'var(--text-muted)' }}>{isArabic ? 'لا توجد بيانات كافية' : 'Not enough data available'}</p>}
                         </div>
                     </div>
                 </>

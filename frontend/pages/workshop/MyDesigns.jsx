@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Plus, Edit, Trash2, Image as ImageIcon, X, Eye, EyeOff, Package, Filter, Grid, List, Search, CheckCircle, Rocket, AlertCircle } from 'lucide-react';
 import { categories } from '../../utils/categories';
 import { getOptimizedImage } from '../../utils/optimizeImage';
@@ -10,6 +11,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.co
 
 const MyDesigns = () => {
     const { token } = useAuth();
+    const { isArabic, t } = useLanguage();
     const [page, setPage] = useState(1);
     const [viewMode, setViewMode] = useState('grid');
     const [searchTerm, setSearchTerm] = useState('');
@@ -79,14 +81,14 @@ const MyDesigns = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('هل أنت متأكد من حذف هذا التصميم؟')) return;
+        if (!confirm(isArabic ? 'هل أنت متأكد من حذف هذا التصميم؟' : 'Are you sure you want to delete this design?')) return;
         try {
             const res = await fetch(`${API_URL}/workshop/products/${id}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) {
-                setSuccessMessage('تم حذف التصميم بنجاح');
+                setSuccessMessage(isArabic ? 'تم حذف التصميم بنجاح' : 'Design deleted successfully');
                 setTimeout(() => setSuccessMessage(''), 3000);
                 refetchProducts();
             }
@@ -128,11 +130,11 @@ const MyDesigns = () => {
 
             if (res.ok) {
                 setIsModalOpen(false);
-                setSuccessMessage(editingProduct ? 'تم تحديث التصميم بنجاح' : 'تم إضافة التصميم بنجاح');
+                setSuccessMessage(editingProduct ? (isArabic ? 'تم تحديث التصميم بنجاح' : 'Design updated successfully') : (isArabic ? 'تم إضافة التصميم بنجاح' : 'Design added successfully'));
                 setTimeout(() => setSuccessMessage(''), 3000);
                 refetchProducts();
             } else {
-                alert('حدث خطأ أثناء الحفظ');
+                alert(isArabic ? 'حدث خطأ أثناء الحفظ' : 'Error saving design');
             }
         } catch (e) {
             console.error(e);
@@ -175,9 +177,9 @@ const MyDesigns = () => {
                         fontWeight: '800',
                         color: 'var(--text-primary)',
                         marginBottom: '0.5rem'
-                    }}>تصاميمي</h1>
+                    }}>{isArabic ? 'تصاميمي' : 'My Designs'}</h1>
                     <p style={{ color: 'var(--text-muted)' }}>
-                        إدارة كتالوج المنتجات والأعمال السابقة ({products.length} تصميم)
+                        {isArabic ? 'إدارة كتالوج المنتجات والأعمال السابقة' : 'Manage your catalog, products, and previous works'} ({products.length} {isArabic ? 'تصميم' : 'Design(s)'})
                     </p>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
@@ -199,14 +201,14 @@ const MyDesigns = () => {
                             boxShadow: workshopStatus === 'APPROVED' ? '0 4px 15px rgba(59, 130, 246, 0.4)' : 'none',
                             transition: 'all 0.2s ease'
                         }}
-                        title={workshopStatus !== 'APPROVED' ? 'يجب تفعيل اشتراكك لإضافة منتجات' : ''}
+                        title={workshopStatus !== 'APPROVED' ? (isArabic ? 'يجب تفعيل اشتراكك لإضافة منتجات' : 'You must activate your subscription to add products') : ''}
                     >
-                        <Plus size={20} /> إضافة تصميم جديد
+                        <Plus size={20} /> {isArabic ? 'إضافة تصميم جديد' : 'Add New Design'}
                     </button>
                     {workshopStatus !== 'APPROVED' && (
                         <span style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: '600' }}>
                             <AlertCircle size={14} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
-                            يجب تفعيل اشتراكك أولاً
+                            {isArabic ? 'يجب تفعيل اشتراكك أولاً' : 'You must activate your subscription first'}
                         </span>
                     )}
                 </div>
@@ -249,7 +251,7 @@ const MyDesigns = () => {
                     }} />
                     <input
                         type="text"
-                        placeholder="بحث عن تصميم..."
+                        placeholder={isArabic ? "بحث عن تصميم..." : "Search for a design..."}
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
                         style={{
@@ -274,7 +276,7 @@ const MyDesigns = () => {
                             cursor: 'pointer'
                         }}
                     >
-                        الكل
+                        {isArabic ? 'الكل' : 'All'}
                     </button>
                     {categories.slice(0, 4).map(cat => (
                         <button
@@ -291,7 +293,7 @@ const MyDesigns = () => {
                                 cursor: 'pointer'
                             }}
                         >
-                            <cat.icon size={16} /> {cat.label}
+                            <cat.icon size={16} /> {isArabic ? cat.label : (cat.labelEn || cat.translationKey ? t(cat.translationKey) : cat.label)}
                         </button>
                     ))}
                 </div>
@@ -327,7 +329,7 @@ const MyDesigns = () => {
 
             {loading ? (
                 <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-                    جاري التحميل...
+                    {t('form.loading') || (isArabic ? 'جاري التحميل...' : 'Loading...')}
                 </div>
             ) : (
                 <>
@@ -352,10 +354,10 @@ const MyDesigns = () => {
                                 <Package size={36} style={{ color: '#9ca3af' }} />
                             </div>
                             <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.5rem', color: '#374151' }}>
-                                لم تقم بإضافة أي تصاميم بعد
+                                {isArabic ? 'لم تقم بإضافة أي تصاميم بعد' : 'No designs added yet'}
                             </h3>
                             <p style={{ color: '#9ca3af', marginBottom: '1.5rem' }}>
-                                أضف تصاميمك لتظهر للزبائن المحتملين
+                                {isArabic ? 'أضف تصاميمك لتظهر للزبائن المحتملين' : 'Add your designs to show them to potential clients'}
                             </p>
                             <button
                                 onClick={() => handleOpenModal()}
@@ -373,14 +375,14 @@ const MyDesigns = () => {
                                     fontWeight: '700',
                                     cursor: workshopStatus === 'APPROVED' ? 'pointer' : 'not-allowed'
                                 }}
-                                title={workshopStatus !== 'APPROVED' ? 'يجب تفعيل اشتراكك لإضافة منتجات' : ''}
+                                title={workshopStatus !== 'APPROVED' ? (isArabic ? 'يجب تفعيل اشتراكك لإضافة منتجات' : 'You must activate your subscription to add products') : ''}
                             >
-                                <Plus size={20} /> أضف أول تصميم
+                                <Plus size={20} /> {isArabic ? 'أضف أول تصميم' : 'Add your first design'}
                             </button>
                             {workshopStatus !== 'APPROVED' && (
                                 <div style={{ marginTop: '1rem', color: '#ef4444', fontSize: '0.85rem', fontWeight: '600' }}>
                                     <AlertCircle size={14} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
-                                    يجب تفعيل اشتراكك أولاً أو انتظار الإدارة
+                                    {isArabic ? 'يجب تفعيل اشتراكك أولاً أو انتظار الإدارة' : 'You must activate your subscription or wait for admin approval'}
                                 </div>
                             )}
                         </div>
@@ -443,7 +445,7 @@ const MyDesigns = () => {
                                                 gap: '0.25rem',
                                                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
                                             }}>
-                                                {category && category.icon && React.createElement(category.icon, { size: 14 })} {category?.label}
+                                                {category && category.icon && React.createElement(category.icon, { size: 14 })} {isArabic ? category?.label : (category?.labelEn || category?.translationKey ? t(category?.translationKey) : category?.label)}
                                             </div>
                                             <div style={{
                                                 position: 'absolute',
@@ -463,7 +465,7 @@ const MyDesigns = () => {
                                                         fontSize: '0.75rem',
                                                         fontWeight: '700'
                                                     }}>
-                                                        منشور
+                                                        {isArabic ? 'منشور' : 'Published'}
                                                     </div>
                                                 )}
                                                 {isFeatured && (
@@ -479,7 +481,7 @@ const MyDesigns = () => {
                                                         gap: '0.25rem',
                                                         boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)'
                                                     }}>
-                                                        <Rocket size={12} /> متبقي {featuredDaysLeft} أيام
+                                                        <Rocket size={12} /> {isArabic ? `متبقي ${featuredDaysLeft} أيام` : `${featuredDaysLeft} days left`}
                                                     </div>
                                                 )}
                                             </div>
@@ -522,7 +524,7 @@ const MyDesigns = () => {
                                                         fontWeight: '600',
                                                         color: '#374151'
                                                     }}
-                                                    title="تعديل"
+                                                    title={isArabic ? "تعديل" : "Edit"}
                                                 >
                                                     <Edit size={16} />
                                                 </button>
@@ -544,7 +546,7 @@ const MyDesigns = () => {
                                                         color: '#1d4ed8' // darker blue
                                                     }}
                                                 >
-                                                    <Rocket size={16} /> ترويج
+                                                    <Rocket size={16} /> {isArabic ? 'ترويج' : 'Promote'}
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(product.id)}
@@ -556,7 +558,7 @@ const MyDesigns = () => {
                                                         cursor: 'pointer',
                                                         color: '#ef4444'
                                                     }}
-                                                    title="حذف"
+                                                    title={isArabic ? "حذف" : "Delete"}
                                                 >
                                                     <Trash2 size={16} />
                                                 </button>
@@ -629,7 +631,7 @@ const MyDesigns = () => {
                                                         fontSize: '0.85rem', fontWeight: '600'
                                                     }}
                                                 >
-                                                    <Edit size={14} /> تعديل
+                                                    <Edit size={14} /> {isArabic ? 'تعديل' : 'Edit'}
                                                 </button>
                                                 <button
                                                     onClick={() => setPromotingProduct(product)}
@@ -640,7 +642,7 @@ const MyDesigns = () => {
                                                         fontSize: '0.85rem', fontWeight: '700', color: '#1d4ed8'
                                                     }}
                                                 >
-                                                    <Rocket size={14} /> ترويج
+                                                    <Rocket size={14} /> {isArabic ? 'ترويج' : 'Promote'}
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(product.id)}
@@ -651,7 +653,7 @@ const MyDesigns = () => {
                                                         fontSize: '0.85rem', fontWeight: '600', color: '#ef4444'
                                                     }}
                                                 >
-                                                    <Trash2 size={14} /> حذف
+                                                    <Trash2 size={14} /> {isArabic ? 'حذف' : 'Delete'}
                                                 </button>
                                             </div>
                                         </div>
@@ -682,7 +684,7 @@ const MyDesigns = () => {
                                     opacity: page === 1 ? 0.5 : 1
                                 }}
                             >
-                                السابق
+                                {isArabic ? 'السابق' : 'Previous'}
                             </button>
                             <span style={{ fontWeight: '600' }}>{page} / {totalPages} {isFetching && <span style={{fontSize: '0.8rem', color: '#9ca3af'}}>(...)</span>}</span>
                             <button
@@ -697,7 +699,7 @@ const MyDesigns = () => {
                                     opacity: page === totalPages ? 0.5 : 1
                                 }}
                             >
-                                التالي
+                                {isArabic ? 'التالي' : 'Next'}
                             </button>
                         </div>
                     )}
@@ -743,7 +745,7 @@ const MyDesigns = () => {
                                 alignItems: 'center'
                             }}>
                                 <h2 style={{ fontSize: '1.25rem', fontWeight: '700' }}>
-                                    {editingProduct ? '✏️ تعديل التصميم' : '➕ إضافة تصميم جديد'}
+                                    {editingProduct ? (isArabic ? '✏️ تعديل التصميم' : '✏️ Edit Design') : (isArabic ? '➕ إضافة تصميم جديد' : '➕ Add New Design')}
                                 </h2>
                                 <button
                                     onClick={() => setIsModalOpen(false)}
@@ -774,11 +776,11 @@ const MyDesigns = () => {
                                 {/* Title */}
                                 <div>
                                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                                        عنوان التصميم
+                                        {isArabic ? 'عنوان التصميم' : 'Design Title'}
                                     </label>
                                     <input
                                         style={inputStyle}
-                                        placeholder="مثال: مطبخ عصري أبيض"
+                                        placeholder={isArabic ? "مثال: مطبخ عصري أبيض" : "e.g: Modern White Kitchen"}
                                         value={formData.title}
                                         onChange={e => setFormData({ ...formData, title: e.target.value })}
                                         required
@@ -789,7 +791,7 @@ const MyDesigns = () => {
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                     <div>
                                         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                                            الفئة
+                                            {isArabic ? 'الفئة' : 'Category'}
                                         </label>
                                         <select
                                             style={{ ...inputStyle, cursor: 'pointer' }}
@@ -798,14 +800,14 @@ const MyDesigns = () => {
                                         >
                                             {categories.map(cat => (
                                                 <option key={cat.value} value={cat.value}>
-                                                    {cat.label}
+                                                    {isArabic ? cat.label : (cat.labelEn || cat.translationKey ? t(cat.translationKey) : cat.label)}
                                                 </option>
                                             ))}
                                         </select>
                                     </div>
                                     <div>
                                         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                                            السعر (د.ج)
+                                            {isArabic ? 'السعر' : 'Price'} ({t('products.currency') || 'د.ج'})
                                         </label>
                                         <input
                                             type="number"
@@ -821,11 +823,11 @@ const MyDesigns = () => {
                                 {/* Description */}
                                 <div>
                                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                                        الوصف
+                                        {isArabic ? 'الوصف' : 'Description'}
                                     </label>
                                     <textarea
                                         style={{ ...inputStyle, minHeight: '100px', resize: 'vertical' }}
-                                        placeholder="وصف تفصيلي للتصميم، المواد المستعملة، الأبعاد..."
+                                        placeholder={isArabic ? "وصف تفصيلي للتصميم، المواد المستعملة، الأبعاد..." : "Detailed description of the design, materials used, dimensions..."}
                                         value={formData.description}
                                         onChange={e => setFormData({ ...formData, description: e.target.value })}
                                     />
@@ -834,7 +836,7 @@ const MyDesigns = () => {
                                 {/* Images */}
                                 <div>
                                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                                        صور التصميم
+                                        {isArabic ? 'صور التصميم' : 'Design Images'}
                                     </label>
                                     <div style={{
                                         border: '2px dashed #e5e7eb',
@@ -855,10 +857,10 @@ const MyDesigns = () => {
                                         <label htmlFor="image-upload" style={{ cursor: 'pointer' }}>
                                             <ImageIcon size={36} style={{ color: '#9ca3af', margin: '0 auto 0.5rem' }} />
                                             <p style={{ color: '#6b7280', marginBottom: '0.25rem' }}>
-                                                اضغط لرفع الصور أو اسحبها هنا
+                                                {isArabic ? 'اضغط لرفع الصور أو اسحبها هنا' : 'Click to upload images or drag them here'}
                                             </p>
                                             <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>
-                                                PNG, JPG حتى 5 صور (بحد أقصى 5MB لكل صورة)
+                                                {isArabic ? 'PNG, JPG حتى 5 صور (بحد أقصى 5MB لكل صورة)' : 'PNG, JPG up to 5 images (max 5MB each)'}
                                             </p>
                                         </label>
                                     </div>
@@ -907,7 +909,7 @@ const MyDesigns = () => {
                                             cursor: 'pointer'
                                         }}
                                     >
-                                        إلغاء
+                                        {isArabic ? 'إلغاء' : 'Cancel'}
                                     </button>
                                     <button
                                         type="submit"
@@ -924,7 +926,7 @@ const MyDesigns = () => {
                                             cursor: submitting ? 'not-allowed' : 'pointer'
                                         }}
                                     >
-                                        {submitting ? 'جاري الحفظ...' : (editingProduct ? 'تحديث التصميم' : 'إضافة التصميم')}
+                                        {submitting ? (isArabic ? 'جاري الحفظ...' : 'Saving...') : (editingProduct ? (isArabic ? 'تحديث التصميم' : 'Update Design') : (isArabic ? 'إضافة التصميم' : 'Add Design'))}
                                     </button>
                                 </div>
                             </form>

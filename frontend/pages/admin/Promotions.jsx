@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Eye, CheckCircle, XCircle, Search, Rocket, X } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const Promotions = () => {
     const { token } = useAuth();
+    const { isArabic, t } = useLanguage();
     const [promotions, setPromotions] = useState([]);
     const [filteredPromotions, setFilteredPromotions] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -73,18 +75,18 @@ const Promotions = () => {
         }
     };
 
-    if (loading) return <div>جاري التحميل...</div>;
+    if (loading) return <div>{t('form.loading') || (isArabic ? 'جاري التحميل...' : 'Loading...')}</div>;
 
     return (
         <div>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>إدارة الترويجات 🚀</h1>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>{isArabic ? 'إدارة الترويجات 🚀' : 'Promotions Management 🚀'}</h1>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
                 <div style={{ position: 'relative', maxWidth: '400px' }}>
                     <Search style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} size={20} />
                     <input
                         type="text"
-                        placeholder="بحث عن ورشة أو تصميم..."
+                        placeholder={isArabic ? 'بحث عن ورشة أو تصميم...' : 'Search for workshop or design...'}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         style={{ width: '100%', padding: '0.75rem 3rem 0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--gray-300)' }}
@@ -105,7 +107,7 @@ const Promotions = () => {
                                 fontSize: '0.9rem'
                             }}
                         >
-                            {s === 'ALL' ? 'الكل' : (s === 'PENDING' ? 'في الانتظار' : (s === 'APPROVED' ? 'مقبول' : 'مرفوض'))}
+                            {s === 'ALL' ? (isArabic ? 'الكل' : 'All') : (s === 'PENDING' ? (isArabic ? 'في الانتظار' : 'Pending') : (s === 'APPROVED' ? (isArabic ? 'مقبول' : 'Approved') : (isArabic ? 'مرفوض' : 'Rejected')))}
                         </button>
                     ))}
                 </div>
@@ -115,12 +117,12 @@ const Promotions = () => {
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr style={{ textAlign: 'right', borderBottom: '1px solid var(--gray-200)' }}>
-                            <th style={{ padding: '1rem' }}>الورشة</th>
-                            <th style={{ padding: '1rem' }}>التصميم</th>
-                            <th style={{ padding: '1rem' }}>المدة / المبلغ</th>
-                            <th style={{ padding: '1rem' }}>الحالة</th>
-                            <th style={{ padding: '1rem' }}>التاريخ</th>
-                            <th style={{ padding: '1rem' }}>إجراءات</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'الورشة' : 'Workshop'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'التصميم' : 'Design'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'المدة / المبلغ' : 'Duration / Amount'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'الحالة' : 'Status'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'التاريخ' : 'Date'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'إجراءات' : 'Actions'}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,8 +138,8 @@ const Promotions = () => {
                                     </div>
                                 </td>
                                 <td style={{ padding: '1rem' }}>
-                                    <div>{promo.durationDays} يوم</div>
-                                    <div style={{ fontWeight: 'bold', color: 'var(--primary)' }}>{promo.amount.toLocaleString()} د.ج</div>
+                                    <div>{promo.durationDays} {isArabic ? 'يوم' : 'days'}</div>
+                                    <div style={{ fontWeight: 'bold', color: 'var(--primary)' }}>{promo.amount.toLocaleString()} {t('products.currency') || 'د.ج'}</div>
                                 </td>
                                 <td style={{ padding: '1rem' }}>
                                     <span style={{
@@ -158,7 +160,7 @@ const Promotions = () => {
                                         onClick={() => setSelectedPromo(promo)}
                                         style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer', border: '1px solid var(--gray-200)', background: 'white' }}
                                     >
-                                        <Eye size={16} /> معاينة
+                                        <Eye size={16} /> {isArabic ? 'معاينة' : 'View'}
                                     </button>
                                 </td>
                             </tr>
@@ -171,7 +173,7 @@ const Promotions = () => {
                 <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
                     <div className="card" style={{ width: '100%', maxWidth: '600px', padding: '0', overflow: 'hidden' }}>
                         <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--gray-200)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h3 style={{ margin: 0 }}>تفاصيل الترويج - {selectedPromo.workshop?.name}</h3>
+                            <h3 style={{ margin: 0 }}>{isArabic ? 'تفاصيل الترويج - ' : 'Promotion Details - '}{selectedPromo.workshop?.name}</h3>
                             <button onClick={() => setSelectedPromo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={24} /></button>
                         </div>
                         <div style={{ padding: '1.5rem', maxHeight: '70vh', overflowY: 'auto' }}>
@@ -185,32 +187,32 @@ const Promotions = () => {
                                         />
                                     </a>
                                 ) : (
-                                    <p>لا يوجد ملف إثبات</p>
+                                    <p>{isArabic ? 'لا يوجد ملف إثبات' : 'No proof file provided'}</p>
                                 )}
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
                                 <div>
-                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>التصميم</label>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{isArabic ? 'التصميم' : 'Design'}</label>
                                     <div style={{ fontWeight: 'bold' }}>{selectedPromo.product?.title}</div>
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>المدة</label>
-                                    <div style={{ fontWeight: 'bold' }}>{selectedPromo.durationDays} يوم</div>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{isArabic ? 'المدة' : 'Duration'}</label>
+                                    <div style={{ fontWeight: 'bold' }}>{selectedPromo.durationDays} {isArabic ? 'يوم' : 'days'}</div>
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>المبلغ</label>
-                                    <div style={{ fontWeight: 'bold' }}>{selectedPromo.amount} د.ج</div>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{isArabic ? 'المبلغ' : 'Amount'}</label>
+                                    <div style={{ fontWeight: 'bold' }}>{selectedPromo.amount} {t('products.currency') || 'د.ج'}</div>
                                 </div>
                             </div>
 
                             {selectedPromo.status === 'PENDING' && (
                                 <div>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>ملاحظة (في حالة الرفض)</label>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>{isArabic ? 'ملاحظة (في حالة الرفض)' : 'Note (if rejected)'}</label>
                                     <textarea
                                         value={adminNote}
                                         onChange={(e) => setAdminNote(e.target.value)}
-                                        placeholder="سبب الرفض..."
+                                        placeholder={isArabic ? 'سبب الرفض...' : 'Reason for rejection...'}
                                         style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid var(--gray-300)', minHeight: '80px' }}
                                     />
                                 </div>
@@ -222,13 +224,13 @@ const Promotions = () => {
                                     onClick={() => handleAction('REJECTED')}
                                     style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', borderRadius: '6px', background: '#fee2e2', color: '#991b1b', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
                                 >
-                                    <XCircle size={18} /> رفض
+                                    <XCircle size={18} /> {isArabic ? 'رفض' : 'Reject'}
                                 </button>
                                 <button
                                     onClick={() => handleAction('APPROVED')}
                                     style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', borderRadius: '6px', background: '#dcfce7', color: '#15803d', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
                                 >
-                                    <CheckCircle size={18} /> قبول وتفعيل
+                                    <CheckCircle size={18} /> {isArabic ? 'قبول وتفعيل' : 'Approve & Activate'}
                                 </button>
                             </div>
                         )}

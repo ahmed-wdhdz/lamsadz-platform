@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Package, Trash2, Eye } from 'lucide-react';
 import { getOptimizedImage } from '../../utils/optimizeImage';
 import { useQuery } from '@tanstack/react-query';
@@ -8,6 +9,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.co
 
 const Products = () => {
     const { token } = useAuth();
+    const { isArabic, t } = useLanguage();
     const [page, setPage] = useState(1);
     const { data: { products = [], totalPages = 1 } = {}, isLoading: loading, refetch: refetchProducts, isFetching } = useQuery({
         queryKey: ['adminProducts', page, token],
@@ -25,7 +27,7 @@ const Products = () => {
     });
 
     const deleteProduct = async (id) => {
-        if (!confirm('هل أنت متأكد من حذف هذا التصميم؟')) return;
+        if (!confirm(isArabic ? 'هل أنت متأكد من حذف هذا التصميم؟' : 'Are you sure you want to delete this design?')) return;
 
         try {
             const res = await fetch(`${API_URL}/admin/products/${id}`, {
@@ -41,22 +43,22 @@ const Products = () => {
         }
     };
 
-    if (loading) return <div>جاري التحميل...</div>;
+    if (loading) return <div>{t('form.loading') || (isArabic ? 'جاري التحميل...' : 'Loading...')}</div>;
 
     return (
         <div>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>إدارة التصاميم</h1>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>{isArabic ? 'إدارة التصاميم' : 'Designs Management'}</h1>
 
             <div className="card" style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', minWidth: '800px', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr style={{ textAlign: 'right', borderBottom: '1px solid var(--gray-200)' }}>
-                            <th style={{ padding: '1rem' }}>الصورة</th>
-                            <th style={{ padding: '1rem' }}>العنوان</th>
-                            <th style={{ padding: '1rem' }}>الورشة</th>
-                            <th style={{ padding: '1rem' }}>السعر</th>
-                            <th style={{ padding: '1rem' }}>الحالة</th>
-                            <th style={{ padding: '1rem' }}>إجراءات</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'الصورة' : 'Image'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'العنوان' : 'Title'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'الورشة' : 'Workshop'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'السعر' : 'Price'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'الحالة' : 'Status'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'إجراءات' : 'Actions'}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,7 +75,7 @@ const Products = () => {
                                 </td>
                                 <td style={{ padding: '1rem', fontWeight: 'bold' }}>{product.title}</td>
                                 <td style={{ padding: '1rem' }}>{product.workshop.name}</td>
-                                <td style={{ padding: '1rem' }}>{product.price} د.ج</td>
+                                <td style={{ padding: '1rem' }}>{product.price} {t('products.currency') || 'د.ج'}</td>
                                 <td style={{ padding: '1rem' }}>
                                     <span style={{
                                         padding: '0.25rem 0.5rem',
@@ -89,7 +91,7 @@ const Products = () => {
                                     <button
                                         onClick={() => deleteProduct(product.id)}
                                         style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}
-                                        title="حذف"
+                                        title={isArabic ? 'حذف' : 'Delete'}
                                     >
                                         <Trash2 size={18} />
                                     </button>
@@ -111,7 +113,7 @@ const Products = () => {
                             cursor: page === 1 ? 'not-allowed' : 'pointer', opacity: page === 1 ? 0.5 : 1, fontWeight: 'bold'
                         }}
                     >
-                        السابق
+                        {isArabic ? 'السابق' : 'Previous'}
                     </button>
                     <span style={{ fontWeight: 'bold', color: '#4b5563', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         {page} / {totalPages} {isFetching && <span style={{fontSize: '0.8rem', color: '#9ca3af'}}>(...)</span>}
@@ -124,7 +126,7 @@ const Products = () => {
                             cursor: page === totalPages ? 'not-allowed' : 'pointer', opacity: page === totalPages ? 0.5 : 1, fontWeight: 'bold'
                         }}
                     >
-                        التالي
+                        {isArabic ? 'التالي' : 'Next'}
                     </button>
                 </div>
             )}

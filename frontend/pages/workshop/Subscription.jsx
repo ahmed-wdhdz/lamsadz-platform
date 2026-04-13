@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Check, Upload, Clock, AlertCircle, CreditCard, ShieldCheck, Star } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const Subscription = () => {
     const { token } = useAuth();
+    const { isArabic, t } = useLanguage();
     const [workshop, setWorkshop] = useState(null);
     const [step, setStep] = useState(1); // 1: Plans, 2: Payment, 3: Status
     const [selectedPlan, setSelectedPlan] = useState(null);
@@ -45,7 +47,7 @@ const Subscription = () => {
                 } else if (data.status === 'REJECTED') {
                     setStep(1);
                     setShowRenew(true);
-                    setMessage(`ملاحظة الإدارة: ${data.payments?.[0]?.adminNote || 'تم رفض الإيصال'}`);
+                    setMessage(`${isArabic ? 'ملاحظة الإدارة:' : 'Admin Note:'} ${data.payments?.[0]?.adminNote || (isArabic ? 'تم رفض الإيصال' : 'Receipt rejected')}`);
                 } else {
                     // PENDING_PAYMENT or New
                     setShowRenew(true);
@@ -69,7 +71,7 @@ const Subscription = () => {
 
     const handleSelectPlan = async (plan) => {
         if (!workshop.id) {
-            setMessage('يجب إعداد ملف الورشة أولاً قبل الاشتراك');
+            setMessage(isArabic ? 'يجب إعداد ملف الورشة أولاً قبل الاشتراك' : 'You must set up your workshop profile first before subscribing');
             return;
         }
 
@@ -88,11 +90,11 @@ const Subscription = () => {
             if (res.ok) {
                 setStep(2);
             } else {
-                setMessage('حدث خطأ في اختيار الخطة');
+                setMessage(isArabic ? 'حدث خطأ في اختيار الخطة' : 'Error selecting plan');
             }
         } catch (err) {
             console.error(err);
-            setMessage('حدث خطأ في الاتصال');
+            setMessage(isArabic ? 'حدث خطأ في الاتصال' : 'Connection error');
         } finally {
             setLoading(false);
         }
@@ -116,7 +118,7 @@ const Subscription = () => {
                 fetchWorkshop();
             } else {
                 const errorData = await res.json();
-                setMessage(errorData.message || 'فشل عملية الرفع، يرجى المحاولة مرة أخرى.');
+                setMessage(errorData.message || (isArabic ? 'فشل عملية الرفع، يرجى المحاولة مرة أخرى.' : 'Upload failed, please try again.'));
             }
         } catch (err) {
             setMessage(err.message);
@@ -125,7 +127,7 @@ const Subscription = () => {
         }
     };
 
-    if (!workshop) return <div className="text-center p-8">جاري التحميل...</div>;
+    if (!workshop) return <div className="text-center p-8">{t('form.loading') || (isArabic ? 'جاري التحميل...' : 'Loading...')}</div>;
 
     // View: New Workshop (No Profile)
     if (workshop.status === 'NEW') {
@@ -159,7 +161,7 @@ const Subscription = () => {
                     marginBottom: '1rem',
                     color: '#1f2937'
                 }}>
-                    أكمل إعداد ورشتك أولاً
+                    {isArabic ? 'أكمل إعداد ورشتك أولاً' : 'Complete your workshop setup first'}
                 </h1>
                 <p style={{
                     color: '#6b7280',
@@ -167,7 +169,7 @@ const Subscription = () => {
                     fontSize: '1.1rem',
                     lineHeight: '1.6'
                 }}>
-                    للبدء في استقبال الطلبات والاشتراك في الباقات، يرجى إكمال إعداد ملف الورشة الخاص بك (الاسم، الموقع، وأرقام التواصل).
+                    {isArabic ? 'للبدء في استقبال الطلبات والاشتراك في الباقات، يرجى إكمال إعداد ملف الورشة الخاص بك (الاسم، الموقع، وأرقام التواصل).' : 'To start receiving orders and subscribe to plans, please complete your workshop profile (Name, Location, and Contact).'}
                 </p>
                 <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
                     <button
@@ -185,7 +187,7 @@ const Subscription = () => {
                             gap: '0.5rem'
                         }}
                     >
-                        إعداد الملف الشخصي ←
+                        {isArabic ? 'إعداد الملف الشخصي ←' : 'Setup Profile →'}
                     </button>
                 </div>
             </div>
@@ -225,7 +227,7 @@ const Subscription = () => {
                         color: '#1f2937',
                         marginBottom: '0.5rem'
                     }}>
-                        اشتراكك نشط ومفعل
+                        {isArabic ? 'اشتراكك نشط ومفعل' : 'Your subscription is active'}
                     </h1>
 
                     <p style={{
@@ -233,7 +235,7 @@ const Subscription = () => {
                         color: '#6b7280',
                         marginBottom: '2.5rem'
                     }}>
-                        استمتع بكافة مميزات المنصة وتواصل مع زبائنك بكل حرية
+                        {isArabic ? 'استمتع بكافة مميزات المنصة وتواصل مع زبائنك بكل حرية' : 'Enjoy all platform features and communicate with your clients freely'}
                     </p>
 
                     <div style={{
@@ -248,9 +250,9 @@ const Subscription = () => {
                             borderRadius: '16px',
                             border: '1px solid #f3f4f6'
                         }}>
-                            <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '0.5rem' }}>الباقة الحالية</p>
+                            <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '0.5rem' }}>{isArabic ? 'الباقة الحالية' : 'Current Plan'}</p>
                             <p style={{ fontSize: '1.25rem', fontWeight: '700', color: '#1f2937' }}>
-                                {payment?.plan === 'MONTHLY' ? 'الباقة الشهرية' : 'الباقة السنوية (Premium)'}
+                                {payment?.plan === 'MONTHLY' ? (isArabic ? 'الباقة الشهرية' : 'Monthly Plan') : (isArabic ? 'الباقة السنوية (Premium)' : 'Annual Plan (Premium)')}
                             </p>
                         </div>
                         <div style={{
@@ -259,7 +261,7 @@ const Subscription = () => {
                             borderRadius: '16px',
                             border: '1px solid #f3f4f6'
                         }}>
-                            <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '0.5rem' }}>تاريخ التفعيل</p>
+                            <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '0.5rem' }}>{isArabic ? 'تاريخ التفعيل' : 'Activation Date'}</p>
                             <p style={{ fontSize: '1.25rem', fontWeight: '700', color: '#1f2937' }}>
                                 {payment?.validatedAt ? new Date(payment.validatedAt).toLocaleDateString('ar-DZ') : '-'}
                             </p>
@@ -293,7 +295,7 @@ const Subscription = () => {
                                 e.currentTarget.style.background = 'white';
                             }}
                         >
-                            تغيير أو تجديد الاشتراك
+                            {isArabic ? 'تغيير أو تجديد الاشتراك' : 'Change or Renew Subscription'}
                         </button>
                     </div>
                 </div>
@@ -306,7 +308,7 @@ const Subscription = () => {
         <div className="max-w-5xl mx-auto" dir="rtl">
             {workshop.status === 'APPROVED' && (
                 <button onClick={() => setShowRenew(false)} className="mb-4 text-gray-500 hover:text-gray-900">
-                    &larr; العودة
+                    &larr; {isArabic ? 'العودة' : 'Back'}
                 </button>
             )}
 
@@ -320,7 +322,7 @@ const Subscription = () => {
                             color: 'var(--text-primary)',
                             marginBottom: '0.75rem'
                         }}>
-                            اختر خطة الاشتراك المناسبة لك
+                            {isArabic ? 'اختر خطة الاشتراك المناسبة لك' : 'Choose the subscription plan that suits you'}
                         </h1>
                         <p style={{
                             color: 'var(--text-muted)',
@@ -328,7 +330,7 @@ const Subscription = () => {
                             maxWidth: '500px',
                             margin: '0 auto'
                         }}>
-                            ابدأ بعرض خدماتك وحرفتك للآلاف من الزبائن المحتملين.
+                            {isArabic ? 'ابدأ بعرض خدماتك وحرفتك للآلاف من الزبائن المحتملين.' : 'Start offering your services and crafts to thousands of potential customers.'}
                         </p>
                     </div>
 
@@ -382,7 +384,7 @@ const Subscription = () => {
                                 fontWeight: '700',
                                 boxShadow: '0 4px 12px rgba(249, 115, 22, 0.4)'
                             }}>
-                                الأفضل قيمة (توفير شهرين)
+                                {isArabic ? 'الأفضل قيمة (توفير شهرين)' : 'Best Value (Save 2 months)'}
                             </div>
 
                             <h3 style={{
@@ -391,7 +393,7 @@ const Subscription = () => {
                                 textAlign: 'center',
                                 marginTop: '1rem',
                                 marginBottom: '1.5rem'
-                            }}>سنوي</h3>
+                            }}>{isArabic ? 'سنوي' : 'Yearly'}</h3>
 
                             <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
                                 <div style={{
@@ -403,7 +405,7 @@ const Subscription = () => {
                                     fontSize: '1rem',
                                     opacity: '0.9',
                                     marginTop: '0.5rem'
-                                }}>د.ج / سنة</div>
+                                }}>{t('products.currency') || 'د.ج'} / {isArabic ? 'سنة' : 'Year'}</div>
                             </div>
 
                             <p style={{
@@ -412,7 +414,7 @@ const Subscription = () => {
                                 opacity: '0.9',
                                 marginBottom: '2rem'
                             }}>
-                                للورش المحترفة التي تبحث عن الاستمرارية.
+                                {isArabic ? 'للورش المحترفة التي تبحث عن الاستمرارية.' : 'For professional workshops seeking continuity.'}
                             </p>
 
                             <ul style={{
@@ -425,19 +427,19 @@ const Subscription = () => {
                             }}>
                                 <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                     <Star fill="currentColor" size={20} style={{ color: '#fbbf24' }} />
-                                    <span style={{ fontWeight: '600' }}>كل مميزات الباقة الشهرية</span>
+                                    <span style={{ fontWeight: '600' }}>{isArabic ? 'كل مميزات الباقة الشهرية' : 'All Monthly Plan features'}</span>
                                 </li>
                                 <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                     <Star fill="currentColor" size={20} style={{ color: '#fbbf24' }} />
-                                    <span style={{ fontWeight: '600' }}>أولوية في نتائج البحث</span>
+                                    <span style={{ fontWeight: '600' }}>{isArabic ? 'أولوية في نتائج البحث' : 'Priority in search results'}</span>
                                 </li>
                                 <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                     <Star fill="currentColor" size={20} style={{ color: '#fbbf24' }} />
-                                    <span style={{ fontWeight: '600' }}>معرض أعمال غير محدود</span>
+                                    <span style={{ fontWeight: '600' }}>{isArabic ? 'معرض أعمال غير محدود' : 'Unlimited Portfolio'}</span>
                                 </li>
                                 <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                     <Star fill="currentColor" size={20} style={{ color: '#fbbf24' }} />
-                                    <span style={{ fontWeight: '600' }}>شارة "ورشة موثوقة"</span>
+                                    <span style={{ fontWeight: '600' }}>{isArabic ? 'شارة "ورشة موثوقة"' : '"Trusted Workshop" Badge'}</span>
                                 </li>
                             </ul>
 
@@ -457,7 +459,7 @@ const Subscription = () => {
                                     transition: 'all 0.2s ease'
                                 }}
                             >
-                                {loading ? 'جاري التحميل...' : 'اختيار الباقة السنوية'}
+                                {loading ? (t('form.loading') || (isArabic ? 'جاري التحميل...' : 'Loading...')) : (isArabic ? 'اختيار الباقة السنوية' : 'Choose Yearly Plan')}
                             </button>
                         </div>
 
@@ -476,7 +478,7 @@ const Subscription = () => {
                                 textAlign: 'center',
                                 color: '#3b82f6',
                                 marginBottom: '1.5rem'
-                            }}>شهري</h3>
+                            }}>{isArabic ? 'شهري' : 'Monthly'}</h3>
 
                             <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
                                 <div style={{
@@ -489,7 +491,7 @@ const Subscription = () => {
                                     fontSize: '1rem',
                                     color: '#6b7280',
                                     marginTop: '0.5rem'
-                                }}>د.ج / شهر</div>
+                                }}>{t('products.currency') || 'د.ج'} / {isArabic ? 'شهر' : 'Month'}</div>
                             </div>
 
                             <p style={{
@@ -498,7 +500,7 @@ const Subscription = () => {
                                 color: '#6b7280',
                                 marginBottom: '2rem'
                             }}>
-                                مثالي لتجربة المنصة والبدء السريع.
+                                {isArabic ? 'مثالي لتجربة المنصة والبدء السريع.' : 'Perfect for testing the platform & quick start.'}
                             </p>
 
                             <ul style={{
@@ -511,15 +513,15 @@ const Subscription = () => {
                             }}>
                                 <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#374151' }}>
                                     <Check size={20} style={{ color: '#3b82f6' }} />
-                                    <span>ظهور في البحث المتقدم</span>
+                                    <span>{isArabic ? 'ظهور في البحث المتقدم' : 'Appearance in advanced search'}</span>
                                 </li>
                                 <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#374151' }}>
                                     <Check size={20} style={{ color: '#3b82f6' }} />
-                                    <span>معرض أعمال (Portfolio) محدود</span>
+                                    <span>{isArabic ? 'معرض أعمال (Portfolio) محدود' : 'Limited Portfolio'}</span>
                                 </li>
                                 <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#374151' }}>
                                     <Check size={20} style={{ color: '#3b82f6' }} />
-                                    <span>دعم فني عبر البريد</span>
+                                    <span>{isArabic ? 'دعم فني عبر البريد' : 'Email support'}</span>
                                 </li>
                             </ul>
 
@@ -539,7 +541,7 @@ const Subscription = () => {
                                     transition: 'all 0.2s ease'
                                 }}
                             >
-                                {loading ? 'جاري التحميل...' : 'اختيار الباقة الشهرية'}
+                                {loading ? (t('form.loading') || (isArabic ? 'جاري التحميل...' : 'Loading...')) : (isArabic ? 'اختيار الباقة الشهرية' : 'Choose Monthly Plan')}
                             </button>
                         </div>
                     </div>
@@ -562,10 +564,10 @@ const Subscription = () => {
                                 color: 'var(--text-primary)',
                                 marginBottom: '0.25rem'
                             }}>
-                                الدفع وتأكيد الاشتراك
+                                {isArabic ? 'الدفع وتأكيد الاشتراك' : 'Payment & Subscription Confirmation'}
                             </h2>
                             <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
-                                أرسل إيصال الدفع لتفعيل اشتراكك
+                                {isArabic ? 'أرسل إيصال الدفع لتفعيل اشتراكك' : 'Send the payment receipt to activate your subscription'}
                             </p>
                         </div>
                         <button
@@ -580,7 +582,7 @@ const Subscription = () => {
                                 cursor: 'pointer'
                             }}
                         >
-                            ← تغيير الخطة
+                            {isArabic ? '← تغيير الخطة' : '← Change Plan'}
                         </button>
                     </div>
 
@@ -596,16 +598,16 @@ const Subscription = () => {
                         alignItems: 'center'
                     }}>
                         <div>
-                            <p style={{ opacity: 0.9, marginBottom: '0.25rem' }}>الباقة المختارة</p>
+                            <p style={{ opacity: 0.9, marginBottom: '0.25rem' }}>{isArabic ? 'الباقة المختارة' : 'Selected Plan'}</p>
                             <p style={{ fontSize: '1.25rem', fontWeight: '700' }}>
-                                {selectedPlan === 'monthly' ? '🗓️ الباقة الشهرية' : '⭐ الباقة السنوية'}
+                                {selectedPlan === 'monthly' ? (isArabic ? '🗓️ الباقة الشهرية' : '🗓️ Monthly Plan') : (isArabic ? '⭐ الباقة السنوية' : '⭐ Yearly Plan')}
                             </p>
                         </div>
                         <div style={{ textAlign: 'left' }}>
-                            <p style={{ opacity: 0.9, marginBottom: '0.25rem' }}>المبلغ</p>
+                            <p style={{ opacity: 0.9, marginBottom: '0.25rem' }}>{isArabic ? 'المبلغ' : 'Amount'}</p>
                             <p style={{ fontSize: '2rem', fontWeight: '900' }}>
                                 {selectedPlan === 'monthly' ? '2,000' : '18,000'}
-                                <span style={{ fontSize: '1rem', opacity: 0.9 }}> د.ج</span>
+                                <span style={{ fontSize: '1rem', opacity: 0.9 }}> {t('products.currency') || 'د.ج'}</span>
                             </p>
                         </div>
                     </div>
@@ -626,7 +628,7 @@ const Subscription = () => {
                             alignItems: 'center',
                             gap: '0.5rem'
                         }}>
-                            💳 طرق الدفع المتاحة
+                            {isArabic ? '💳 طرق الدفع المتاحة' : '💳 Available Payment Methods'}
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             <div style={{
@@ -713,7 +715,7 @@ const Subscription = () => {
                             alignItems: 'center',
                             gap: '0.5rem'
                         }}>
-                            📤 رفع إيصال الدفع
+                            {isArabic ? '📤 رفع إيصال الدفع' : '📤 Upload Payment Receipt'}
                         </h3>
 
                         <div style={{
@@ -738,10 +740,10 @@ const Subscription = () => {
                             <label htmlFor="receipt-upload" style={{ cursor: 'pointer' }}>
                                 <Upload size={40} style={{ color: '#9ca3af', margin: '0 auto 0.75rem' }} />
                                 <p style={{ color: '#6b7280', fontWeight: '600', marginBottom: '0.25rem' }}>
-                                    اضغط لرفع صورة الإيصال
+                                    {isArabic ? 'اضغط لرفع صورة الإيصال' : 'Click to upload receipt image'}
                                 </p>
                                 <p style={{ fontSize: '0.85rem', color: '#9ca3af' }}>
-                                    PNG, JPG (حد أقصى 5MB)
+                                    {isArabic ? 'PNG, JPG (حد أقصى 5MB)' : 'PNG, JPG (Max 5MB)'}
                                 </p>
                             </label>
                         </div>
@@ -768,7 +770,7 @@ const Subscription = () => {
                                     }}
                                 />
                                 <div>
-                                    <p style={{ fontWeight: '600', color: '#166534' }}>✅ تم اختيار الصورة</p>
+                                    <p style={{ fontWeight: '600', color: '#166534' }}>{isArabic ? '✅ تم اختيار الصورة' : '✅ Image selected'}</p>
                                     <p style={{ fontSize: '0.85rem', color: '#16a34a' }}>{file?.name}</p>
                                 </div>
                             </div>
@@ -797,11 +799,11 @@ const Subscription = () => {
                             }}
                         >
                             {loading ? (
-                                <>جاري الرفع...</>
+                                <>{t('form.loading') || (isArabic ? 'جاري الرفع...' : 'Uploading...')}</>
                             ) : (
                                 <>
                                     <ShieldCheck size={20} />
-                                    تأكيد الدفع
+                                    {isArabic ? 'تأكيد الدفع' : 'Confirm Payment'}
                                 </>
                             )}
                         </button>
@@ -835,7 +837,7 @@ const Subscription = () => {
                         color: 'var(--text-primary)',
                         marginBottom: '0.75rem'
                     }}>
-                        جاري المراجعة ⏳
+                        {isArabic ? 'جاري المراجعة ⏳' : 'Under Review ⏳'}
                     </h2>
                     <p style={{
                         color: 'var(--text-muted)',
@@ -843,9 +845,9 @@ const Subscription = () => {
                         lineHeight: '1.7',
                         marginBottom: '2rem'
                     }}>
-                        تم استلام إيصال الدفع بنجاح!
+                        {isArabic ? 'تم استلام إيصال الدفع بنجاح!' : 'Payment receipt received successfully!'}
                         <br />
-                        سنقوم بتفعيل اشتراكك فور التحقق من العملية.
+                        {isArabic ? 'سنقوم بتفعيل اشتراكك فور التحقق من العملية.' : 'We will activate your subscription upon verification.'}
                     </p>
                     <div style={{
                         background: '#f0f9ff',
@@ -858,7 +860,7 @@ const Subscription = () => {
                     }}>
                         <span style={{ fontSize: '1.5rem' }}>💡</span>
                         <span style={{ fontWeight: '600' }}>
-                            عادةً ما يتم التفعيل خلال 24 ساعة
+                            {isArabic ? 'عادةً ما يتم التفعيل خلال 24 ساعة' : 'Activation usually takes up to 24 hours'}
                         </span>
                     </div>
                 </div>

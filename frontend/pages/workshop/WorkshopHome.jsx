@@ -39,9 +39,9 @@ const WorkshopHome = () => {
     if (error) return (
         <div style={{ padding: '4rem', textAlign: 'center' }}>
             <div style={{ color: '#ef4444', marginBottom: '1rem' }}><AlertCircle size={48} style={{ margin: '0 auto' }} /></div>
-            <h2>حدث خطأ في تحميل البيانات</h2>
-            <p style={{ color: '#6b7280', marginBottom: '2rem' }}>يرجى التحقق من اتصالك بالخادم أو إعادة المحاولة.</p>
-            <Button onClick={() => fetchStats()} variant="outline">إعادة المحاولة</Button>
+            <h2>{isArabic ? 'حدث خطأ في تحميل البيانات' : 'Error loading data'}</h2>
+            <p style={{ color: '#6b7280', marginBottom: '2rem' }}>{isArabic ? 'يرجى التحقق من اتصالك بالخادم أو إعادة المحاولة.' : 'Please check your server connection or try again.'}</p>
+            <Button onClick={() => fetchStats()} variant="outline">{isArabic ? 'إعادة المحاولة' : 'Retry'}</Button>
         </div>
     );
 
@@ -131,21 +131,21 @@ const WorkshopHome = () => {
 
     const statCards = [
         {
-            label: t('workshop.totalDesigns') || 'إجمالي التصاميم',
+            label: t('workshop.totalDesigns') || (isArabic ? 'إجمالي التصاميم' : 'Total Designs'),
             value: stats.totalDesigns,
             icon: Package,
             gradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
             shadow: '0 4px 20px rgba(59, 130, 246, 0.2)',
         },
         {
-            label: t('workshop.totalRequests') || 'إجمالي الطلبات',
+            label: t('workshop.totalRequests') || (isArabic ? 'إجمالي الطلبات' : 'Total Requests'),
             value: stats.totalRequests,
             icon: Inbox,
             gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
             shadow: '0 4px 20px rgba(16, 185, 129, 0.2)',
         },
         {
-            label: t('workshop.unreadRequests') || 'طلبات جديدة',
+            label: t('workshop.unreadRequests') || (isArabic ? 'طلبات جديدة' : 'New Requests'),
             value: stats.unreadRequests,
             icon: AlertCircle,
             gradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
@@ -168,10 +168,10 @@ const WorkshopHome = () => {
                         gap: '0.75rem'
                     }}
                 >
-                    {t('workshop.welcome') || 'مرحباً'}، <span style={{ color: '#3b82f6' }}>{user?.name}</span> 👋
+                    {t('workshop.welcome') || (isArabic ? 'مرحباً' : 'Welcome')}، <span style={{ color: '#3b82f6' }}>{user?.name}</span> 👋
                 </h1>
                 <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>
-                    {t('workshop.overview') || 'إليك نظرة عامة على نشاط ورشتك اليوم.'}
+                    {t('workshop.overview') || (isArabic ? 'إليك نظرة عامة على نشاط ورشتك اليوم.' : 'Here is an overview of your workshop activity today.')}
                 </p>
             </div>
 
@@ -212,7 +212,7 @@ const WorkshopHome = () => {
                     <p style={{ color: stats.status === 'APPROVED' ? '#15803d' : '#b45309', marginBottom: '0.5rem' }}>
                         {isArabic
                             ? `حالة حسابك: ${stats.status === 'PENDING_PAYMENT' ? 'بانتظار الدفع' : stats.status === 'WAITING_APPROVAL' ? 'قيد المراجعة' : stats.status === 'REJECTED' ? 'مرفوض - يرجى مراجعة السبب' : stats.status}. `
-                            : `Account Status: ${stats.status === 'WAITING_APPROVAL' ? 'Pending Approval' : stats.status === 'PENDING_PAYMENT' ? 'Pending Payment' : stats.status}. `}
+                            : `Account Status: ${stats.status === 'WAITING_APPROVAL' ? 'Pending Approval' : stats.status === 'PENDING_PAYMENT' ? 'Pending Payment' : stats.status === 'REJECTED' ? 'Rejected - please check reason' : stats.status}. `}
 
                         {stats.subscriptionEndsAt && (
                             <span style={{ fontWeight: 'bold' }}>
@@ -334,7 +334,7 @@ const WorkshopHome = () => {
                             <div style={{ background: '#eff6ff', padding: '0.5rem', borderRadius: '8px', color: '#3b82f6' }}>
                                 <Clock size={20} />
                             </div>
-                            {t('workshop.recentActivity') || 'آخر النشاطات'}
+                            {t('workshop.recentActivity') || (isArabic ? 'آخر النشاطات' : 'Recent Activity')}
                         </h3>
 
                     </div>
@@ -348,8 +348,8 @@ const WorkshopHome = () => {
                                 borderRadius: '16px',
                                 border: '2px dashed #e5e7eb'
                             }}>
-                                <p style={{ color: '#9ca3af', fontWeight: '600' }}>
-                                    {t('workshop.noActivity') || 'لا يوجد نشاطات حديثة'}
+                                <p style={{ color: 'var(--text-muted)', margin: 0 }}>
+                                    {t('workshop.noActivity') || (isArabic ? 'لا يوجد نشاطات حديثة' : 'No recent activity')}
                                 </p>
                             </div>
                         ) : (
@@ -429,10 +429,10 @@ const WorkshopHome = () => {
                     >
                         <div style={{ zIndex: 1 }}>
                             <h4 style={{ fontSize: '1.2rem', fontWeight: '800', marginBottom: '0.25rem', color: '#1f2937' }}>
-                                {t('workshop.addDesign') || 'إضافة تصميم جديد'}
+                                {t('workshop.addDesign') || (isArabic ? 'إضافة تصميم جديد' : 'Add New Design')}
                             </h4>
                             <p style={{ fontSize: '0.9rem', color: '#6b7280' }}>
-                                اعرض أعمالك للزبائن
+                                {isArabic ? 'اعرض أعمالك للزبائن' : 'Showcase your work to clients'}
                             </p>
                         </div>
                         <div style={{
@@ -499,7 +499,7 @@ const WorkshopHome = () => {
                                 <div style={{ background: 'white', padding: '6px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
                                     <Inbox size={18} />
                                 </div>
-                                {t('workshop.viewRequests') || 'طلبات الزبائن'}
+                                {t('workshop.viewRequests') || (isArabic ? 'طلبات الزبائن' : 'Client Requests')}
                             </Link>
                             <Link
                                 to="/dashboard/workshop/profile"
@@ -520,7 +520,7 @@ const WorkshopHome = () => {
                                 <div style={{ background: 'white', padding: '6px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
                                     <Settings size={18} />
                                 </div>
-                                {t('workshop.settings') || 'إعدادات الورشة'}
+                                {t('workshop.settings') || (isArabic ? 'إعدادات الورشة' : 'Workshop Settings')}
                             </Link>
                         </div>
                     </div>

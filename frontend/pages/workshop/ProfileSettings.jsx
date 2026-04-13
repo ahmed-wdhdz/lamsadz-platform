@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { wilayas } from '../../utils/wilayas';
 import { User, MapPin, Phone, Briefcase, FileText, Save, CheckCircle, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +10,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.co
 const ProfileSettings = () => {
     const navigate = useNavigate();
     const { token, user } = useAuth();
+    const { isArabic, t } = useLanguage();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
@@ -66,11 +68,11 @@ const ProfileSettings = () => {
                 }, 1500);
             } else {
                 const err = await res.json();
-                alert(err.message || 'حدث خطأ أثناء حفظ الملف الشخصي');
+                alert(err.message || (isArabic ? 'حدث خطأ أثناء حفظ الملف الشخصي' : 'Error saving profile'));
             }
         } catch (error) {
             console.error(error);
-            alert('حدث خطأ في الاتصال بالسيرفر');
+            alert(isArabic ? 'حدث خطأ في الاتصال بالسيرفر' : 'Server connection error');
         } finally {
             setSaving(false);
         }
@@ -85,7 +87,7 @@ const ProfileSettings = () => {
                 minHeight: '400px',
                 color: 'var(--text-muted)'
             }}>
-                جاري التحميل...
+                {t('form.loading') || (isArabic ? 'جاري التحميل...' : 'Loading...')}
             </div>
         );
     }
@@ -127,10 +129,10 @@ const ProfileSettings = () => {
                     color: 'var(--text-primary)',
                     marginBottom: '0.5rem'
                 }}>
-                    إعدادات الملف الشخصي
+                    {isArabic ? 'إعدادات الملف الشخصي' : 'Profile Settings'}
                 </h1>
                 <p style={{ color: 'var(--text-muted)' }}>
-                    اضبط معلومات ورشتك لتظهر بشكل احترافي للزبائن
+                    {isArabic ? 'اضبط معلومات ورشتك لتظهر بشكل احترافي للزبائن' : 'Set up your workshop information to appear professionally to clients'}
                 </p>
             </div>
 
@@ -148,7 +150,7 @@ const ProfileSettings = () => {
                     fontWeight: '600'
                 }}>
                     <CheckCircle size={20} />
-                    تم حفظ التغييرات بنجاح!
+                    {isArabic ? 'تم حفظ التغييرات بنجاح!' : 'Changes saved successfully!'}
                 </div>
             )}
 
@@ -165,12 +167,12 @@ const ProfileSettings = () => {
                     <div style={{ marginBottom: '1.5rem' }}>
                         <label style={labelStyle}>
                             <User size={16} style={{ display: 'inline', marginLeft: '0.5rem', verticalAlign: 'middle' }} />
-                            اسم الورشة
+                            {isArabic ? 'اسم الورشة' : 'Workshop Name'}
                         </label>
                         <div style={{ position: 'relative' }}>
                             <input
                                 type="text"
-                                placeholder="مثال: ورشة الحرفي الماهر"
+                                placeholder={isArabic ? "مثال: ورشة الحرفي الماهر" : "e.g: The Master Craftsman Workshop"}
                                 value={formData.name}
                                 onChange={e => setFormData({ ...formData, name: e.target.value })}
                                 required
@@ -191,7 +193,7 @@ const ProfileSettings = () => {
                     <div style={{ marginBottom: '1.5rem' }}>
                         <label style={labelStyle}>
                             <Mail size={16} style={{ display: 'inline', marginLeft: '0.5rem', verticalAlign: 'middle' }} />
-                            البريد الإلكتروني (غير قابل للتعديل)
+                            {isArabic ? 'البريد الإلكتروني (غير قابل للتعديل)' : 'Email (Read-only)'}
                         </label>
                         <div style={{ position: 'relative' }}>
                             <input
@@ -213,10 +215,10 @@ const ProfileSettings = () => {
                     <div style={{ marginBottom: '1.5rem' }}>
                         <label style={labelStyle}>
                             <FileText size={16} style={{ display: 'inline', marginLeft: '0.5rem', verticalAlign: 'middle' }} />
-                            نبذة عن الورشة
+                            {isArabic ? 'نبذة عن الورشة' : 'About the Workshop'}
                         </label>
                         <textarea
-                            placeholder="صف ورشتك وخدماتك... مثال: ورشة متخصصة في صناعة الأثاث العصري والكلاسيكي بخبرة 15 سنة"
+                            placeholder={isArabic ? "صف ورشتك وخدماتك... مثال: ورشة متخصصة في صناعة الأثاث العصري والكلاسيكي بخبرة 15 سنة" : "Describe your workshop and services..."}
                             value={formData.description}
                             onChange={e => setFormData({ ...formData, description: e.target.value })}
                             required
@@ -240,7 +242,7 @@ const ProfileSettings = () => {
                             color: '#9ca3af',
                             marginTop: '0.5rem'
                         }}>
-                            وصف جيد يساعد الزبائن على فهم تخصصك
+                            {isArabic ? 'وصف جيد يساعد الزبائن على فهم تخصصك' : 'A good description helps clients understand your specialty'}
                         </p>
                     </div>
 
@@ -254,7 +256,7 @@ const ProfileSettings = () => {
                         <div>
                             <label style={labelStyle}>
                                 <MapPin size={16} style={{ display: 'inline', marginLeft: '0.5rem', verticalAlign: 'middle' }} />
-                                المدينة / الولاية
+                                {isArabic ? 'المدينة / الولاية' : 'City / State'}
                             </label>
                             <div style={{ position: 'relative' }}>
                                 <select
@@ -276,7 +278,7 @@ const ProfileSettings = () => {
                                         e.target.style.background = '#f9fafb';
                                     }}
                                 >
-                                    <option value="">اختر الولاية</option>
+                                    <option value="">{isArabic ? 'اختر الولاية' : 'Select State'}</option>
                                     {wilayas.map((w) => (
                                         <option key={w} value={w}>{w}</option>
                                     ))}
@@ -296,7 +298,7 @@ const ProfileSettings = () => {
                         <div>
                             <label style={labelStyle}>
                                 <Phone size={16} style={{ display: 'inline', marginLeft: '0.5rem', verticalAlign: 'middle' }} />
-                                رقم الهاتف
+                                {isArabic ? 'رقم الهاتف' : 'Phone Number'}
                             </label>
                             <input
                                 type="tel"
@@ -342,7 +344,7 @@ const ProfileSettings = () => {
                         }}
                     >
                         <Save size={20} />
-                        {saving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+                        {saving ? (isArabic ? 'جاري الحفظ...' : 'Saving...') : (isArabic ? 'حفظ التغييرات' : 'Save Changes')}
                     </button>
                 </form>
             </div>

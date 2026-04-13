@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { MessageSquare, MapPin } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const Requests = () => {
     const { token } = useAuth();
+    const { isArabic, t } = useLanguage();
     const [leads, setLeads] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('READY'); // READY, CUSTOM
@@ -35,11 +37,11 @@ const Requests = () => {
         }
     };
 
-    if (loading) return <div>جاري التحميل...</div>;
+    if (loading) return <div>{t('form.loading') || (isArabic ? 'جاري التحميل...' : 'Loading...')}</div>;
 
     return (
         <div>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>مراقبة الطلبات</h1>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>{isArabic ? 'مراقبة الطلبات' : 'Requests Monitoring'}</h1>
 
             {/* Tabs */}
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--gray-200)', paddingBottom: '1px' }}>
@@ -58,7 +60,7 @@ const Requests = () => {
                         fontSize: '1rem'
                     }}
                 >
-                    طلبات جاهزة ({readyLeads.length})
+                    {isArabic ? 'طلبات جاهزة' : 'Ready Products'} ({readyLeads.length})
                 </button>
                 <button
                     onClick={() => setActiveTab('CUSTOM')}
@@ -75,7 +77,7 @@ const Requests = () => {
                         fontSize: '1rem'
                     }}
                 >
-                    طلبات خاصة ({customLeads.length})
+                    {isArabic ? 'طلبات خاصة' : 'Custom Designs'} ({customLeads.length})
                 </button>
             </div>
 
@@ -83,19 +85,20 @@ const Requests = () => {
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr style={{ textAlign: 'right', borderBottom: '1px solid var(--gray-200)' }}>
-                            <th style={{ padding: '1rem' }}>العميل</th>
-                            <th style={{ padding: '1rem' }}>{activeTab === 'READY' ? 'المنتج' : 'نوع الطلب'}</th>
-                            <th style={{ padding: '1rem' }}>الورشة</th>
-                            <th style={{ padding: '1rem' }}>{activeTab === 'READY' ? 'السعر (د.ج)' : 'الوصف / الميزانية'}</th>
-                            <th style={{ padding: '1rem' }}>الموقع</th>
-                            <th style={{ padding: '1rem' }}>الحالة</th>
-                            <th style={{ padding: '1rem' }}>التاريخ</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'العميل' : 'Client'}</th>
+                            <th style={{ padding: '1rem' }}>{activeTab === 'READY' ? (isArabic ? 'المنتج' : 'Product') : (isArabic ? 'نوع الطلب' : 'Request Type')}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'الورشة' : 'Workshop'}</th>
+                            <th style={{ padding: '1rem' }}>{activeTab === 'READY' ? (isArabic ? 'السعر' : 'Price') + ` (${t('products.currency') || 'د.ج'})` : (isArabic ? 'الوصف / الميزانية' : 'Description / Budget')}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'الموقع' : 'Location'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'الحالة' : 'Status'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'التاريخ' : 'Date'}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {displayedLeads.map(lead => (
                             <tr key={lead.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
-                                <td style={{ padding: '1rem', fontWeight: 'bold' }}>{lead.clientName || 'عميل'}</td>
+                                
+                                <td style={{ padding: '1rem', fontWeight: 'bold' }}>{lead.clientName || (isArabic ? 'عميل' : 'Client')}</td>
                                 <td style={{ padding: '1rem' }}>
                                     {activeTab === 'READY' ? (
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -106,7 +109,7 @@ const Requests = () => {
                                                     style={{ width: '32px', height: '32px', borderRadius: '4px', objectFit: 'cover' }}
                                                 />
                                             )}
-                                            {lead.design?.title || 'منتج محذوف'}
+                                            {lead.design?.title || (isArabic ? 'منتج محذوف' : 'Deleted Product')}
                                         </div>
                                     ) : (
                                         lead.type
@@ -114,27 +117,27 @@ const Requests = () => {
                                 </td>
                                 <td style={{ padding: '1rem', maxWidth: '200px' }}>
                                     {activeTab === 'READY' ? (
-                                        <span style={{ fontWeight: '500', color: '#4b5563' }}>{lead.design?.workshop?.name || 'غير معروف'}</span>
+                                        <span style={{ fontWeight: '500', color: '#4b5563' }}>{lead.design?.workshop?.name || (isArabic ? 'غير معروف' : 'Unknown')}</span>
                                     ) : (
                                         <div style={{ fontSize: '0.85rem', color: '#4b5563' }}>
                                             {lead.deliveries && lead.deliveries.length > 0 ? (
                                                 lead.deliveries.map(d => d.workshop?.name).join('، ')
                                             ) : (
-                                                <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>في الانتظار...</span>
+                                                <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>{isArabic ? 'في الانتظار...' : 'Waiting...'}</span>
                                             )}
                                         </div>
                                     )}
                                 </td>
                                 <td style={{ padding: '1rem', maxWidth: '300px' }}>
                                     {activeTab === 'READY' ? (
-                                        <span style={{ fontWeight: 'bold' }}>{lead.design?.price?.toLocaleString()} د.ج</span>
+                                        <span style={{ fontWeight: 'bold' }}>{lead.design?.price?.toLocaleString()} {t('products.currency') || 'د.ج'}</span>
                                     ) : (
                                         <div>
                                             <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginBottom: '0.25rem' }}>
-                                                {lead.description || 'لا يوجد وصف'}
+                                                {lead.description || (isArabic ? 'لا يوجد وصف' : 'No description')}
                                             </div>
                                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                                                {lead.budgetMin || 0} - {lead.budgetMax || '؟'} د.ج
+                                                {lead.budgetMin || 0} - {lead.budgetMax || '؟'} {t('products.currency') || 'د.ج'}
                                             </div>
                                         </div>
                                     )}
@@ -164,7 +167,7 @@ const Requests = () => {
                 </table>
                 {displayedLeads.length === 0 && (
                     <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                        لا توجد طلبات في هذا القسم.
+                        {isArabic ? 'لا توجد طلبات في هذا القسم.' : 'No requests found in this section.'}
                     </div>
                 )}
             </div>

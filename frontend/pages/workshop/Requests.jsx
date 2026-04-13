@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Clock, CheckCircle, ChevronDown, ChevronUp, Send, Inbox, MapPin, DollarSign, Calendar, MessageSquare, Image as ImageIcon, User, Phone, Filter, Truck, Package, Check, XCircle, AlertCircle } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -7,6 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.co
 
 const Requests = () => {
     const { token } = useAuth();
+    const { isArabic, t } = useLanguage();
     const [expandedLead, setExpandedLead] = useState(null);
     const [filterStatus, setFilterStatus] = useState('ALL');
     const [successMessage, setSuccessMessage] = useState('');
@@ -33,7 +35,7 @@ const Requests = () => {
                 queryClient.setQueryData(['workshopLeads', token], (oldLeads) => 
                     oldLeads ? oldLeads.map(l => l.id === id ? { ...l, status: status } : l) : oldLeads
                 );
-                setSuccessMessage('تم تحديث حالة الطلب بنجاح');
+                setSuccessMessage(isArabic ? 'تم تحديث حالة الطلب بنجاح' : 'Order status updated successfully');
                 setTimeout(() => setSuccessMessage(''), 3000);
             }
         } catch (error) {
@@ -96,17 +98,17 @@ const Requests = () => {
             });
 
             if (res.ok) {
-                setSuccessMessage('تم إرسال العرض بنجاح! سنقوم بإعلامك عند رد الزبون.');
+                setSuccessMessage(isArabic ? 'تم إرسال العرض بنجاح! سنقوم بإعلامك عند رد الزبون.' : 'Offer sent successfully! We will notify you when the client responds.');
                 setTimeout(() => setSuccessMessage(''), 4000);
                 setOfferForm({ price: '', leadTimeDays: '', message: '' });
                 setExpandedLead(null);
                 refetchLeads();
             } else {
-                alert('حدث خطأ أثناء إرسال العرض');
+                alert(isArabic ? 'حدث خطأ أثناء إرسال العرض' : 'Error sending offer');
             }
         } catch (e) {
             console.error(e);
-            alert('خطأ في الاتصال');
+            alert(isArabic ? 'خطأ في الاتصال' : 'Connection error');
         } finally {
             setSubmitting(false);
         }
@@ -153,7 +155,7 @@ const Requests = () => {
                 minHeight: '400px',
                 color: 'var(--text-muted)'
             }}>
-                جاري تحميل الطلبات...
+                {t('form.loading') || (isArabic ? 'جاري تحميل الطلبات...' : 'Loading requests...')}
             </div>
         );
     }
@@ -168,10 +170,10 @@ const Requests = () => {
                     color: 'var(--text-primary)',
                     marginBottom: '0.5rem'
                 }}>
-                    طلبات الزبائن
+                    {t('workshop.requests') || (isArabic ? 'طلبات الزبائن' : 'Customer Requests')}
                 </h1>
                 <p style={{ color: 'var(--text-muted)' }}>
-                    استقبل الطلبات وأرسل عروض الأسعار للزبائن المهتمين
+                    {isArabic ? 'استقبل الطلبات وأرسل عروض الأسعار للزبائن المهتمين' : 'Receive requests and send quotes to interested clients'}
                 </p>
             </div>
 
@@ -189,7 +191,7 @@ const Requests = () => {
                     textAlign: 'center'
                 }}>
                     <div style={{ fontSize: '2rem', fontWeight: '800', color: '#1e40af' }}>{stats.total}</div>
-                    <div style={{ fontSize: '0.9rem', color: '#3b82f6', fontWeight: '600' }}>إجمالي الطلبات</div>
+                    <div style={{ fontSize: '0.9rem', color: '#3b82f6', fontWeight: '600' }}>{isArabic ? 'إجمالي الطلبات' : 'Total Requests'}</div>
                 </div>
                 <div style={{
                     background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
@@ -198,7 +200,7 @@ const Requests = () => {
                     textAlign: 'center'
                 }}>
                     <div style={{ fontSize: '2rem', fontWeight: '800', color: '#92400e' }}>{stats.new}</div>
-                    <div style={{ fontSize: '0.9rem', color: '#d97706', fontWeight: '600' }}>طلبات جديدة</div>
+                    <div style={{ fontSize: '0.9rem', color: '#d97706', fontWeight: '600' }}>{isArabic ? 'طلبات جديدة' : 'New Requests'}</div>
                 </div>
 
             </div>
@@ -229,13 +231,13 @@ const Requests = () => {
                 flexWrap: 'wrap'
             }}>
                 {[
-                    { value: 'ALL', label: 'الكل', count: stats.total },
-                    { value: 'NEW', label: 'جديدة', count: stats.new },
-                    { value: 'CONFIRMED', label: 'مؤكدة', count: stats.confirmed },
-                    { value: 'SHIPPED', label: 'تم الشحن', count: stats.shipped },
-                    { value: 'DELIVERED', label: 'مستلمة', count: stats.delivered },
-                    { value: 'NO_RESPONSE', label: 'لم يتم الرد', count: stats.no_response },
-                    { value: 'CANCELLED', label: 'ملغاة', count: stats.cancelled }
+                    { value: 'ALL', label: isArabic ? 'الكل' : 'All', count: stats.total },
+                    { value: 'NEW', label: isArabic ? 'جديدة' : 'New', count: stats.new },
+                    { value: 'CONFIRMED', label: isArabic ? 'مؤكدة' : 'Confirmed', count: stats.confirmed },
+                    { value: 'SHIPPED', label: isArabic ? 'تم الشحن' : 'Shipped', count: stats.shipped },
+                    { value: 'DELIVERED', label: isArabic ? 'مستلمة' : 'Delivered', count: stats.delivered },
+                    { value: 'NO_RESPONSE', label: isArabic ? 'لم يتم الرد' : 'No Response', count: stats.no_response },
+                    { value: 'CANCELLED', label: isArabic ? 'ملغاة' : 'Cancelled', count: stats.cancelled }
                 ].map(f => (
                     <button
                         key={f.value}
@@ -292,10 +294,10 @@ const Requests = () => {
                             <Inbox size={36} style={{ color: '#9ca3af' }} />
                         </div>
                         <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.5rem', color: '#374151' }}>
-                            لا توجد طلبات حالياً
+                            {isArabic ? 'لا توجد طلبات حالياً' : 'No requests yet'}
                         </h3>
                         <p style={{ color: '#9ca3af', maxWidth: '400px', margin: '0 auto' }}>
-                            سيتم إشعارك عند توفر طلبات جديدة في منطقتك أو تخصصك.
+                            {isArabic ? 'سيتم إشعارك عند توفر طلبات جديدة في منطقتك أو تخصصك.' : 'We will notify you when there are new requests in your area or specialty.'}
                         </p>
                     </div>
                 ) : (
@@ -345,7 +347,7 @@ const Requests = () => {
                                         <div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
                                                 <h3 style={{ fontWeight: '700', fontSize: '1.1rem', color: '#1f2937' }}>
-                                                    {delivery.lead?.type || 'طلب جديد'}
+                                                    {delivery.lead?.type || (isArabic ? 'طلب جديد' : 'New Request')}
                                                 </h3>
                                                 {isNew && (
                                                     <span style={{
@@ -355,12 +357,12 @@ const Requests = () => {
                                                         borderRadius: '999px',
                                                         fontSize: '0.7rem',
                                                         fontWeight: '700'
-                                                    }}>جديد</span>
+                                                    }}>{isArabic ? 'جديد' : 'New'}</span>
                                                 )}
                                             </div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.9rem', color: '#6b7280' }}>
                                                 <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                                                    <MapPin size={14} /> {delivery.lead?.wilaya || 'غير محدد'}
+                                                    <MapPin size={14} /> {delivery.lead?.wilaya || (isArabic ? 'غير محدد' : 'Not specified')}
                                                 </span>
                                                 <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                                                     <Clock size={14} /> {new Date(delivery.deliveredAt).toLocaleDateString('ar-DZ')}
@@ -381,7 +383,7 @@ const Requests = () => {
                                                 fontSize: '0.85rem',
                                                 fontWeight: '700'
                                             }}>
-                                                <CheckCircle size={16} /> تم التقديم
+                                                <CheckCircle size={16} /> {isArabic ? 'تم التقديم' : 'Applied'}
                                             </span>
                                         ) : (
                                             <span style={{
@@ -409,14 +411,14 @@ const Requests = () => {
                                                 fontWeight: '700'
                                             }}>
                                                 {{
-                                                    'PENDING': 'في الانتظار',
-                                                    'CONFIRMED': 'تم التأكيد',
-                                                    'SHIPPED': 'تم الشحن',
-                                                    'DELIVERED': 'تم التسليم',
-                                                    'CANCELLED': 'ملغاة',
-                                                    'REJECTED': 'مرفوضة',
-                                                    'NO_RESPONSE': 'لم يتم الرد'
-                                                }[delivery.status] || 'غير محدد'}
+                                                    'PENDING': isArabic ? 'في الانتظار' : 'Pending',
+                                                    'CONFIRMED': isArabic ? 'تم التأكيد' : 'Confirmed',
+                                                    'SHIPPED': isArabic ? 'تم الشحن' : 'Shipped',
+                                                    'DELIVERED': isArabic ? 'تم التسليم' : 'Delivered',
+                                                    'CANCELLED': isArabic ? 'ملغاة' : 'Cancelled',
+                                                    'REJECTED': isArabic ? 'مرفوضة' : 'Rejected',
+                                                    'NO_RESPONSE': isArabic ? 'لم يتم الرد' : 'No Response'
+                                                }[delivery.status] || (isArabic ? 'غير محدد' : 'Unknown')}
                                             </span>
                                         )}
                                         {isExpanded ?
@@ -448,7 +450,7 @@ const Requests = () => {
                                                     gap: '0.5rem',
                                                     color: '#374151'
                                                 }}>
-                                                    📋 تفاصيل الطلب
+                                                    📋 {isArabic ? 'تفاصيل الطلب' : 'Order Details'}
                                                 </h4>
 
                                                 {/* Customer & Order Details */}
@@ -465,15 +467,15 @@ const Requests = () => {
                                                     {/* Client Info */}
                                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                                         <div>
-                                                            <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>الزبون</p>
+                                                            <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>{isArabic ? 'الزبون' : 'Client'}</p>
                                                             <p style={{ fontWeight: '600', color: '#111827', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                                <User size={16} /> {delivery.lead?.clientName || 'غير متوفر'}
+                                                                <User size={16} /> {delivery.lead?.clientName || (isArabic ? 'غير متوفر' : 'N/A')}
                                                             </p>
                                                         </div>
                                                         <div>
-                                                            <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>رقم الهاتف</p>
+                                                            <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>{isArabic ? 'رقم الهاتف' : 'Phone Number'}</p>
                                                             <p style={{ fontWeight: '600', color: '#111827', direction: 'ltr', textAlign: 'right', display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                                                                {delivery.lead?.clientPhone || 'غير متوفر'} <Phone size={16} />
+                                                                {delivery.lead?.clientPhone || (isArabic ? 'غير متوفر' : 'N/A')} <Phone size={16} />
                                                             </p>
                                                         </div>
                                                     </div>
@@ -483,18 +485,18 @@ const Requests = () => {
                                                     {/* Location & Price */}
                                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                                         <div>
-                                                            <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>الولاية</p>
+                                                            <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>{isArabic ? 'الولاية' : 'State'}</p>
                                                             <p style={{ fontWeight: '600', color: '#111827', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                                <MapPin size={16} /> {delivery.lead?.wilaya || 'غير محدد'}
+                                                                <MapPin size={16} /> {delivery.lead?.wilaya || (isArabic ? 'غير محدد' : 'Not specified')}
                                                             </p>
                                                         </div>
                                                         <div>
-                                                            <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>سعر المنتج</p>
+                                                            <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>{isArabic ? 'سعر المنتج' : 'Product Price'}</p>
                                                             <p style={{ fontWeight: '700', color: '#16a34a', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                                                 <DollarSign size={18} />
                                                                 {delivery.lead?.design?.price
-                                                                    ? `${Number(delivery.lead.design.price).toLocaleString()} د.ج`
-                                                                    : (delivery.lead?.budgetMin ? `${Number(delivery.lead.budgetMin).toLocaleString()} د.ج` : '---')}
+                                                                    ? `${Number(delivery.lead.design.price).toLocaleString()} ${t('products.currency') || 'د.ج'}`
+                                                                    : (delivery.lead?.budgetMin ? `${Number(delivery.lead.budgetMin).toLocaleString()} ${t('products.currency') || 'د.ج'}` : '---')}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -509,7 +511,7 @@ const Requests = () => {
                                                         border: '1px solid #e5e7eb',
                                                         marginBottom: '1rem'
                                                     }}>
-                                                        <h5 style={{ fontSize: '0.9rem', fontWeight: '700', marginBottom: '0.5rem', color: '#374151' }}>الأبعاد المطلوبة:</h5>
+                                                        <h5 style={{ fontSize: '0.9rem', fontWeight: '700', marginBottom: '0.5rem', color: '#374151' }}>{isArabic ? 'الأبعاد المطلوبة:' : 'Requested Dimensions:'}</h5>
                                                         <p style={{ color: '#4b5563' }}>{delivery.lead.dimensions}</p>
                                                     </div>
                                                 )}
@@ -527,7 +529,7 @@ const Requests = () => {
                                                             gap: '0.5rem',
                                                             color: '#374151'
                                                         }}>
-                                                            <ImageIcon size={16} /> الصور المرفقة:
+                                                            <ImageIcon size={16} /> {isArabic ? 'الصور المرفقة:' : 'Attached Images:'}
                                                         </p>
                                                         <div style={{
                                                             display: 'flex',
@@ -575,7 +577,7 @@ const Requests = () => {
                                                     color: '#374151'
                                                 }}>
                                                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                        <Send size={18} /> تتبع الطلب
+                                                        <Send size={18} /> {isArabic ? 'تتبع الطلب' : 'Order Tracking'}
                                                     </span>
                                                     {delivery.status && delivery.status !== 'PENDING' && (
                                                         <span style={{
@@ -585,7 +587,7 @@ const Requests = () => {
                                                             padding: '0.25rem 0.75rem',
                                                             borderRadius: '999px'
                                                         }}>
-                                                            تم التأكيد
+                                                            {isArabic ? 'تم التأكيد' : 'Confirmed'}
                                                         </span>
                                                     )}
                                                 </h4>
@@ -608,9 +610,9 @@ const Requests = () => {
                                                             }}></div>
 
                                                             {[
-                                                                { status: 'CONFIRMED', label: 'تم التأكيد', icon: CheckCircle },
-                                                                { status: 'SHIPPED', label: 'تم الشحن', icon: Truck },
-                                                                { status: 'DELIVERED', label: 'تم الاستلام', icon: Package }
+                                                                { status: 'CONFIRMED', label: isArabic ? 'تم التأكيد' : 'Confirmed', icon: CheckCircle },
+                                                                { status: 'SHIPPED', label: isArabic ? 'تم الشحن' : 'Shipped', icon: Truck },
+                                                                { status: 'DELIVERED', label: isArabic ? 'تم الاستلام' : 'Delivered', icon: Package }
                                                             ].map((step, idx) => {
                                                                 const isCompleted = ['CONFIRMED', 'SHIPPED', 'DELIVERED'].indexOf(delivery.status) >= idx;
                                                                 const isCurrent = delivery.status === step.status;
@@ -664,7 +666,7 @@ const Requests = () => {
                                                                         cursor: 'pointer'
                                                                     }}
                                                                 >
-                                                                    <Truck size={18} /> تحديد كـ "تم الشحن"
+                                                                    <Truck size={18} /> {isArabic ? 'تحديد كـ "تم الشحن"' : 'Mark as "Shipped"'}
                                                                 </button>
                                                             )}
                                                             {delivery.status === 'SHIPPED' && (
@@ -684,18 +686,18 @@ const Requests = () => {
                                                                         cursor: 'pointer'
                                                                     }}
                                                                 >
-                                                                    <Package size={18} /> تحديد كـ "تم الاستلام"
+                                                                    <Package size={18} /> {isArabic ? 'تحديد كـ "تم الاستلام"' : 'Mark as "Delivered"'}
                                                                 </button>
                                                             )}
                                                             {delivery.status === 'DELIVERED' && (
                                                                 <div style={{ textAlign: 'center', color: '#166534', fontWeight: '600' }}>
-                                                                    ✅ اكتملت الطلبية بنجاح
+                                                                    ✅ {isArabic ? 'اكتملت الطلبية بنجاح' : 'Order Completed'}
                                                                 </div>
                                                             )}
                                                             {delivery.status !== 'DELIVERED' && (
                                                                 <button
                                                                     onClick={() => {
-                                                                        if (confirm('هل أنت متأكد من إلغاء الطلب؟')) updateStatus(delivery.id, 'CANCELLED');
+                                                                        if (confirm(isArabic ? 'هل أنت متأكد من إلغاء الطلب؟' : 'Are you sure you want to cancel the order?')) updateStatus(delivery.id, 'CANCELLED');
                                                                     }}
                                                                     disabled={submitting}
                                                                     style={{
@@ -708,7 +710,7 @@ const Requests = () => {
                                                                         cursor: 'pointer'
                                                                     }}
                                                                 >
-                                                                    إلغاء الطلب
+                                                                    {isArabic ? 'إلغاء الطلب' : 'Cancel Order'}
                                                                 </button>
                                                             )}
                                                         </div>
@@ -725,7 +727,7 @@ const Requests = () => {
                                                             }}>
                                                                 <CheckCircle size={40} style={{ color: '#16a34a', margin: '0 auto 0.75rem' }} />
                                                                 <p style={{ fontWeight: '700', color: '#166534', marginBottom: '0.5rem' }}>
-                                                                    تم إرسال عرضك بنجاح!
+                                                                    {isArabic ? 'تم إرسال عرضك بنجاح!' : 'Offer sent successfully!'}
                                                                 </p>
                                                                 {/* ... details ... */}
                                                             </div>
@@ -733,17 +735,17 @@ const Requests = () => {
                                                     ) : (
                                                         <div style={{ padding: '1rem', background: '#eff6ff', borderRadius: '12px', marginBottom: '1rem' }}>
                                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                                                                <span style={{ fontWeight: '700', color: '#1e3a8a' }}>المنتج:</span>
+                                                                <span style={{ fontWeight: '700', color: '#1e3a8a' }}>{isArabic ? 'المنتج:' : 'Product:'}</span>
                                                                 <span style={{ fontWeight: '600', color: '#374151' }}>
-                                                                    {delivery.lead?.design?.title || delivery.lead?.type || 'طلب مخصص'}
+                                                                    {delivery.lead?.design?.title || delivery.lead?.type || (isArabic ? 'طلب مخصص' : 'Custom Request')}
                                                                 </span>
                                                             </div>
                                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                                                <span style={{ fontWeight: '700', color: '#1e3a8a' }}>السعر:</span>
+                                                                <span style={{ fontWeight: '700', color: '#1e3a8a' }}>{isArabic ? 'السعر:' : 'Price:'}</span>
                                                                 <span style={{ fontWeight: '800', fontSize: '1.25rem', color: '#2563eb' }}>
                                                                     {delivery.lead?.design?.price
-                                                                        ? `${Number(delivery.lead.design.price).toLocaleString()} د.ج`
-                                                                        : (delivery.lead?.budgetMin ? `${Number(delivery.lead.budgetMin).toLocaleString()} د.ج` : 'غير محدد')}
+                                                                        ? `${Number(delivery.lead.design.price).toLocaleString()} ${t('products.currency') || 'د.ج'}`
+                                                                        : (delivery.lead?.budgetMin ? `${Number(delivery.lead.budgetMin).toLocaleString()} ${t('products.currency') || 'د.ج'}` : (isArabic ? 'غير محدد' : 'N/A'))}
                                                                 </span>
                                                             </div>
 
@@ -752,7 +754,7 @@ const Requests = () => {
                                                                 {/* Cancel Button */}
                                                                 <button
                                                                     onClick={async () => {
-                                                                        if (confirm('هل أنت متأكد من إلغاء الطلب؟')) await updateStatus(delivery.id, 'REJECTED');
+                                                                        if (confirm(isArabic ? 'هل أنت متأكد من إلغاء الطلب؟' : 'Are you sure you want to cancel the order?')) await updateStatus(delivery.id, 'REJECTED');
                                                                     }}
                                                                     disabled={submitting}
                                                                     style={{
@@ -773,7 +775,7 @@ const Requests = () => {
                                                                     }}
                                                                 >
                                                                     <XCircle size={18} />
-                                                                    إلغاء الطلب
+                                                                    {isArabic ? 'إلغاء الطلب' : 'Cancel Order'}
                                                                 </button>
 
                                                                 {/* No Response Button */}
@@ -800,7 +802,7 @@ const Requests = () => {
                                                                     }}
                                                                 >
                                                                     <AlertCircle size={18} />
-                                                                    لم يتم الرد
+                                                                    {isArabic ? 'لم يتم الرد' : 'No Reply'}
                                                                 </button>
 
                                                                 {/* Confirm Button */}
@@ -827,18 +829,18 @@ const Requests = () => {
                                                                     }}
                                                                 >
                                                                     <CheckCircle size={18} />
-                                                                    تأكيد الطلب
+                                                                    {isArabic ? 'تأكيد الطلب' : 'Confirm Order'}
                                                                 </button>
                                                             </div>
 
                                                             {delivery.status === 'NO_RESPONSE' && (
                                                                 <p style={{ fontSize: '0.8rem', color: '#ea580c', marginTop: '0.75rem', textAlign: 'center', fontWeight: '600' }}>
-                                                                    ⚠️ تم تحديد الحالة: "لم يتم الرد". حاول الاتصال مجدداً.
+                                                                    ⚠️ {isArabic ? 'تم تحديد الحالة: "لم يتم الرد". حاول الاتصال مجدداً.' : 'Status marked as "No Reply". Try calling again.'}
                                                                 </p>
                                                             )}
 
                                                             <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.75rem', textAlign: 'center' }}>
-                                                                * تأكد من الاتصال بالزبون قبل اتخاذ أي إجراء.
+                                                                * {isArabic ? 'تأكد من الاتصال بالزبون قبل اتخاذ أي إجراء.' : 'Make sure to contact the client before taking any action.'}
                                                             </p>
                                                         </div>
                                                     ))}

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Store, Check, X, Ban, Eye } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const Workshops = () => {
     const { token } = useAuth();
+    const { isArabic, t } = useLanguage();
     const [workshops, setWorkshops] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedWorkshop, setSelectedWorkshop] = useState(null);
@@ -29,7 +31,7 @@ const Workshops = () => {
     };
 
     const updateStatus = async (id, status) => {
-        if (!confirm(`هل أنت متأكد من تغيير الحالة إلى ${status}؟`)) return;
+        if (!confirm(isArabic ? `هل أنت متأكد من تغيير الحالة إلى ${status}؟` : `Are you sure you want to change the status to ${status}?`)) return;
 
         try {
             const res = await fetch(`${API_URL}/admin/workshops/${id}/status`, {
@@ -49,23 +51,23 @@ const Workshops = () => {
         }
     };
 
-    if (loading) return <div>جاري التحميل...</div>;
+    if (loading) return <div>{t('form.loading') || (isArabic ? 'جاري التحميل...' : 'Loading...')}</div>;
 
     return (
         <div>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>إدارة الورش</h1>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>{isArabic ? 'إدارة الورش' : 'Workshops Management'}</h1>
 
             <div className="card" style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', minWidth: '800px', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr style={{ textAlign: 'right', borderBottom: '1px solid var(--gray-200)' }}>
-                            <th style={{ padding: '1rem' }}>اسم الورشة</th>
-                            <th style={{ padding: '1rem' }}>المالك</th>
-                            <th style={{ padding: '1rem' }}>الولاية</th>
-                            <th style={{ padding: '1rem' }}>انتهاء الاشتراك</th>
-                            <th style={{ padding: '1rem' }}>إحصائيات</th>
-                            <th style={{ padding: '1rem' }}>الحالة</th>
-                            <th style={{ padding: '1rem' }}>إجراءات</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'اسم الورشة' : 'Workshop Name'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'المالك' : 'Owner'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'الولاية' : 'State/Wilaya'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'انتهاء الاشتراك' : 'Subscription Ends'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'إحصائيات' : 'Stats'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'الحالة' : 'Status'}</th>
+                            <th style={{ padding: '1rem' }}>{isArabic ? 'إجراءات' : 'Actions'}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -91,8 +93,8 @@ const Workshops = () => {
                                     )}
                                 </td>
                                 <td style={{ padding: '1rem' }}>
-                                    <div style={{ fontSize: '0.85rem' }}>تصاميم: {workshop._count.products}</div>
-                                    <div style={{ fontSize: '0.85rem' }}>طلبات: {workshop._count.leadDeliveries}</div>
+                                    <div style={{ fontSize: '0.85rem' }}>{isArabic ? 'تصاميم:' : 'Designs:'} {workshop._count.products}</div>
+                                    <div style={{ fontSize: '0.85rem' }}>{isArabic ? 'طلبات:' : 'Requests:'} {workshop._count.leadDeliveries}</div>
                                 </td>
                                 <td style={{ padding: '1rem' }}>
                                     <span style={{
@@ -109,7 +111,7 @@ const Workshops = () => {
                                     <button
                                         onClick={() => setSelectedWorkshop(workshop)}
                                         style={{ color: '#3b82f6', background: '#eff6ff', padding: '0.4rem', borderRadius: '4px', border: 'none', cursor: 'pointer' }}
-                                        title="معاينة التفاصيل"
+                                        title={isArabic ? 'معاينة التفاصيل' : 'View Details'}
                                     >
                                         <Eye size={16} />
                                     </button>
@@ -117,7 +119,7 @@ const Workshops = () => {
                                         <button
                                             onClick={() => updateStatus(workshop.id, 'APPROVED')}
                                             style={{ color: 'green', background: '#dcfce7', padding: '0.4rem', borderRadius: '4px', border: 'none', cursor: 'pointer' }}
-                                            title="قبول"
+                                            title={isArabic ? 'قبول' : 'Approve'}
                                         >
                                             <Check size={16} />
                                         </button>
@@ -126,7 +128,7 @@ const Workshops = () => {
                                         <button
                                             onClick={() => updateStatus(workshop.id, 'SUSPENDED')}
                                             style={{ color: 'orange', background: '#ffedd5', padding: '0.4rem', borderRadius: '4px', border: 'none', cursor: 'pointer' }}
-                                            title="تجميد"
+                                            title={isArabic ? 'تجميد' : 'Suspend'}
                                         >
                                             <Ban size={16} />
                                         </button>
@@ -135,7 +137,7 @@ const Workshops = () => {
                                         <button
                                             onClick={() => updateStatus(workshop.id, 'REJECTED')}
                                             style={{ color: 'red', background: '#fee2e2', padding: '0.4rem', borderRadius: '4px', border: 'none', cursor: 'pointer' }}
-                                            title="رفض"
+                                            title={isArabic ? 'رفض' : 'Reject'}
                                         >
                                             <X size={16} />
                                         </button>
@@ -153,55 +155,55 @@ const Workshops = () => {
                         <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--gray-200)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <Store size={20} />
-                                تفاصيل الورشة - {selectedWorkshop.name}
+                                {isArabic ? 'تفاصيل الورشة - ' : 'Workshop Details - '} {selectedWorkshop.name}
                             </h3>
                             <button onClick={() => setSelectedWorkshop(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={24} /></button>
                         </div>
                         <div style={{ padding: '1.5rem', maxHeight: '70vh', overflowY: 'auto' }}>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
                                 <div>
-                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>اسم المالك</label>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{isArabic ? 'اسم المالك' : 'Owner Name'}</label>
                                     <div style={{ fontWeight: 'bold' }}>{selectedWorkshop.owner?.name}</div>
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>البريد الإلكتروني</label>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{isArabic ? 'البريد الإلكتروني' : 'Email'}</label>
                                     <div style={{ fontWeight: 'bold' }}>{selectedWorkshop.owner?.email}</div>
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>رقم الهاتف</label>
-                                    <div style={{ fontWeight: 'bold', direction: 'ltr', textAlign: 'right' }}>{selectedWorkshop.phone || 'غير متوفر'}</div>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{isArabic ? 'رقم الهاتف' : 'Phone Number'}</label>
+                                    <div style={{ fontWeight: 'bold', direction: 'ltr', textAlign: 'right' }}>{selectedWorkshop.phone || (isArabic ? 'غير متوفر' : 'Not available')}</div>
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>الولاية</label>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{isArabic ? 'الولاية' : 'State/Wilaya'}</label>
                                     <div style={{ fontWeight: 'bold' }}>{selectedWorkshop.location}</div>
                                 </div>
                             </div>
                             
                             <div style={{ marginBottom: '1.5rem' }}>
-                                <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>وصف الورشة</label>
+                                <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{isArabic ? 'وصف الورشة' : 'Workshop Description'}</label>
                                 <div style={{ background: '#f9fafb', padding: '1rem', borderRadius: '8px', marginTop: '0.5rem' }}>
-                                    {selectedWorkshop.description || 'لا يوجد وصف مقدّم.'}
+                                    {selectedWorkshop.description || (isArabic ? 'لا يوجد وصف مقدّم.' : 'No description provided.')}
                                 </div>
                             </div>
 
                             <div style={{ marginBottom: '1.5rem' }}>
-                                <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>المهارات والاختصاصات</label>
+                                <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{isArabic ? 'المهارات والاختصاصات' : 'Skills & Specialties'}</label>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
                                     {selectedWorkshop.skills ? selectedWorkshop.skills.split(',').map(s => (
                                         <span key={s} style={{ background: '#e0f2fe', color: '#0369a1', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.85rem' }}>
                                             {s.trim()}
                                         </span>
-                                    )) : <span style={{ color: 'var(--text-muted)' }}>لا توجد مهارات محددة</span>}
+                                    )) : <span style={{ color: 'var(--text-muted)' }}>{isArabic ? 'لا توجد مهارات محددة' : 'No skills specified'}</span>}
                                 </div>
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', background: '#eff6ff', padding: '1rem', borderRadius: '8px' }}>
                                 <div>
-                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>إجمالي التصاميم</label>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{isArabic ? 'إجمالي التصاميم' : 'Total Designs'}</label>
                                     <div style={{ fontWeight: '800', fontSize: '1.2rem', color: '#1d4ed8' }}>{selectedWorkshop._count?.products || 0}</div>
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>الطلبيات المُستلمة</label>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{isArabic ? 'الطلبيات المُستلمة' : 'Received Requests'}</label>
                                     <div style={{ fontWeight: '800', fontSize: '1.2rem', color: '#1d4ed8' }}>{selectedWorkshop._count?.leadDeliveries || 0}</div>
                                 </div>
                             </div>
@@ -211,7 +213,7 @@ const Workshops = () => {
                                 onClick={() => setSelectedWorkshop(null)}
                                 style={{ padding: '0.75rem 1.5rem', borderRadius: '6px', background: 'var(--gray-200)', color: 'black', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
                             >
-                                إغلاق
+                                {isArabic ? 'إغلاق' : 'Close'}
                             </button>
                         </div>
                     </div>
