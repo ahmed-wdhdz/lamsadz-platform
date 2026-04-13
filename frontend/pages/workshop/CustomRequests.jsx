@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Clock, DollarSign, MapPin, Send, MessageSquare, Image as ImageIcon, Ruler, Archive, Phone, User } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
 const CustomRequests = () => {
     const { token } = useAuth();
+    const { isArabic, t } = useLanguage();
     const [leads, setLeads] = useState([]);
     const [loading, setLoading] = useState(true);
     const [expandedLead, setExpandedLead] = useState(null);
@@ -41,13 +43,13 @@ const CustomRequests = () => {
                         ? { ...item, lead: { ...item.lead, status: status } }
                         : item
                 ));
-                alert('تم تحديث حالة الطلب');
+                alert(isArabic ? 'تم تحديث حالة الطلب' : 'Status updated successfully');
             } else {
-                alert('حدث خطأ أثناء تحديث الحالة');
+                alert(isArabic ? 'حدث خطأ أثناء تحديث الحالة' : 'Error updating status');
             }
         } catch (error) {
             console.error(error);
-            alert('خطأ في الاتصال');
+            alert(isArabic ? 'خطأ في الاتصال' : 'Connection error');
         }
     };
 
@@ -71,7 +73,9 @@ const CustomRequests = () => {
 
     return (
         <div style={{ padding: '2rem' }}>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem', color: '#1e293b' }}>الطلبات الخاصة (نفس الولاية)</h1>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem', color: '#1e293b' }}>
+                {isArabic ? 'الطلبات الخاصة (نفس الولاية)' : 'Custom Requests (Local)'}
+            </h1>
 
             {successMessage && (
                 <div style={{ padding: '1rem', background: '#dcfce7', color: '#166534', borderRadius: '8px', marginBottom: '1rem' }}>
@@ -83,22 +87,22 @@ const CustomRequests = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
                 <div style={{ background: '#dbeafe', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                     <span style={{ fontSize: '2.5rem', fontWeight: '800', color: '#1e40af' }}>{leads.length}</span>
-                    <span style={{ color: '#3b82f6', fontWeight: '600' }}>إجمالي الطلبات</span>
+                    <span style={{ color: '#3b82f6', fontWeight: '600' }}>{isArabic ? 'إجمالي الطلبات' : 'Total Requests'}</span>
                 </div>
                 <div style={{ background: '#fef3c7', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                     <span style={{ fontSize: '2.5rem', fontWeight: '800', color: '#92400e' }}>{leads.filter(l => l.lead.status === 'NEW' || l.lead.status === 'SENT').length}</span>
-                    <span style={{ color: '#d97706', fontWeight: '600' }}>طلبات جديدة</span>
+                    <span style={{ color: '#d97706', fontWeight: '600' }}>{isArabic ? 'طلبات جديدة' : 'New Requests'}</span>
                 </div>
             </div>
 
             {/* Filters */}
             <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '1rem', marginBottom: '1rem', scrollbarWidth: 'none' }}>
                 {[
-                    { id: 'all', label: 'الكل' },
-                    { id: 'NEW', label: 'جديدة' },
-                    { id: 'CONFIRMED', label: 'تم الاتفاق' },
-                    { id: 'NO_RESPONSE', label: 'لم يتم الرد' },
-                    { id: 'CANCELLED', label: 'ملغاة' }
+                    { id: 'all', label: isArabic ? 'الكل' : 'All' },
+                    { id: 'NEW', label: isArabic ? 'جديدة' : 'New' },
+                    { id: 'CONFIRMED', label: isArabic ? 'تم الاتفاق' : 'Agreed' },
+                    { id: 'NO_RESPONSE', label: isArabic ? 'لم يتم الرد' : 'No Response' },
+                    { id: 'CANCELLED', label: isArabic ? 'ملغاة' : 'Cancelled' }
                 ].map(tab => (
                     <button
                         key={tab.id}
@@ -125,11 +129,11 @@ const CustomRequests = () => {
             </div>
 
             {loading ? (
-                <div>جاري التحميل...</div>
+                <div>{t('form.loading') || (isArabic ? 'جاري التحميل...' : 'Loading...')}</div>
             ) : filteredLeads.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem', background: 'white', borderRadius: '16px' }}>
                     <Archive size={48} color="#cbd5e1" style={{ margin: '0 auto 1rem' }} />
-                    <p style={{ color: '#64748b' }}>لا توجد طلبات في هذا التصنيف.</p>
+                    <p style={{ color: '#64748b' }}>{isArabic ? 'لا توجد طلبات في هذا التصنيف.' : 'No requests found.'}</p>
                 </div>
             ) : (
                 <div style={{ display: 'grid', gap: '1.5rem' }}>
@@ -143,14 +147,14 @@ const CustomRequests = () => {
                                     <div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
                                             <span style={{ background: '#eff6ff', color: '#3b82f6', padding: '0.25rem 0.75rem', borderRadius: '99px', fontSize: '0.8rem', fontWeight: '700' }}>
-                                                {l.category || l.type || 'طلب خاص'}
+                                                {l.category || l.type || (isArabic ? 'طلب خاص' : 'Custom Request')}
                                             </span>
                                             <span style={{ background: '#f8fafc', color: '#64748b', padding: '0.25rem 0.75rem', borderRadius: '99px', fontSize: '0.8rem', border: '1px solid #e2e8f0' }}>
                                                 {new Date(l.createdAt).toLocaleDateString()}
                                             </span>
                                         </div>
                                         <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#0f172a', marginBottom: '0.5rem' }}>
-                                            {l.dimensions ? `أبعاد: ${l.dimensions}` : 'طلب تصميم خاص'}
+                                            {l.dimensions ? `${isArabic ? 'أبعاد:' : 'Dimensions:'} ${l.dimensions}` : (isArabic ? 'طلب تصميم خاص' : 'Custom Design Request')}
                                         </h3>
                                         <p style={{ color: '#475569', maxWidth: '600px', lineHeight: '1.6' }}>
                                             {l.description}
@@ -162,7 +166,7 @@ const CustomRequests = () => {
                                             </div>
                                             {l.budgetMax && (
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#16a34a', fontWeight: '600' }}>
-                                                    <DollarSign size={16} /> الميزانية: {l.budgetMax} د.ج
+                                                    <DollarSign size={16} /> {isArabic ? 'الميزانية:' : 'Budget:'} {l.budgetMax} {t('products.currency') || 'د.ج'}
                                                 </div>
                                             )}
                                         </div>
@@ -185,8 +189,8 @@ const CustomRequests = () => {
                                                 <User size={20} color="#64748b" />
                                             </div>
                                             <div>
-                                                <div style={{ fontSize: '0.8rem', color: '#64748b' }}>الزبون</div>
-                                                <div style={{ fontWeight: '600', color: '#334155' }}>{l.clientName || 'غير معروف'}</div>
+                                                <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{isArabic ? 'الزبون' : 'Client'}</div>
+                                                <div style={{ fontWeight: '600', color: '#334155' }}>{l.clientName || (isArabic ? 'غير معروف' : 'Unknown')}</div>
                                             </div>
                                         </div>
 
@@ -195,13 +199,13 @@ const CustomRequests = () => {
                                                 <Phone size={20} color="#16a34a" />
                                             </div>
                                             <div>
-                                                <div style={{ fontSize: '0.8rem', color: '#64748b' }}>الهاتف</div>
+                                                <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{isArabic ? 'الهاتف' : 'Phone'}</div>
                                                 <div style={{ fontWeight: '700', color: '#16a34a', direction: 'ltr' }}>{l.clientPhone || '---'}</div>
                                             </div>
                                         </div>
 
                                         <a href={`tel:${l.clientPhone}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: '#eff6ff', color: '#3b82f6', padding: '0.5rem 1rem', borderRadius: '8px', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem', border: '1px solid #dbeafe' }}>
-                                            <Phone size={16} /> اتصال
+                                            <Phone size={16} /> {isArabic ? 'اتصال' : 'Call'}
                                         </a>
                                     </div>
 
@@ -210,23 +214,23 @@ const CustomRequests = () => {
                                         <button
                                             onClick={() => updateStatus(l.id, 'CONFIRMED')}
                                             style={{ padding: '0.6rem 1rem', borderRadius: '8px', border: '1px solid #16a34a', background: l.status === 'CONFIRMED' ? '#16a34a' : 'white', color: l.status === 'CONFIRMED' ? 'white' : '#16a34a', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.9rem' }}
-                                            title="تم الاتفاق"
+                                            title={isArabic ? "تم الاتفاق" : "Agreed"}
                                         >
-                                            ✅ تم الاتفاق
+                                            ✅ {isArabic ? 'تم الاتفاق' : 'Agreed'}
                                         </button>
                                         <button
                                             onClick={() => updateStatus(l.id, 'NO_RESPONSE')}
                                             style={{ padding: '0.6rem 1rem', borderRadius: '8px', border: '1px solid #eab308', background: l.status === 'NO_RESPONSE' ? '#eab308' : 'white', color: l.status === 'NO_RESPONSE' ? 'white' : '#ca8a04', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.9rem' }}
-                                            title="لم يرد"
+                                            title={isArabic ? "لم يرد" : "No Reply"}
                                         >
-                                            📵 لم يرد
+                                            📵 {isArabic ? 'لم يرد' : 'No Reply'}
                                         </button>
                                         <button
                                             onClick={() => updateStatus(l.id, 'CANCELLED')}
                                             style={{ padding: '0.6rem 1rem', borderRadius: '8px', border: '1px solid #ef4444', background: l.status === 'CANCELLED' ? '#ef4444' : 'white', color: l.status === 'CANCELLED' ? 'white' : '#ef4444', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.9rem' }}
-                                            title="ملغاة"
+                                            title={isArabic ? "ملغاة" : "Cancelled"}
                                         >
-                                            ❌ ملغاة
+                                            ❌ {isArabic ? 'ملغاة' : 'Cancelled'}
                                         </button>
                                     </div>
                                 </div>

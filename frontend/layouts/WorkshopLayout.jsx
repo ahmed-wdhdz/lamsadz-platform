@@ -18,7 +18,7 @@ const WorkshopLayout = () => {
         { path: '/dashboard/workshop', label: t('workshop.home'), icon: LayoutDashboard },
         { path: '/dashboard/workshop/products', label: t('workshop.designs'), icon: Package },
         { path: '/dashboard/workshop/requests', label: t('workshop.requests'), icon: Inbox },
-        { path: '/dashboard/workshop/custom-requests', label: 'الطلبات الخاصة', icon: MessageSquare },
+        { path: '/dashboard/workshop/custom-requests', label: t('workshop.customRequests'), icon: MessageSquare },
         { path: '/dashboard/workshop/profile', label: t('workshop.settings'), icon: User },
         { path: '/dashboard/workshop/subscribe', label: t('workshop.subscription'), icon: CreditCard },
     ];

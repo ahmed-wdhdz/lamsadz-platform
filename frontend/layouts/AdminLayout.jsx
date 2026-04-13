@@ -26,7 +26,7 @@ const AdminLayout = () => {
         { path: '/dashboard/admin/users', label: t('admin.users'), icon: Users },
         { path: '/dashboard/admin/products', label: t('admin.products'), icon: Package },
         { path: '/dashboard/admin/payments', label: t('admin.payments'), icon: CreditCard },
-        { path: '/dashboard/admin/promotions', label: 'الترويجات', icon: Rocket },
+        { path: '/dashboard/admin/promotions', label: t('admin.promotions'), icon: Rocket },
         { path: '/dashboard/admin/requests', label: t('admin.requests'), icon: MessageSquare },
     ];
 
