@@ -6,12 +6,34 @@ import { useLanguage } from '../context/LanguageContext';
 const About = () => {
     const { isArabic } = useLanguage();
 
+    const steps = isArabic ? [
+        { icon: <Users size={32} />, title: '01. الطلب', text: 'الزبون يتصفح التصاميم أو يرسل طلب مخصص لاحتياجاته.' },
+        { icon: <Hammer size={32} />, title: '02. العروض', text: 'الورشات تستقبل الطلبات وتقدم عروض أسعارها ومدد التنفيذ.' },
+        { icon: <CheckCircle size={32} />, title: '03. التنفيذ', text: 'التواصل والدفع يتم مباشرة بين الطرفين لضمان الشفافية.' }
+    ] : [
+        { icon: <Users size={32} />, title: '01. Request', text: 'The client browses designs or sends a custom request for their needs.' },
+        { icon: <Hammer size={32} />, title: '02. Offers', text: 'Workshops receive requests and submit their price offers and timelines.' },
+        { icon: <CheckCircle size={32} />, title: '03. Execution', text: 'Communication and payment happen directly between both parties for full transparency.' }
+    ];
+
+    const benefits = isArabic ? [
+        { text: 'ورشات محلية موثوقة ومختارة بعناية', icon: <ShieldCheck size={24} color="#16a34a" /> },
+        { text: 'بدون عمولات خفية على الزبائن', icon: <CheckCircle size={24} color="#3b82f6" /> },
+        { text: 'تصاميم حسب الطلب تناسب ذوقك', icon: <Heart size={24} color="#ec4899" /> },
+        { text: 'تجربة بسيطة وسريعة', icon: <Clock size={24} color="#f59e0b" /> }
+    ] : [
+        { text: 'Trusted and carefully selected local workshops', icon: <ShieldCheck size={24} color="#16a34a" /> },
+        { text: 'No hidden commissions for clients', icon: <CheckCircle size={24} color="#3b82f6" /> },
+        { text: 'Custom designs tailored to your taste', icon: <Heart size={24} color="#ec4899" /> },
+        { text: 'Simple and fast experience', icon: <Clock size={24} color="#f59e0b" /> }
+    ];
+
     return (
-        <div style={{ paddingBottom: '4rem' }}>
+        <div style={{ paddingBottom: '4rem' }} dir={isArabic ? 'rtl' : 'ltr'}>
             {/* Hero Section */}
             <div style={{
                 background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-                padding: '8rem 1.5rem 6rem', // Added top padding for navbar space
+                padding: '8rem 1.5rem 6rem',
                 color: '#0f172a',
                 textAlign: 'center',
                 marginBottom: '4rem'
@@ -24,7 +46,7 @@ const About = () => {
                         lineHeight: '1.2',
                         color: '#0f172a'
                     }}>
-                        من نحن؟
+                        {isArabic ? 'من نحن؟' : 'About Us'}
                     </h1>
                     <p style={{
                         fontSize: '1.25rem',
@@ -32,7 +54,9 @@ const About = () => {
                         lineHeight: '1.8',
                         fontWeight: '500'
                     }}>
-                        منصة جزائرية تربطك بأفضل ورشات الأثاث حسب الطلب.
+                        {isArabic
+                            ? 'منصة جزائرية تربطك بأفضل ورشات الأثاث حسب الطلب.'
+                            : 'An Algerian platform connecting you with the best custom furniture workshops.'}
                     </p>
                 </div>
             </div>
@@ -59,14 +83,15 @@ const About = () => {
                             fontSize: '0.9rem',
                             marginBottom: '1.5rem'
                         }}>
-                            <Lightbulb size={18} /> مهمتنا
+                            <Lightbulb size={18} /> {isArabic ? 'مهمتنا' : 'Our Mission'}
                         </div>
                         <h2 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '1.5rem', color: '#1e293b' }}>
-                            مهمتنا
+                            {isArabic ? 'مهمتنا' : 'Our Mission'}
                         </h2>
                         <p style={{ fontSize: '1.2rem', lineHeight: '1.8', color: '#475569', marginBottom: '2rem' }}>
-                            Lamsadz هي منصة رقمية جزائرية هدفها تسهيل العثور على ورشات أثاث موثوقة،
-                            ومساعدة الحرفيين على الوصول لزبائن جدد بدون تعقيد.
+                            {isArabic
+                                ? 'Lamsadz هي منصة رقمية جزائرية هدفها تسهيل العثور على ورشات أثاث موثوقة، ومساعدة الحرفيين على الوصول لزبائن جدد بدون تعقيد.'
+                                : 'Lamsadz is an Algerian digital platform aimed at making it easy to find trusted furniture workshops, and helping artisans reach new clients without complexity.'}
                         </p>
                     </div>
                     <div style={{
@@ -91,14 +116,15 @@ const About = () => {
                             color: 'white',
                             boxShadow: '0 10px 25px rgba(59, 130, 246, 0.3)'
                         }}>
-                            <img src="/logo-icon-white.svg" alt="" style={{ width: '40px', height: '40px' }} onError={(e) => e.target.style.display = 'none'} />
                             <Heart size={40} />
                         </div>
                         <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '1rem', color: '#0f172a' }}>
-                            شغف الحرفية
+                            {isArabic ? 'شغف الحرفية' : 'Artisan Passion'}
                         </h3>
                         <p style={{ color: '#64748b', lineHeight: '1.7' }}>
-                            نحن نؤمن بأن الأثاث ليس مجرد خشب، بل هو فن وحكاية. نسعى لدعم الحرفيين المحليين وإبراز جودة أعمالهم للجميع.
+                            {isArabic
+                                ? 'نحن نؤمن بأن الأثاث ليس مجرد خشب، بل هو فن وحكاية. نسعى لدعم الحرفيين المحليين وإبراز جودة أعمالهم للجميع.'
+                                : 'We believe furniture is not just wood — it is art and story. We strive to support local artisans and showcase the quality of their work to everyone.'}
                         </p>
                     </div>
                 </div>
@@ -106,30 +132,14 @@ const About = () => {
                 {/* Section 2: How It Works */}
                 <div style={{ marginBottom: '6rem', textAlign: 'center' }}>
                     <h2 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '3rem', color: '#1e293b' }}>
-                        كيف تعمل المنصة؟
+                        {isArabic ? 'كيف تعمل المنصة؟' : 'How Does the Platform Work?'}
                     </h2>
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
                         gap: '2rem'
                     }}>
-                        {[
-                            {
-                                icon: <Users size={32} />,
-                                title: '01. الطلب',
-                                text: 'الزبون يتصفح التصاميم أو يرسل طلب مخصص لاحتياجاته.'
-                            },
-                            {
-                                icon: <Hammer size={32} />,
-                                title: '02. العروض',
-                                text: 'الورشات تستقبل الطلبات وتقدم عروض أسعارها ومدد التنفيذ.'
-                            },
-                            {
-                                icon: <CheckCircle size={32} />,
-                                title: '03. التنفيذ',
-                                text: 'التواصل والدفع يتم مباشرة بين الطرفين لضمان الشفافية.'
-                            }
-                        ].map((step, idx) => (
+                        {steps.map((step, idx) => (
                             <div key={idx} style={{
                                 background: 'white',
                                 padding: '2.5rem',
@@ -175,19 +185,14 @@ const About = () => {
                 }}>
                     <div style={{ maxWidth: '900px', margin: '0 auto' }}>
                         <h2 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '3rem', textAlign: 'center', color: '#1e293b' }}>
-                            لماذا Lamsadz؟
+                            {isArabic ? 'لماذا Lamsadz؟' : 'Why Lamsadz?'}
                         </h2>
                         <div style={{
                             display: 'grid',
                             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
                             gap: '2rem'
                         }}>
-                            {[
-                                { text: 'ورشات محلية موثوقة ومختارة بعناية', icon: <ShieldCheck size={24} color="#16a34a" /> },
-                                { text: 'بدون عمولات خفية على الزبائن', icon: <CheckCircle size={24} color="#3b82f6" /> },
-                                { text: 'تصاميم حسب الطلب تناسب ذوقك', icon: <Heart size={24} color="#ec4899" /> },
-                                { text: 'تجربة بسيطة وسريعة', icon: <Clock size={24} color="#f59e0b" /> }
-                            ].map((item, idx) => (
+                            {benefits.map((item, idx) => (
                                 <div key={idx} style={{
                                     display: 'flex',
                                     alignItems: 'center',
@@ -219,13 +224,12 @@ const About = () => {
                     position: 'relative',
                     overflow: 'hidden'
                 }}>
-                    {/* Abstract Shapes */}
                     <div style={{ position: 'absolute', top: '-50px', left: '-50px', width: '200px', height: '200px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%' }}></div>
                     <div style={{ position: 'absolute', bottom: '-20px', right: '-20px', width: '150px', height: '150px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }}></div>
 
                     <div style={{ position: 'relative', zIndex: 1, maxWidth: '700px', margin: '0 auto' }}>
                         <h2 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '1.5rem' }}>
-                            للورشات
+                            {isArabic ? 'للورشات' : 'For Workshops'}
                         </h2>
                         <p style={{
                             fontSize: '1.25rem',
@@ -233,8 +237,9 @@ const About = () => {
                             marginBottom: '2.5rem',
                             color: '#dbeafe'
                         }}>
-                            إذا كنت تملك ورشة نجارة أو تصنيع أثاث،
-                            Lamsadz تساعدك على زيادة الطلبات والوصول لزبائن جدد عبر الإنترنت بسهولة.
+                            {isArabic
+                                ? 'إذا كنت تملك ورشة نجارة أو تصنيع أثاث، Lamsadz تساعدك على زيادة الطلبات والوصول لزبائن جدد عبر الإنترنت بسهولة.'
+                                : 'If you own a carpentry or furniture manufacturing workshop, Lamsadz helps you increase orders and reach new clients online with ease.'}
                         </p>
                         <Link
                             to="/register"
@@ -252,7 +257,7 @@ const About = () => {
                                 boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
                             }}
                         >
-                            سجل ورشتك الآن
+                            {isArabic ? 'سجل ورشتك الآن' : 'Register Your Workshop Now'}
                             <ArrowRight size={20} style={{ transform: isArabic ? 'rotate(180deg)' : 'none' }} />
                         </Link>
                     </div>
