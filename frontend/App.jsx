@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import Designs from './pages/Designs';
 import DesignDetails from './pages/DesignDetails';
 import About from './pages/About';
-import CustomRequest from './pages/CustomRequest';
+import ClientRequest from './pages/ClientRequest';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -59,7 +59,7 @@ const AppContent = () => {
             <Route path="/designs/:id" element={<DesignDetails />} />
             <Route path="/workshops" element={<WorkshopsList />} />
             <Route path="/about" element={<About />} />
-            <Route path="/custom-request" element={<CustomRequest />} />
+            <Route path="/custom-request" element={<ClientRequest />} />
             {/* Client Dashboard Route */}
             <Route
               path="/dashboard"
