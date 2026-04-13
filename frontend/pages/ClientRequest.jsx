@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Upload, MapPin, DollarSign, PenTool, Layout } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const algeriaWilayas = [
     "01 - أدرار", "02 - الشلف", "03 - الأغواط", "04 - أم البواقي", "05 - باتنة", "06 - بجاية", "07 - بسكرة", "08 - بشار", "09 - البليدة", "10 - البويرة",
@@ -17,6 +18,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.co
 const ClientRequest = () => {
     const { user, token } = useAuth();
     const navigate = useNavigate();
+    const { t, isArabic } = useLanguage();
     const [loading, setLoading] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -67,34 +69,34 @@ const ClientRequest = () => {
 
             if (res.ok) {
                 const result = await res.json();
-                alert(`تم إرسال طلبك بنجاح! تم إشعار ${result.matchedCount} ورشة قريبة منك.`);
+                alert(`${t('custom.success')}${result.matchedCount}${t('custom.successWorkshops')}`);
                 navigate('/dashboard');
             } else {
                 const err = await res.json();
-                alert(err.message || 'حدث خطأ ما');
+                alert(err.message || t('custom.error'));
             }
         } catch (error) {
             console.error(error);
-            alert('فشل الاتصال بالخادم');
+            alert(t('custom.failObj'));
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div style={{ padding: '6rem 1rem 4rem', minHeight: '100vh', background: 'var(--bg-body)' }} dir="rtl">
+        <div style={{ padding: '6rem 1rem 4rem', minHeight: '100vh', background: 'var(--bg-body)' }} dir={isArabic ? "rtl" : "ltr"}>
             <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
                 <div style={{ background: 'white', borderRadius: '24px', padding: '3rem', boxShadow: '0 10px 40px rgba(0,0,0,0.08)' }}>
                     <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-                        <h1 style={{ fontSize: '2rem', fontWeight: '900', color: 'var(--text-color)', marginBottom: '1rem' }}>اطلب أثاث بمواصفات خاصة</h1>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: '1.6' }}>صف لنا ما تريد، وسنقوم بإيصال طلبك لأفضل الورش الحرفية في منطقتك لتقديم عروض أسعار.</p>
+                        <h1 style={{ fontSize: '2rem', fontWeight: '900', color: 'var(--text-color)', marginBottom: '1rem' }}>{t('custom.title')}</h1>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: '1.6' }}>{t('custom.subtitle')}</p>
                     </div>
 
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                         {/* Furniture Type */}
                         <div>
                             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '700', marginBottom: '0.75rem', color: 'var(--text-color)' }}>
-                                <Layout size={20} color="var(--primary)" /> نوع الأثاث
+                                <Layout size={20} color="var(--primary)" /> {t('custom.type')}
                             </label>
                             <select
                                 required
@@ -102,26 +104,26 @@ const ClientRequest = () => {
                                 value={formData.type}
                                 onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                             >
-                                <option value="">اختر النوع...</option>
-                                <option value="kitchen">مطبخ (Kitchen)</option>
-                                <option value="sofa">أريكة / صالون (Sofa)</option>
-                                <option value="bedroom">غرفة نوم (Bedroom)</option>
-                                <option value="table">طاولة / كراسي</option>
-                                <option value="decoration">ديكور خشبي</option>
-                                <option value="other">آخر</option>
+                                <option value="">{t('custom.typeSelect')}</option>
+                                <option value="kitchen">{t('custom.kitchen')}</option>
+                                <option value="sofa">{t('custom.sofa')}</option>
+                                <option value="bedroom">{t('custom.bedroom')}</option>
+                                <option value="table">{t('custom.table')}</option>
+                                <option value="decoration">{t('custom.decoration')}</option>
+                                <option value="other">{t('custom.other')}</option>
                             </select>
                         </div>
 
                         {/* Description */}
                         <div>
                             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '700', marginBottom: '0.75rem', color: 'var(--text-color)' }}>
-                                <PenTool size={20} color="var(--primary)" /> التفاصيل والمواصفات
+                                <PenTool size={20} color="var(--primary)" /> {t('custom.details')}
                             </label>
                             <textarea
                                 required
                                 rows="5"
                                 style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '1rem', outline: 'none', resize: 'vertical' }}
-                                placeholder="اذكر الأبعاد، المواد المفضلة، الألوان، وأي تفاصيل أخرى تساعد الورشة على فهم طلبك..."
+                                placeholder={t('custom.detailsPlaceholder')}
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             />
@@ -130,7 +132,7 @@ const ClientRequest = () => {
                         {/* Wilaya */}
                         <div>
                             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '700', marginBottom: '0.75rem', color: 'var(--text-color)' }}>
-                                <MapPin size={20} color="var(--primary)" /> الولاية / المنطقة
+                                <MapPin size={20} color="var(--primary)" /> {t('custom.wilaya')}
                             </label>
                             <div style={{ position: 'relative' }}>
                                 <select
@@ -139,7 +141,7 @@ const ClientRequest = () => {
                                     value={formData.wilaya}
                                     onChange={(e) => setFormData({ ...formData, wilaya: e.target.value })}
                                 >
-                                    <option value="" disabled>اختر ولايتك...</option>
+                                    <option value="" disabled>{t('custom.wilayaSelect')}</option>
                                     {algeriaWilayas.map((wilaya) => (
                                         <option key={wilaya} value={wilaya}>{wilaya}</option>
                                     ))}
@@ -153,12 +155,12 @@ const ClientRequest = () => {
                         {/* Estimated Budget */}
                         <div>
                             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '700', marginBottom: '0.75rem', color: 'var(--text-color)' }}>
-                                <DollarSign size={20} color="var(--primary)" /> الميزانية التقديرية (د.ج)
+                                <DollarSign size={20} color="var(--primary)" /> {t('custom.budget')}
                             </label>
                             <input
                                 type="number"
                                 style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '1rem', outline: 'none' }}
-                                placeholder="اختياري (مثال: 50000)"
+                                placeholder={t('custom.budgetExample')}
                                 value={formData.budget}
                                 onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
                             />
@@ -177,9 +179,9 @@ const ClientRequest = () => {
                             <label htmlFor="images-upload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                 <Upload size={40} color={images.length > 0 ? "#22c55e" : "#94a3b8"} style={{ marginBottom: '1rem' }} />
                                 <span style={{ fontSize: '1.1rem', fontWeight: '700', color: images.length > 0 ? '#15803d' : 'var(--text-color)', marginBottom: '0.5rem' }}>
-                                    {images.length > 0 ? 'تم تحديد الصور بنجاح' : 'اضغط لرفع صور توضيحية'}
+                                    {images.length > 0 ? t('custom.imagesSuccess') : t('custom.upload')}
                                 </span>
-                                <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>يمكنك اختيار صور متعددة لمساعدة الورشة على الفهم الأفضل (اختياري)</span>
+                                <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>{t('custom.uploadHint')}</span>
                             </label>
                             {images.length > 0 && (
                                 <div style={{ marginTop: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
@@ -210,11 +212,11 @@ const ClientRequest = () => {
                                 marginTop: '1rem'
                             }}
                         >
-                            {loading ? 'جاري الإرسال...' : 'إرسال الطلب الآن 🚀'}
+                            {loading ? t('custom.sending') : t('custom.submit')}
                         </button>
 
                         <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                            بإرسال الطلب، أنت توافق على مشاركة تفاصيله حصرياً مع الورشات الحرفية المعتمدة في منصتنا.
+                            {t('custom.agreement')}
                         </p>
                     </form>
                 </div>
