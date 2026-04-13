@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import Button from '../components/Button';
-import { Phone, MapPin, X, Wrench, Store } from 'lucide-react';
+import { Phone, MapPin, X, Store } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
@@ -211,29 +211,7 @@ const WorkshopsList = () => {
                                 </div>
                             </div>
 
-                            {/* Skills */}
-                            {selectedWorkshop.skills && (
-                                <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '12px' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                                        <Wrench size={18} color="#7c3aed" />
-                                        <p style={{ margin: 0, fontWeight: '700', color: '#1f2937', fontSize: '0.9rem' }}>
-                                            {isArabic ? 'المهارات' : 'Skills'}
-                                        </p>
-                                    </div>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                                        {selectedWorkshop.skills.split(',').map((skill, i) => (
-                                            <span key={i} style={{
-                                                background: '#ede9fe',
-                                                color: '#6d28d9',
-                                                padding: '0.25rem 0.75rem',
-                                                borderRadius: '999px',
-                                                fontSize: '0.8rem',
-                                                fontWeight: '600'
-                                            }}>{skill.trim()}</span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
+
 
                             {/* Description */}
                             {selectedWorkshop.description && (
