@@ -29,7 +29,11 @@ const WorkshopsList = () => {
     if (loading) return <div className="container" style={{ padding: '8rem 1rem' }}>{t('form.loading') || (isArabic ? 'جاري التحميل...' : 'Loading...')}</div>;
 
     return (
-        <div className="container" style={{ padding: '8rem 1rem' }}>
+        <div
+            className="container"
+            dir={isArabic ? 'rtl' : 'ltr'}
+            style={{ padding: '8rem 1rem', textAlign: isArabic ? 'right' : 'left' }}
+        >
             <h1 style={{ marginBottom: '2rem', fontWeight: '800' }}>
                 {isArabic ? 'استكشف الورش المعتمدة' : 'Explore Certified Workshops'}
             </h1>
