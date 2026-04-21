@@ -117,13 +117,13 @@ const ClientRequest = () => {
                         {/* Client Name */}
                         <div>
                             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '700', marginBottom: '0.75rem', color: 'var(--text-color)' }}>
-                                <User size={20} color="var(--primary)" /> الإسم الكامل
+                                <User size={20} color="var(--primary)" /> {t('client.fullName')}
                             </label>
                             <input
                                 required
                                 type="text"
                                 style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '1rem', outline: 'none' }}
-                                placeholder="أدخل إسمك الكامل"
+                                placeholder={isArabic ? "أدخل إسمك الكامل" : "Enter your full name"}
                                 value={formData.clientName}
                                 onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
                             />
@@ -132,7 +132,7 @@ const ClientRequest = () => {
                         {/* Client Phone */}
                         <div>
                             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '700', marginBottom: '0.75rem', color: 'var(--text-color)' }}>
-                                <Phone size={20} color="var(--primary)" /> رقم الهاتف
+                                <Phone size={20} color="var(--primary)" /> {t('form.phone')}
                             </label>
                             <input
                                 required
