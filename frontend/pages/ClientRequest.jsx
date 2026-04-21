@@ -91,9 +91,7 @@ const ClientRequest = () => {
             });
 
             if (res.ok) {
-                const result = await res.json();
-                alert(`${t('custom.success')}${result.matchedCount}${t('custom.successWorkshops')}`);
-                navigate('/dashboard');
+                navigate('/thank-you');
             } else {
                 const err = await res.json();
                 alert(err.message || t('custom.error'));

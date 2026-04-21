@@ -6,6 +6,7 @@ import Designs from './pages/Designs';
 import DesignDetails from './pages/DesignDetails';
 import About from './pages/About';
 import ClientRequest from './pages/ClientRequest';
+import ThankYou from './pages/ThankYou';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -60,6 +61,7 @@ const AppContent = () => {
             <Route path="/workshops" element={<WorkshopsList />} />
             <Route path="/about" element={<About />} />
             <Route path="/custom-request" element={<ClientRequest />} />
+            <Route path="/thank-you" element={<ThankYou />} />
             {/* Client Dashboard Route */}
             <Route
               path="/dashboard"
