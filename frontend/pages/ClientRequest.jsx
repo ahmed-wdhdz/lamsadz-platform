@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Upload, MapPin, DollarSign, PenTool, Layout } from 'lucide-react';
+import { Upload, MapPin, DollarSign, PenTool, Layout, User, Phone } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const algeriaWilayasAr = [
@@ -31,11 +31,23 @@ const ClientRequest = () => {
     const [loading, setLoading] = useState(false);
 
     const [formData, setFormData] = useState({
+        clientName: user ? user.name : '',
+        clientPhone: user ? user.phone : '',
         type: '',
         description: '',
         wilaya: '',
         budget: ''
     });
+
+    React.useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                clientName: user.name || '',
+                clientPhone: user.phone || ''
+            }));
+        }
+    }, [user]);
     const [images, setImages] = useState([]);
 
     const handleImageChange = (e) => {
@@ -54,11 +66,8 @@ const ClientRequest = () => {
         data.append('wilaya', formData.wilaya);
         if (formData.budget) data.append('budgetMin', formData.budget);
 
-        // Include user details implicitly if logged in
-        if (user) {
-            data.append('clientName', user.name);
-            if (user.phone) data.append('clientPhone', user.phone);
-        }
+        data.append('clientName', formData.clientName);
+        data.append('clientPhone', formData.clientPhone);
 
         images.forEach(image => {
             data.append('images', image);
@@ -102,6 +111,36 @@ const ClientRequest = () => {
                     </div>
 
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                        {/* Client Name */}
+                        <div>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '700', marginBottom: '0.75rem', color: 'var(--text-color)' }}>
+                                <User size={20} color="var(--primary)" /> الإسم الكامل
+                            </label>
+                            <input
+                                required
+                                type="text"
+                                style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '1rem', outline: 'none' }}
+                                placeholder="أدخل إسمك الكامل"
+                                value={formData.clientName}
+                                onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                            />
+                        </div>
+
+                        {/* Client Phone */}
+                        <div>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '700', marginBottom: '0.75rem', color: 'var(--text-color)' }}>
+                                <Phone size={20} color="var(--primary)" /> رقم الهاتف
+                            </label>
+                            <input
+                                required
+                                type="tel"
+                                dir="ltr"
+                                style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '1rem', outline: 'none', textAlign: isArabic ? 'right' : 'left' }}
+                                placeholder="0550 00 00 00"
+                                value={formData.clientPhone}
+                                onChange={(e) => setFormData({ ...formData, clientPhone: e.target.value })}
+                            />
+                        </div>
                         {/* Furniture Type */}
                         <div>
                             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '700', marginBottom: '0.75rem', color: 'var(--text-color)' }}>
