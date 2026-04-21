@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Upload, MapPin, DollarSign, PenTool, Layout, User, Phone } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { wilayas as standardWilayas } from '../utils/wilayas';
 
 const algeriaWilayasAr = [
     "01 - أدرار", "02 - الشلف", "03 - الأغواط", "04 - أم البواقي", "05 - باتنة", "06 - بجاية", "07 - بسكرة", "08 - بشار", "09 - البليدة", "10 - البويرة",
@@ -63,7 +64,11 @@ const ClientRequest = () => {
         const data = new FormData();
         data.append('type', formData.type);
         data.append('description', formData.description);
-        data.append('wilaya', formData.wilaya);
+        
+        // Map the selected index to the standard wilaya name used by the backend
+        const standardWilaya = formData.wilaya !== '' ? standardWilayas[parseInt(formData.wilaya)] : '';
+        data.append('wilaya', standardWilaya);
+        
         if (formData.budget) data.append('budgetMin', formData.budget);
 
         data.append('clientName', formData.clientName);
@@ -191,7 +196,7 @@ const ClientRequest = () => {
                                 >
                                     <option value="" disabled>{t('custom.wilayaSelect')}</option>
                                     {algeriaWilayasAr.map((wilaya, index) => (
-                                        <option key={wilaya} value={wilaya}>{isArabic ? wilaya : algeriaWilayasEn[index]}</option>
+                                        <option key={index} value={index}>{isArabic ? wilaya : algeriaWilayasEn[index]}</option>
                                     ))}
                                 </select>
                                 <div style={{ position: 'absolute', top: '50%', left: '1rem', transform: 'translateY(-50%)', pointerEvents: 'none', color: '#64748b' }}>
