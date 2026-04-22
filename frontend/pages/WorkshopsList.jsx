@@ -46,12 +46,12 @@ const WorkshopsList = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem' }}>
                 {workshops.map(workshop => (
                     <div key={workshop.id} style={{
-                        background: 'white',
+                        background: 'var(--bg-card)',
                         borderRadius: 'var(--radius-lg)',
                         boxShadow: 'var(--shadow-sm)',
                         padding: '1.5rem',
                         transition: 'var(--smooth)',
-                        border: '1px solid var(--gray-200)'
+                        border: '1px solid var(--border)'
                     }} className="hover-lift">
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                             <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{workshop.name}</h2>

@@ -65,7 +65,7 @@ const Designs = () => {
     };
 
     return (
-        <div className="container" style={{ padding: '2rem 1rem', maxWidth: '1280px', margin: '0 auto' }}>
+        <div className="container designs-page" style={{ padding: '6rem 1rem 4rem', maxWidth: '1280px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
                 <h2 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '1rem', color: '#1f2937' }}>
                     {activeCategory === 'ALL' ? (isArabic ? 'كل المنتجات' : 'All Products') :
@@ -77,7 +77,7 @@ const Designs = () => {
             </div>
 
             {/* Category Filters */}
-            <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '1.5rem', marginBottom: '2rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '1.5rem', marginBottom: '2rem', justifyContent: 'flex-start', flexWrap: 'nowrap', WebkitOverflowScrolling: 'touch' }}>
                 <button
                     onClick={() => handleCategoryClick('ALL')}
                     style={{
@@ -177,6 +177,16 @@ const Designs = () => {
                     </button>
                 </div>
             )}
+            <style>{`
+                .designs-page {
+                    padding-top: 6rem !important;
+                }
+                @media (max-width: 640px) {
+                    .designs-page {
+                        padding-top: 5rem !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 };

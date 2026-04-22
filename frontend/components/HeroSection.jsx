@@ -149,7 +149,7 @@ const HeroSection = () => {
                                 alt="Premium Furniture"
                                 style={{
                                     width: '100%',
-                                    height: '500px',
+                                    height: 'clamp(280px, 45vw, 500px)',
                                     objectFit: 'cover',
                                 }}
                             />

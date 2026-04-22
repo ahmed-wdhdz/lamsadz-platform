@@ -107,7 +107,7 @@ const ClientRequest = () => {
     return (
         <div style={{ padding: '6rem 1rem 4rem', minHeight: '100vh', background: 'var(--bg-body)' }} dir={isArabic ? "rtl" : "ltr"}>
             <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                <div style={{ background: 'white', borderRadius: '24px', padding: '3rem', boxShadow: '0 10px 40px rgba(0,0,0,0.08)' }}>
+                <div className="request-card" style={{ background: 'var(--bg-card)', borderRadius: '24px', padding: '3rem', boxShadow: '0 10px 40px rgba(0,0,0,0.08)' }}>
                     <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                         <h1 style={{ fontSize: '2rem', fontWeight: '900', color: 'var(--text-color)', marginBottom: '1rem' }}>{t('custom.title')}</h1>
                         <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: '1.6' }}>{t('custom.subtitle')}</p>
@@ -272,6 +272,14 @@ const ClientRequest = () => {
                     </form>
                 </div>
             </div>
+            <style>{`
+                @media (max-width: 640px) {
+                    .request-card {
+                        padding: 1.5rem !important;
+                        border-radius: 16px !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 };
