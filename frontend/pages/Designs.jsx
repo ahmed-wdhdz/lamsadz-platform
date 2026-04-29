@@ -76,8 +76,21 @@ const Designs = () => {
                 </p>
             </div>
 
-            {/* Category Filters */}
-            <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '1.5rem', marginBottom: '2rem', justifyContent: 'flex-start', flexWrap: 'nowrap', WebkitOverflowScrolling: 'touch' }}>
+            {/* Category Filters - horizontal scroll on mobile */}
+            <div
+                className="designs-filter-bar"
+                style={{
+                    display: 'flex',
+                    gap: '0.6rem',
+                    overflowX: 'auto',
+                    paddingBottom: '0.5rem',
+                    marginBottom: '2rem',
+                    flexWrap: 'nowrap',
+                    WebkitOverflowScrolling: 'touch',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                }}
+            >
                 <button
                     onClick={() => handleCategoryClick('ALL')}
                     style={{
@@ -90,8 +103,9 @@ const Designs = () => {
                         fontWeight: '600',
                         fontSize: '1rem',
                         transition: 'all 0.2s',
-                        boxShadow: activeCategory === 'ALL' ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none'
-                    }}
+                    flexShrink: 0,
+                    whiteSpace: 'nowrap',
+                }}
                 >
                     {isArabic ? 'الكل' : 'All'}
                 </button>
@@ -112,19 +126,21 @@ const Designs = () => {
                             alignItems: 'center',
                             gap: '0.5rem',
                             transition: 'all 0.2s',
-                            boxShadow: activeCategory === cat.value ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none'
-                        }}
+                            flexShrink: 0,
+                        whiteSpace: 'nowrap',
+                    }}
                     >
                         <span style={{ display: 'flex', alignItems: 'center' }}>
                             <img
                                 src={cat.image}
                                 alt=""
-                                style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }}
+                                style={{ width: '22px', height: '22px', borderRadius: '50%', objectFit: 'cover' }}
                             />
                         </span> <span>{isArabic ? cat.label : cat.labelEn}</span>
                     </button>
                 ))}
             </div>
+            <style>{`.designs-filter-bar::-webkit-scrollbar { display: none; }`}</style>
 
             {loading ? (
                 <div style={{ textAlign: 'center', padding: '4rem', color: '#6b7280' }}>جاري التحميل...</div>
