@@ -159,13 +159,14 @@ const WorkshopHome = () => {
             <div style={{ marginBottom: '2.5rem' }}>
                 <h1
                     style={{
-                        fontSize: '2.25rem',
+                        fontSize: 'clamp(1.4rem, 5vw, 2.25rem)',
                         fontWeight: '800',
                         marginBottom: '0.5rem',
                         color: 'var(--text-primary)',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.75rem'
+                        flexWrap: 'wrap',
+                        gap: '0.5rem'
                     }}
                 >
                     {t('workshop.welcome') || (isArabic ? 'مرحباً' : 'Welcome')}، <span style={{ color: '#3b82f6' }}>{user?.name}</span> 👋
@@ -183,8 +184,9 @@ const WorkshopHome = () => {
                     padding: '1.5rem',
                     marginBottom: '2.5rem',
                     display: 'flex',
-                    alignItems: 'center',
-                    gap: '1.5rem',
+                    alignItems: 'flex-start',
+                    flexWrap: 'wrap',
+                    gap: '1rem',
                     border: stats.status === 'APPROVED' ? '1px solid #bbf7d0' : '1px solid #fcd34d',
                     boxShadow: stats.status === 'APPROVED' ? '0 4px 15px rgba(22, 163, 74, 0.1)' : '0 4px 15px rgba(251, 191, 36, 0.1)'
                 }}

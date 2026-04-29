@@ -465,7 +465,7 @@ const Requests = () => {
                                                     gap: '1rem'
                                                 }}>
                                                     {/* Client Info */}
-                                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                                    <div className="req-info-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                                         <div>
                                                             <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>{isArabic ? 'الزبون' : 'Client'}</p>
                                                             <p style={{ fontWeight: '600', color: '#111827', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -483,7 +483,7 @@ const Requests = () => {
                                                     <div style={{ height: '1px', background: '#f3f4f6' }}></div>
 
                                                     {/* Location & Price */}
-                                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                                    <div className="req-info-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                                         <div>
                                                             <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>{isArabic ? 'الولاية' : 'State'}</p>
                                                             <p style={{ fontWeight: '600', color: '#111827', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -750,7 +750,7 @@ const Requests = () => {
                                                             </div>
 
                                                             {/* Action Buttons Row */}
-                                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }}>
+                                                            <div className="req-actions-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }}>
                                                                 {/* Cancel Button */}
                                                                 <button
                                                                     onClick={async () => {
@@ -853,6 +853,17 @@ const Requests = () => {
                     })
                 )}
             </div >
+            <style>{`
+                @media (max-width: 480px) {
+                    .req-info-grid { grid-template-columns: 1fr !important; }
+                    .req-actions-grid { grid-template-columns: 1fr 1fr !important; }
+                    .req-filter-bar { flex-wrap: wrap !important; }
+                    .req-filter-bar button { flex: 1 1 auto !important; font-size: 0.78rem !important; padding: 0.4rem 0.6rem !important; }
+                }
+                @media (max-width: 360px) {
+                    .req-actions-grid { grid-template-columns: 1fr !important; }
+                }
+            `}</style>
         </div >
     );
 };
