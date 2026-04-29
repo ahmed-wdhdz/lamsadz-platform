@@ -6,6 +6,7 @@ import './styles/variables.css'
 import './styles/global.css'
 import './styles/components.css'
 import './styles/animations.css'
+import './styles/responsive.css'
 
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'

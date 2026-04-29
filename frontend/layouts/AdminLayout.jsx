@@ -234,7 +234,7 @@ const AdminLayout = () => {
                     <ThemeToggle />
                 </header>
 
-                <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
+                <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }} className="admin-inner-content">
                     <Outlet />
                 </div>
             </main>

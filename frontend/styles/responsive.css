@@ -1,0 +1,375 @@
+/* ============================================
+   📱 LAMSADZ - Complete Mobile Responsive System
+   Breakpoints:
+   - xs:  480px (small phones)
+   - sm:  640px (phones)
+   - md:  768px (large phones / small tablets)
+   - lg: 1024px (tablets / small laptops)
+   ============================================ */
+
+/* ========== Container ========== */
+.container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 0.75rem;
+    }
+}
+
+/* ========== Hero Section Grid ========== */
+.hero-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 4rem !important;
+    align-items: center !important;
+}
+
+@media (max-width: 768px) {
+    .hero-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+        text-align: center !important;
+    }
+
+    .hero-grid > div {
+        order: unset !important;
+    }
+
+    /* Center hero text elements */
+    .hero-grid p {
+        max-width: 100% !important;
+    }
+
+    .hero-grid div[style*="display: flex"][style*="gap: 1rem"] {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+/* ========== Dashboard Sidebar + Layout ========== */
+
+/* ---- Workshop Dashboard ---- */
+@media (max-width: 1024px) {
+    /* Show mobile header */
+    .mobile-header {
+        display: flex !important;
+    }
+
+    /* Hide sidebar by default, slide in when open */
+    .sidebar {
+        transform: translateX(-100%);
+        z-index: 999 !important;
+    }
+
+    /* RTL: slide from right */
+    [dir="rtl"] .sidebar {
+        transform: translateX(100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0) !important;
+    }
+
+    /* Show mobile-only elements */
+    .mobile-only {
+        display: flex !important;
+    }
+
+    /* Reset main content margin */
+    .main-content {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+        padding-top: 4.5rem !important;
+    }
+
+    /* Admin content padding */
+    .main-content > div[style] {
+        padding: 1rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        padding: 4.5rem 0.75rem 1rem !important;
+    }
+
+    .admin-inner-content {
+        padding: 1rem !important;
+    }
+}
+
+/* ========== Admin Page ========== */
+@media (max-width: 768px) {
+    .admin-page {
+        padding: 1rem !important;
+    }
+
+    .admin-filters {
+        flex-direction: column !important;
+    }
+
+    .search-box {
+        min-width: 100% !important;
+        width: 100% !important;
+    }
+}
+
+/* ========== Stats Grid ========== */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.75rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ========== Tables (Horizontal Scroll) ========== */
+.table-responsive,
+.table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .admin-table th,
+    .admin-table td {
+        padding: 0.6rem 0.75rem !important;
+        font-size: 0.82rem !important;
+        white-space: nowrap;
+    }
+}
+
+/* ========== Modals ========== */
+@media (max-width: 640px) {
+    /* Any inline modal div */
+    div[style*="position: fixed"][style*="z-index: 2000"] > div,
+    div[style*="position: fixed"][style*="zIndex: 2000"] > div {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+        margin: 0.5rem !important;
+    }
+
+    .modal-content {
+        max-width: 95vw !important;
+        width: 95vw !important;
+        max-height: 90vh !important;
+    }
+
+    /* Modal grid to single col */
+    .modal-body {
+        flex-direction: column !important;
+    }
+
+    .payment-details {
+        flex: unset !important;
+        width: 100% !important;
+    }
+}
+
+/* ========== Forms ========== */
+@media (max-width: 640px) {
+    /* 2-col form rows collapse */
+    div[style*="grid-template-columns: 1fr 1fr"],
+    div[style*="gridTemplateColumns: '1fr 1fr'"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Specific price/category row */
+    .form-row-2 {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ========== Navbar ========== */
+@media (max-width: 768px) {
+    .hidden-mobile {
+        display: none !important;
+    }
+
+    .mobile-only {
+        display: flex !important;
+    }
+}
+
+/* ========== Footer ========== */
+@media (max-width: 768px) {
+    /* Multi-col footer grid → single col */
+    footer div[style*="grid-template-columns"],
+    footer div[style*="gridTemplateColumns"] {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 1.5rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    footer div[style*="grid-template-columns"],
+    footer div[style*="gridTemplateColumns"] {
+        grid-template-columns: 1fr !important;
+        text-align: center !important;
+    }
+}
+
+/* ========== Public Pages Grids ========== */
+@media (max-width: 640px) {
+    /* Workshop cards */
+    div[style*="minmax(300px, 1fr)"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* About page How-it-works cards */
+    div[style*="minmax(280px, 1fr)"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ========== Cards Image Height ========== */
+@media (max-width: 480px) {
+    .card-img-wrapper {
+        height: 200px !important;
+    }
+}
+
+/* ========== Typography Scale ========== */
+@media (max-width: 480px) {
+    h1 {
+        font-size: clamp(1.6rem, 7vw, 2rem) !important;
+    }
+
+    h2 {
+        font-size: clamp(1.3rem, 6vw, 1.75rem) !important;
+    }
+}
+
+/* ========== About Page Sections ========== */
+@media (max-width: 768px) {
+    /* Mission section 2-col grid */
+    div[style*="repeat(auto-fit, minmax(300px, 1fr))"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* CTA section padding */
+    div[style*="padding: '4rem 2rem'"],
+    div[style*="borderRadius: '40px'"] {
+        padding: 2rem 1rem !important;
+        border-radius: 20px !important;
+    }
+}
+
+/* ========== Requests & Leads Page ========== */
+@media (max-width: 640px) {
+    /* Lead card header: flex row → column */
+    div[style*="justify-content: space-between"][style*="align-items: center"] {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+}
+
+/* ========== Subscription Page ========== */
+@media (max-width: 640px) {
+    .pricing-cards {
+        grid-template-columns: 1fr !important;
+    }
+
+    .pricing-card.featured {
+        transform: none !important;
+    }
+
+    .payment-methods {
+        grid-template-columns: 1fr !important;
+    }
+
+    .payment-container {
+        border-radius: 12px !important;
+    }
+
+    .modal-actions {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ========== MyDesigns Modal ========== */
+@media (max-width: 640px) {
+    .designs-modal {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+    }
+
+    .designs-modal-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ========== Profile Settings ========== */
+@media (max-width: 640px) {
+    .profile-grid-2 {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ========== Product Grid (Designs Page) ========== */
+@media (max-width: 640px) {
+    .products-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 1rem !important;
+    }
+}
+
+@media (max-width: 400px) {
+    .products-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ========== WorkshopsList Page ========== */
+@media (max-width: 640px) {
+    .workshops-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ========== Touch Targets (Accessibility) ========== */
+@media (max-width: 768px) {
+    button,
+    a[role="button"],
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+/* ========== Scroll Lock when Modal/Sidebar Open ========== */
+body.sidebar-open {
+    overflow: hidden;
+}
+
+/* ========== Safe Area (iPhone notch) ========== */
+@supports (padding: env(safe-area-inset-bottom)) {
+    .main-content {
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+
+    .mobile-header {
+        padding-top: max(1rem, env(safe-area-inset-top));
+    }
+}
