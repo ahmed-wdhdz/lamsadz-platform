@@ -35,6 +35,8 @@ const WorkshopLayout = () => {
                 display: 'flex',
                 minHeight: '100vh',
                 backgroundColor: 'var(--bg-primary)',
+                overflowX: 'hidden',
+                width: '100%',
             }}
             dir={isArabic ? 'rtl' : 'ltr'}
         >
@@ -216,7 +218,6 @@ const WorkshopLayout = () => {
                 </div>
             </aside>
 
-            {/* Main Content */}
             <main
                 style={{
                     flex: 1,
@@ -224,6 +225,9 @@ const WorkshopLayout = () => {
                     marginLeft: isArabic ? 0 : '280px',
                     padding: '2rem',
                     minHeight: '100vh',
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    maxWidth: '100vw'
                 }}
                 className="main-content"
             >
@@ -248,6 +252,11 @@ const WorkshopLayout = () => {
                         margin-right: 0 !important;
                         margin-left: 0 !important;
                         padding-top: 5rem !important;
+                        padding-left: 0.5rem !important;
+                        padding-right: 0.5rem !important;
+                        width: 100% !important;
+                        max-width: 100vw !important;
+                        overflow-x: hidden !important;
                     }
                 }
             `}</style>

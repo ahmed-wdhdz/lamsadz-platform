@@ -72,7 +72,7 @@ const CustomRequests = () => {
     const cancelledCount = leads.filter(l => l.lead.status === 'CANCELLED').length;
 
     return (
-        <div className="custom-req-page" style={{ maxWidth: '900px', margin: '0 auto' }}>
+        <div className="custom-req-page" style={{ maxWidth: '900px', margin: '0 auto', padding: '1rem', width: '100%', boxSizing: 'border-box', overflowX: 'hidden' }}>
             {/* Page Title */}
             <div style={{ marginBottom: '1.5rem' }}>
                 <h1 style={{
@@ -129,7 +129,9 @@ const CustomRequests = () => {
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
                 paddingBottom: '4px',
-                marginBottom: '1.25rem'
+                marginBottom: '1.25rem',
+                width: '100%',
+                maxWidth: '100%'
             }}>
                 {[
                     { id: 'all',         label: isArabic ? 'الكل'        : 'All',         count: leads.length },
@@ -185,7 +187,7 @@ const CustomRequests = () => {
                     <p style={{ color: 'var(--text-muted)' }}>{isArabic ? 'لا توجد طلبات في هذا التصنيف.' : 'No requests found.'}</p>
                 </div>
             ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', minWidth: 0 }}>
                     {filteredLeads.map(entry => {
                         const l = entry.lead;
                         const images = l.images ? JSON.parse(l.images) : [];
@@ -203,6 +205,9 @@ const CustomRequests = () => {
                                 boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
                                 border: '1px solid var(--border)',
                                 overflow: 'hidden',
+                                width: '100%',
+                                minWidth: 0,
+                                boxSizing: 'border-box'
                             }}>
                                 {/* Card Header */}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '0.75rem' }}>
@@ -233,7 +238,7 @@ const CustomRequests = () => {
                                 </div>
 
                                 {/* Title */}
-                                <h3 style={{ fontSize: '1.05rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.4rem' }}>
+                                <h3 style={{ fontSize: '1.05rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.4rem', wordBreak: 'break-word', whiteSpace: 'normal' }}>
                                     {l.dimensions
                                         ? `${isArabic ? 'أبعاد:' : 'Dimensions:'} ${l.dimensions}`
                                         : (isArabic ? 'طلب تصميم خاص' : 'Custom Design Request')}
@@ -241,7 +246,7 @@ const CustomRequests = () => {
 
                                 {/* Description */}
                                 {l.description && (
-                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: '1.6', marginBottom: '0.75rem' }}>
+                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: '1.6', marginBottom: '0.75rem', wordBreak: 'break-word', whiteSpace: 'normal' }}>
                                         {l.description}
                                     </p>
                                 )}
@@ -298,7 +303,7 @@ const CustomRequests = () => {
                                         </div>
                                         <div>
                                             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{isArabic ? 'الهاتف' : 'Phone'}</div>
-                                            <div style={{ fontWeight: '700', color: '#16a34a', direction: 'ltr', fontSize: '0.9rem' }}>
+                                            <div style={{ fontWeight: '700', color: '#16a34a', direction: 'ltr', fontSize: '0.9rem', wordBreak: 'break-all' }}>
                                                 {l.clientPhone || '---'}
                                             </div>
                                         </div>
@@ -320,8 +325,9 @@ const CustomRequests = () => {
                                 </div>
 
                                 {/* Action Buttons - flex wrap for mobile */}
-                                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                <div className="stack-on-mobile" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', width: '100%' }}>
                                     <button
+                                        className="action-btn"
                                         onClick={() => updateStatus(l.id, 'CONFIRMED')}
                                         disabled={updating === l.id}
                                         style={{
@@ -338,6 +344,7 @@ const CustomRequests = () => {
                                         ✅ {isArabic ? 'اتفاق' : 'Agreed'}
                                     </button>
                                     <button
+                                        className="action-btn"
                                         onClick={() => updateStatus(l.id, 'NO_RESPONSE')}
                                         disabled={updating === l.id}
                                         style={{
@@ -354,6 +361,7 @@ const CustomRequests = () => {
                                         📵 {isArabic ? 'لم يرد' : 'No Reply'}
                                     </button>
                                     <button
+                                        className="action-btn"
                                         onClick={() => updateStatus(l.id, 'CANCELLED')}
                                         disabled={updating === l.id}
                                         style={{
@@ -378,8 +386,9 @@ const CustomRequests = () => {
 
             <style>{`
                 .custom-req-page .filter-bar::-webkit-scrollbar { display: none; }
-                @media (max-width: 480px) {
+                @media (max-width: 768px) {
                     .custom-req-page button[style] { font-size: 0.78rem !important; }
+                    .custom-req-page .action-btn { flex: 1 1 100% !important; min-width: 100% !important; margin-bottom: 0.25rem; }
                 }
             `}</style>
         </div>

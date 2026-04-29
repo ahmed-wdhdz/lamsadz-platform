@@ -161,7 +161,7 @@ const Requests = () => {
     }
 
     return (
-        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+        <div className="requests-container" style={{ maxWidth: '900px', margin: '0 auto', padding: '1rem', width: '100%', boxSizing: 'border-box' }}>
             {/* Header */}
             <div style={{ marginBottom: '2rem' }}>
                 <h1 style={{
@@ -236,6 +236,7 @@ const Requests = () => {
                     scrollbarWidth: 'none',
                     msOverflowStyle: 'none',
                     paddingBottom: '4px',
+                    width: '100%',
                 }}
             >
                 {[
@@ -282,7 +283,7 @@ const Requests = () => {
             </div>
 
             {/* Leads List */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', minWidth: 0 }}>
                 {filteredLeads.length === 0 ? (
                     <div style={{
                         textAlign: 'center',
@@ -325,22 +326,25 @@ const Requests = () => {
                                     overflow: 'hidden',
                                     boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
                                     border: isNew ? '2px solid #3b82f6' : '1px solid #e5e7eb',
-                                    transition: 'all 0.3s ease'
+                                    transition: 'all 0.3s ease',
+                                    width: '100%',
+                                    minWidth: 0
                                 }}
                             >
-                                {/* Header Row */}
                                 <div
                                     onClick={() => toggleExpand(delivery)}
+                                    className="req-card-header"
                                     style={{
                                         padding: '1.25rem',
                                         display: 'flex',
                                         justifyContent: 'space-between',
                                         alignItems: 'center',
                                         cursor: 'pointer',
-                                        background: isExpanded ? '#f9fafb' : 'white'
+                                        background: isExpanded ? '#f9fafb' : 'white',
+                                        gap: '1rem'
                                     }}
                                 >
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                    <div className="req-card-left" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, minWidth: 0, width: '100%' }}>
                                         {/* Status Indicator */}
                                         <div style={{
                                             width: '48px',
@@ -354,9 +358,9 @@ const Requests = () => {
                                         }}>
                                             {hasOffer ? <CheckCircle size={24} /> : <Inbox size={24} />}
                                         </div>
-                                        <div>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                                                <h3 style={{ fontWeight: '700', fontSize: '1.1rem', color: '#1f2937' }}>
+                                        <div style={{ minWidth: 0 }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
+                                                <h3 style={{ fontWeight: '700', fontSize: '1.1rem', color: '#1f2937', whiteSpace: 'normal', wordBreak: 'break-word' }}>
                                                     {delivery.lead?.type || (isArabic ? 'طلب جديد' : 'New Request')}
                                                 </h3>
                                                 {isNew && (
@@ -380,7 +384,7 @@ const Requests = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                    <div className="req-card-status" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
                                         {hasOffer ? (
                                             <span style={{
                                                 display: 'flex',
@@ -447,7 +451,7 @@ const Requests = () => {
                                     }}>
                                         <div style={{
                                             display: 'grid',
-                                            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                                            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
                                             gap: '1.5rem'
                                         }}>
                                             {/* Lead Details */}
@@ -484,8 +488,8 @@ const Requests = () => {
                                                         </div>
                                                         <div>
                                                             <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.25rem' }}>{isArabic ? 'رقم الهاتف' : 'Phone Number'}</p>
-                                                            <p style={{ fontWeight: '600', color: '#111827', direction: 'ltr', textAlign: 'right', display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                                                                {delivery.lead?.clientPhone || (isArabic ? 'غير متوفر' : 'N/A')} <Phone size={16} />
+                                                            <p style={{ fontWeight: '600', color: '#111827', direction: 'ltr', textAlign: 'right', display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                                                                <span style={{ wordBreak: 'break-all' }}>{delivery.lead?.clientPhone || (isArabic ? 'غير متوفر' : 'N/A')}</span> <Phone size={16} style={{ flexShrink: 0 }} />
                                                             </p>
                                                         </div>
                                                     </div>
@@ -584,6 +588,8 @@ const Requests = () => {
                                                     display: 'flex',
                                                     alignItems: 'center',
                                                     justifyContent: 'space-between',
+                                                    flexWrap: 'wrap',
+                                                    gap: '0.5rem',
                                                     color: '#374151'
                                                 }}>
                                                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -744,15 +750,15 @@ const Requests = () => {
                                                         </div>
                                                     ) : (
                                                         <div style={{ padding: '1rem', background: '#eff6ff', borderRadius: '12px', marginBottom: '1rem' }}>
-                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                                                                <span style={{ fontWeight: '700', color: '#1e3a8a' }}>{isArabic ? 'المنتج:' : 'Product:'}</span>
-                                                                <span style={{ fontWeight: '600', color: '#374151' }}>
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                                                <span style={{ fontWeight: '700', color: '#1e3a8a', flexShrink: 0 }}>{isArabic ? 'المنتج:' : 'Product:'}</span>
+                                                                <span style={{ fontWeight: '600', color: '#374151', textAlign: 'right', flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
                                                                     {delivery.lead?.design?.title || delivery.lead?.type || (isArabic ? 'طلب مخصص' : 'Custom Request')}
                                                                 </span>
                                                             </div>
-                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                                                <span style={{ fontWeight: '700', color: '#1e3a8a' }}>{isArabic ? 'السعر:' : 'Price:'}</span>
-                                                                <span style={{ fontWeight: '800', fontSize: '1.25rem', color: '#2563eb' }}>
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                                                <span style={{ fontWeight: '700', color: '#1e3a8a', flexShrink: 0 }}>{isArabic ? 'السعر:' : 'Price:'}</span>
+                                                                <span style={{ fontWeight: '800', fontSize: '1.25rem', color: '#2563eb', textAlign: 'right', flex: 1, minWidth: 0 }}>
                                                                     {delivery.lead?.design?.price
                                                                         ? `${Number(delivery.lead.design.price).toLocaleString()} ${t('products.currency') || 'د.ج'}`
                                                                         : (delivery.lead?.budgetMin ? `${Number(delivery.lead.budgetMin).toLocaleString()} ${t('products.currency') || 'د.ج'}` : (isArabic ? 'غير محدد' : 'N/A'))}
@@ -867,15 +873,17 @@ const Requests = () => {
                 .req-filter-bar::-webkit-scrollbar { display: none; }
                 .req-info-grid { grid-template-columns: 1fr 1fr; }
                 .req-actions-grid button { flex: 1 1 calc(33% - 0.5rem); min-width: 80px; }
+                @media (max-width: 640px) {
+                    .req-card-header { flex-direction: column; align-items: flex-start !important; }
+                    .req-card-status { width: 100%; justify-content: space-between; margin-top: 0.5rem; }
+                }
                 @media (max-width: 480px) {
                     .req-info-grid { grid-template-columns: 1fr !important; }
-                    .req-actions-grid button { flex: 1 1 calc(50% - 0.5rem) !important; }
-                }
-                @media (max-width: 360px) {
                     .req-actions-grid button { flex: 1 1 100% !important; }
+                    .requests-container { padding: 0.75rem !important; }
                 }
             `}</style>
-        </div >
+        </div>
     );
 };
 
