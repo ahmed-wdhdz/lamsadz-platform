@@ -263,7 +263,12 @@ const Subscription = () => {
                         }}>
                             <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '0.5rem' }}>{isArabic ? 'تاريخ التفعيل' : 'Activation Date'}</p>
                             <p style={{ fontSize: '1.25rem', fontWeight: '700', color: '#1f2937' }}>
-                                {payment?.validatedAt ? new Date(payment.validatedAt).toLocaleDateString('ar-DZ') : '-'}
+                                {payment?.validatedAt
+                                    ? new Date(payment.validatedAt).toLocaleDateString(
+                                        isArabic ? 'ar-DZ' : 'en-GB',
+                                        { day: 'numeric', month: 'long', year: 'numeric' }
+                                    )
+                                    : '-'}
                             </p>
                         </div>
                     </div>

@@ -180,9 +180,9 @@ const Requests = () => {
             {/* Stats Cards */}
             <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-                gap: '1rem',
-                marginBottom: '2rem'
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '0.75rem',
+                marginBottom: '1.5rem'
             }}>
                 <div style={{
                     background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
@@ -223,47 +223,57 @@ const Requests = () => {
                 </div>
             )}
 
-            {/* Filters */}
-            <div style={{
-                display: 'flex',
-                gap: '0.5rem',
-                marginBottom: '1.5rem',
-                flexWrap: 'wrap'
-            }}>
+            {/* Filters - horizontal scroll on mobile */}
+            <div
+                className="req-filter-bar"
+                style={{
+                    display: 'flex',
+                    gap: '0.5rem',
+                    marginBottom: '1.5rem',
+                    overflowX: 'auto',
+                    flexWrap: 'nowrap',
+                    WebkitOverflowScrolling: 'touch',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                    paddingBottom: '4px',
+                }}
+            >
                 {[
                     { value: 'ALL', label: isArabic ? 'الكل' : 'All', count: stats.total },
                     { value: 'NEW', label: isArabic ? 'جديدة' : 'New', count: stats.new },
-                    { value: 'CONFIRMED', label: isArabic ? 'مؤكدة' : 'Confirmed', count: stats.confirmed },
+                    { value: 'CONFIRMED', label: isArabic ? 'مؤكدة' : 'Agreed', count: stats.confirmed },
                     { value: 'SHIPPED', label: isArabic ? 'تم الشحن' : 'Shipped', count: stats.shipped },
                     { value: 'DELIVERED', label: isArabic ? 'مستلمة' : 'Delivered', count: stats.delivered },
-                    { value: 'NO_RESPONSE', label: isArabic ? 'لم يتم الرد' : 'No Response', count: stats.no_response },
+                    { value: 'NO_RESPONSE', label: isArabic ? 'لم يتم الرد' : 'No Reply', count: stats.no_response },
                     { value: 'CANCELLED', label: isArabic ? 'ملغاة' : 'Cancelled', count: stats.cancelled }
                 ].map(f => (
                     <button
                         key={f.value}
                         onClick={() => setFilterStatus(f.value)}
                         style={{
-                            padding: '0.5rem 1rem',
+                            padding: '0.45rem 0.9rem',
                             borderRadius: '999px',
                             border: filterStatus === f.value ? 'none' : '1px solid #e5e7eb',
                             background: filterStatus === f.value ? '#3b82f6' : 'white',
                             color: filterStatus === f.value ? 'white' : '#6b7280',
-                            fontSize: '0.85rem',
+                            fontSize: '0.82rem',
                             fontWeight: '600',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '0.5rem',
+                            gap: '0.35rem',
+                            flexShrink: 0,
+                            whiteSpace: 'nowrap',
                             transition: 'all 0.2s',
                             boxShadow: filterStatus === f.value ? '0 2px 8px rgba(59, 130, 246, 0.4)' : 'none'
                         }}
                     >
                         {f.label}
                         <span style={{
-                            background: filterStatus === f.value ? 'rgba(255,255,255,0.2)' : '#f3f4f6',
-                            padding: '0.125rem 0.5rem',
+                            background: filterStatus === f.value ? 'rgba(255,255,255,0.25)' : '#f3f4f6',
+                            padding: '0.1rem 0.4rem',
                             borderRadius: '999px',
-                            fontSize: '0.75rem'
+                            fontSize: '0.72rem'
                         }}>
                             {f.count}
                         </span>
@@ -750,7 +760,7 @@ const Requests = () => {
                                                             </div>
 
                                                             {/* Action Buttons Row */}
-                                                            <div className="req-actions-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }}>
+                                                            <div className="req-actions-grid" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                                                                 {/* Cancel Button */}
                                                                 <button
                                                                     onClick={async () => {
@@ -854,14 +864,15 @@ const Requests = () => {
                 )}
             </div >
             <style>{`
+                .req-filter-bar::-webkit-scrollbar { display: none; }
+                .req-info-grid { grid-template-columns: 1fr 1fr; }
+                .req-actions-grid button { flex: 1 1 calc(33% - 0.5rem); min-width: 80px; }
                 @media (max-width: 480px) {
                     .req-info-grid { grid-template-columns: 1fr !important; }
-                    .req-actions-grid { grid-template-columns: 1fr 1fr !important; }
-                    .req-filter-bar { flex-wrap: wrap !important; }
-                    .req-filter-bar button { flex: 1 1 auto !important; font-size: 0.78rem !important; padding: 0.4rem 0.6rem !important; }
+                    .req-actions-grid button { flex: 1 1 calc(50% - 0.5rem) !important; }
                 }
                 @media (max-width: 360px) {
-                    .req-actions-grid { grid-template-columns: 1fr !important; }
+                    .req-actions-grid button { flex: 1 1 100% !important; }
                 }
             `}</style>
         </div >
