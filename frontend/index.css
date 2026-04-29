@@ -268,6 +268,12 @@ a {
   transition: all var(--transition-base);
 }
 
+@media (max-width: 768px) {
+  .card {
+    padding: 0.75rem;
+  }
+}
+
 .card:hover {
   box-shadow: var(--shadow-lg);
   border-color: transparent;

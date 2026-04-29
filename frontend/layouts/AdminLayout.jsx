@@ -203,6 +203,10 @@ const AdminLayout = () => {
                     flex: 1,
                     marginRight: isArabic ? '280px' : 0,
                     marginLeft: isArabic ? 0 : '280px',
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    maxWidth: '100vw',
+                    overflowX: 'hidden'
                 }}
                 className="main-content"
             >
@@ -234,7 +238,7 @@ const AdminLayout = () => {
                     <ThemeToggle />
                 </header>
 
-                <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }} className="admin-inner-content">
+                <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }} className="admin-inner-content">
                     <Outlet />
                 </div>
             </main>
@@ -256,6 +260,12 @@ const AdminLayout = () => {
                     .main-content {
                         margin-right: 0 !important;
                         margin-left: 0 !important;
+                        width: 100% !important;
+                        max-width: 100vw !important;
+                        overflow-x: hidden !important;
+                    }
+                    .admin-inner-content {
+                        padding: 1rem 0.5rem !important;
                     }
                 }
             `}</style>

@@ -113,7 +113,7 @@ const Promotions = () => {
                 </div>
             </div>
 
-            <div className="card overflow-x-auto">
+            <div className="card" style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr style={{ textAlign: 'right', borderBottom: '1px solid var(--gray-200)' }}>
