@@ -241,6 +241,20 @@
     }
 }
 
+/* ========== Dashboard Stats Grid (minmax 240px) ========== */
+@media (max-width: 640px) {
+    div[style*="minmax(240px, 1fr)"] {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.75rem !important;
+    }
+}
+
+@media (max-width: 400px) {
+    div[style*="minmax(240px, 1fr)"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+
 /* ========== Cards Image Height ========== */
 @media (max-width: 480px) {
     .card-img-wrapper {

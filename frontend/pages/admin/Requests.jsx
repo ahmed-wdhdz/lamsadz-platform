@@ -44,12 +44,22 @@ const Requests = () => {
             <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '2rem' }}>{isArabic ? 'مراقبة الطلبات' : 'Requests Monitoring'}</h1>
 
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--gray-200)', paddingBottom: '1px' }}>
+            <div style={{
+                display: 'flex',
+                gap: '0.5rem',
+                marginBottom: '1.5rem',
+                borderBottom: '1px solid var(--gray-200)',
+                overflowX: 'auto',
+                flexWrap: 'nowrap',
+                scrollbarWidth: 'none',
+            }}>
                 <button
                     onClick={() => setActiveTab('READY')}
                     style={{
-                        padding: '0.75rem 1.5rem',
+                        padding: '0.65rem 1.1rem',
                         fontWeight: 'bold',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
                         color: activeTab === 'READY' ? 'var(--primary)' : 'var(--text-muted)',
                         borderBottom: activeTab === 'READY' ? '2px solid var(--primary)' : '2px solid transparent',
                         background: 'none',
@@ -65,8 +75,10 @@ const Requests = () => {
                 <button
                     onClick={() => setActiveTab('CUSTOM')}
                     style={{
-                        padding: '0.75rem 1.5rem',
+                        padding: '0.65rem 1.1rem',
                         fontWeight: 'bold',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
                         color: activeTab === 'CUSTOM' ? 'var(--primary)' : 'var(--text-muted)',
                         borderBottom: activeTab === 'CUSTOM' ? '2px solid var(--primary)' : '2px solid transparent',
                         background: 'none',
@@ -159,7 +171,10 @@ const Requests = () => {
                                     </span>
                                 </td>
                                 <td style={{ padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                    {new Date(lead.createdAt).toLocaleDateString('ar-DZ')}
+                                    {new Date(lead.createdAt).toLocaleDateString(
+                                        isArabic ? 'ar-DZ' : 'en-GB',
+                                        { day: '2-digit', month: '2-digit', year: 'numeric' }
+                                    )}
                                 </td>
                             </tr>
                         ))}

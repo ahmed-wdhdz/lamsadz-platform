@@ -47,7 +47,7 @@ const Overview = () => {
             {stats && (
                 <>
                     {/* Stats Grid */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+                    <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
                         <div className="card" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                             <div style={{ background: '#e0f2fe', padding: '1rem', borderRadius: '50%', color: '#0369a1' }}>
                                 <FileText size={24} />
