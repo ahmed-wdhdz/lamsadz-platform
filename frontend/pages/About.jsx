@@ -29,7 +29,7 @@ const About = () => {
     ];
 
     return (
-        <div style={{ paddingBottom: '4rem' }} dir={isArabic ? 'rtl' : 'ltr'}>
+        <div style={{ paddingBottom: '4rem', overflowX: 'hidden' }} dir={isArabic ? 'rtl' : 'ltr'}>
             {/* Hero Section */}
             <div style={{
                 background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
@@ -96,36 +96,39 @@ const About = () => {
                     </div>
                     <div style={{
                         background: '#f8fafc',
-                        padding: '3rem',
+                        padding: '2.5rem',
                         borderRadius: '32px',
                         border: '1px solid #e2e8f0',
-                        position: 'relative'
+                        position: 'relative',
+                        overflow: 'hidden'
                     }}>
+                        {/* Decoration — inside bounds, no overflow */}
                         <div style={{
                             position: 'absolute',
-                            top: '-20px',
-                            left: isArabic ? 'auto' : '-20px',
-                            right: isArabic ? '-20px' : 'auto',
-                            background: '#3b82f6',
-                            width: '80px',
-                            height: '80px',
-                            borderRadius: '24px',
+                            top: '0',
+                            insetInlineStart: '0',
+                            background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                            width: '72px',
+                            height: '72px',
+                            borderRadius: '0 0 24px 0',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             color: 'white',
-                            boxShadow: '0 10px 25px rgba(59, 130, 246, 0.3)'
+                            boxShadow: '0 10px 25px rgba(59, 130, 246, 0.25)'
                         }}>
-                            <Heart size={40} />
+                            <Heart size={32} />
                         </div>
-                        <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '1rem', color: '#0f172a' }}>
-                            {isArabic ? 'شغف الحرفية' : 'Artisan Passion'}
-                        </h3>
-                        <p style={{ color: '#64748b', lineHeight: '1.7' }}>
-                            {isArabic
-                                ? 'نحن نؤمن بأن الأثاث ليس مجرد خشب، بل هو فن وحكاية. نسعى لدعم الحرفيين المحليين وإبراز جودة أعمالهم للجميع.'
-                                : 'We believe furniture is not just wood — it is art and story. We strive to support local artisans and showcase the quality of their work to everyone.'}
-                        </p>
+                        <div style={{ paddingTop: '4rem' }}>
+                            <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '1rem', color: '#0f172a' }}>
+                                {isArabic ? 'شغف الحرفية' : 'Artisan Passion'}
+                            </h3>
+                            <p style={{ color: '#64748b', lineHeight: '1.7' }}>
+                                {isArabic
+                                    ? 'نحن نؤمن بأن الأثاث ليس مجرد خشب، بل هو فن وحكاية. نسعى لدعم الحرفيين المحليين وإبراز جودة أعمالهم للجميع.'
+                                    : 'We believe furniture is not just wood — it is art and story. We strive to support local artisans and showcase the quality of their work to everyone.'}
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -140,18 +143,13 @@ const About = () => {
                         gap: '2rem'
                     }}>
                         {steps.map((step, idx) => (
-                            <div key={idx} style={{
+                            <div key={idx} className="about-step-card" style={{
                                 background: 'white',
                                 padding: '2.5rem',
                                 borderRadius: '24px',
                                 boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
                                 border: '1px solid #f1f5f9',
-                                transition: 'transform 0.3s ease',
-                                cursor: 'default'
-                            }}
-                                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-10px)'}
-                                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                            >
+                            }}>
                                 <div style={{
                                     width: '70px',
                                     height: '70px',
@@ -263,6 +261,17 @@ const About = () => {
                     </div>
                 </div>
             </div>
+            <style>{`
+                .about-step-card {
+                    transition: transform 0.25s ease, box-shadow 0.25s ease;
+                }
+                @media (hover: hover) {
+                    .about-step-card:hover {
+                        transform: translateY(-8px);
+                        box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+                    }
+                }
+            `}</style>
         </div>
     );
 };
