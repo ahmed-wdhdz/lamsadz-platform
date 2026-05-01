@@ -154,7 +154,7 @@ const WorkshopLayout = () => {
                 </div>
 
                 {/* Navigation */}
-                <nav style={{ flex: 1, padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <nav style={{ flex: 1, padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', overflowY: 'auto', overflowX: 'hidden' }}>
                     {navItems.map((item) => (
                         <Link
                             key={item.path}
