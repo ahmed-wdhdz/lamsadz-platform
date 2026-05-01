@@ -112,7 +112,7 @@ const WorkshopLayout = () => {
                     display: 'flex',
                     flexDirection: 'column',
                     position: 'fixed',
-                    height: '100vh',
+                    height: '100dvh',
                     right: isArabic ? 0 : 'auto',
                     left: isArabic ? 'auto' : 0,
                     zIndex: 50,
