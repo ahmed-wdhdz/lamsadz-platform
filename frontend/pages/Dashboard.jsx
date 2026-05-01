@@ -107,7 +107,7 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '250px 1fr', gap: '2rem' }}>
+                <div className="client-dashboard-layout">
                     {/* Sidebar */}
                     <aside style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', height: 'fit-content', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
                         <ul className="space-y-2">
@@ -286,6 +286,19 @@ const Dashboard = () => {
                     </main>
                 </div>
             </div>
+            <style>{`
+                .client-dashboard-layout {
+                    display: grid;
+                    grid-template-columns: 250px 1fr;
+                    gap: 2rem;
+                }
+                @media (max-width: 768px) {
+                    .client-dashboard-layout {
+                        grid-template-columns: 1fr;
+                        gap: 1.5rem;
+                    }
+                }
+            `}</style>
         </div>
     );
 };
