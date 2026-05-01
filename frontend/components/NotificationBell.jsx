@@ -111,22 +111,7 @@ const NotificationBell = () => {
 
             {isOpen && (
                 <div
-                    style={{
-                        position: 'absolute',
-                        top: 'calc(100% + 10px)',
-                        left: '0', // Mobile-first default, should check RTL context if global dir is set
-                        right: 'auto', // Adjust based on layout
-                        width: '360px',
-                        maxWidth: '90vw',
-                        backgroundColor: 'var(--bg-card)',
-                        borderRadius: 'var(--radius-lg)',
-                        boxShadow: 'var(--shadow-xl)',
-                        border: '1px solid var(--border)',
-                        zIndex: 1000,
-                        overflow: 'hidden',
-                        animation: 'slideUp 0.2s ease-out',
-                        transformOrigin: 'top left'
-                    }}
+                    className="notification-dropdown"
                     dir="rtl" // Ensuring content inside is RTL since it's an Arabic app
                 >
                     <div style={{
@@ -234,6 +219,35 @@ const NotificationBell = () => {
                 </div>
             )}
             <style>{`
+                .notification-dropdown {
+                    position: absolute;
+                    top: calc(100% + 10px);
+                    left: 0;
+                    right: auto;
+                    width: 360px;
+                    max-width: 90vw;
+                    background-color: var(--bg-card);
+                    border-radius: var(--radius-lg);
+                    box-shadow: var(--shadow-xl);
+                    border: 1px solid var(--border);
+                    z-index: 1000;
+                    overflow: hidden;
+                    animation: slideUp 0.2s ease-out;
+                    transform-origin: top left;
+                }
+                
+                @media (max-width: 768px) {
+                    .notification-dropdown {
+                        position: fixed !important;
+                        top: 70px !important;
+                        left: 50% !important;
+                        transform: translateX(-50%) !important;
+                        width: 90vw !important;
+                        max-width: 400px !important;
+                        right: auto !important;
+                    }
+                }
+                
                 @keyframes slideUp {
                     from { opacity: 0; transform: translateY(10px); }
                     to { opacity: 1; transform: translateY(0); }
