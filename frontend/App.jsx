@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
+import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import Designs from './pages/Designs';
 import DesignDetails from './pages/DesignDetails';
@@ -124,6 +125,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <AppContent />
       </Router>
     </AuthProvider>
