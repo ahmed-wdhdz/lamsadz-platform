@@ -219,6 +219,11 @@ const AdminLayout = () => {
                         display: 'none',
                         alignItems: 'center',
                         justifyContent: 'space-between',
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        zIndex: 45,
                     }}
                     className="mobile-header"
                 >
@@ -263,6 +268,7 @@ const AdminLayout = () => {
                         width: 100% !important;
                         max-width: 100vw !important;
                         overflow-x: hidden !important;
+                        padding-top: 5rem !important;
                     }
                     .admin-inner-content {
                         padding: 1rem 0.5rem !important;
