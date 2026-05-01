@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Users, Store, Package, CreditCard, MessageSquare, LogOut, Menu, X, Shield, ExternalLink, Rocket } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -12,6 +12,19 @@ const AdminLayout = () => {
     const { logout, user } = useAuth();
     const { t, isArabic } = useLanguage();
     const navigate = useNavigate();
+
+    // Prevent background scrolling when sidebar is open on mobile
+    useEffect(() => {
+        if (sidebarOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [sidebarOpen]);
 
     const handleLogout = () => {
         logout();

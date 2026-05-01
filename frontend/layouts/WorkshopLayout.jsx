@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -13,6 +13,19 @@ const WorkshopLayout = () => {
     const { t, isArabic } = useLanguage();
     const location = useLocation();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    // Prevent background scrolling when sidebar is open on mobile
+    useEffect(() => {
+        if (sidebarOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [sidebarOpen]);
 
     const navItems = [
         { path: '/dashboard/workshop', label: t('workshop.home'), icon: LayoutDashboard },
