@@ -388,10 +388,23 @@ async function approvePayment(req, res) {
             }
         });
 
-        // Approve workshop
+        // Calculate subscription end date based on plan
+        const now = new Date();
+        let subscriptionEndsAt = new Date();
+        if (payment.plan === 'YEARLY') {
+            subscriptionEndsAt.setFullYear(now.getFullYear() + 1);
+        } else {
+            // Default to monthly
+            subscriptionEndsAt.setMonth(now.getMonth() + 1);
+        }
+
+        // Approve workshop AND set subscription end date
         await prisma.workshop.update({
             where: { id: payment.workshopId },
-            data: { status: 'APPROVED' }
+            data: {
+                status: 'APPROVED',
+                subscriptionEndsAt: subscriptionEndsAt
+            }
         });
 
         res.json(payment);
