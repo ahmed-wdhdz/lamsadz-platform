@@ -151,11 +151,13 @@ const Subscriptions = () => {
                                         background: payment.status === 'VALIDATED' ? '#dcfce7' : payment.status === 'REJECTED' ? '#fee2e2' : '#fef9c3',
                                         color: payment.status === 'VALIDATED' ? '#15803d' : payment.status === 'REJECTED' ? '#991b1b' : '#a16207'
                                     }}>
-                                        {payment.status}
+                                        {payment.status === 'VALIDATED' ? (isArabic ? 'مؤكد' : 'Validated') :
+                                         payment.status === 'REJECTED'  ? (isArabic ? 'مرفوض' : 'Rejected') :
+                                         (isArabic ? 'بانتظار' : 'Pending')}
                                     </span>
                                 </td>
                                 <td style={{ padding: '1rem', fontSize: '0.85rem' }}>
-                                    {new Date(payment.createdAt).toLocaleDateString('ar-DZ')}
+                                    {new Date(payment.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                                 </td>
                                 <td style={{ padding: '1rem' }}>
                                     <button

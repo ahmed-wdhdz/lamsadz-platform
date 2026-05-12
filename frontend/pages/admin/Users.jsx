@@ -121,7 +121,9 @@ const UsersList = () => {
                                         {user.role}
                                     </span>
                                 </td>
-                                <td style={{ padding: '1rem' }}>{new Date(user.createdAt).toLocaleDateString('ar-DZ')}</td>
+                                <td style={{ padding: '1rem', fontSize: '0.85rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                                    {new Date(user.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                                </td>
                                 <td style={{ padding: '1rem' }}>
                                     {user.blocked ? (
                                         <span style={{ color: 'red', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
