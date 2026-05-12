@@ -80,17 +80,42 @@ const Workshops = () => {
                                 </td>
                                 <td style={{ padding: '1rem' }}>{workshop.location}</td>
                                 <td style={{ padding: '1rem' }}>
-                                    {workshop.subscriptionEndsAt ? (
-                                        <div style={{
-                                            fontSize: '0.85rem',
-                                            color: new Date(workshop.subscriptionEndsAt) < new Date() ? 'red' : 'green',
-                                            fontWeight: '600'
-                                        }}>
-                                            {new Date(workshop.subscriptionEndsAt).toLocaleDateString('ar-DZ')}
+                                    {workshop.subscriptionEndsAt ? (() => {
+                                    const endDate = new Date(workshop.subscriptionEndsAt);
+                                    const isExpired = endDate < new Date();
+                                    return (
+                                        <div>
+                                            <div style={{
+                                                fontSize: '0.88rem',
+                                                fontWeight: '700',
+                                                color: isExpired ? '#dc2626' : '#16a34a'
+                                            }}>
+                                                {endDate.toLocaleDateString('en-GB', {
+                                                    day: '2-digit', month: '2-digit', year: 'numeric'
+                                                })}
+                                            </div>
+                                            {isExpired && (
+                                                <span style={{ fontSize: '0.72rem', color: '#dc2626', fontWeight: '600' }}>
+                                                    {isArabic ? '⚠ منتهي' : '⚠ Expired'}
+                                                </span>
+                                            )}
                                         </div>
-                                    ) : (
-                                        <span style={{ color: '#9ca3af', fontSize: '0.8rem' }}>-</span>
-                                    )}
+                                    );
+                                })() : (
+                                    <span style={{
+                                        display: 'inline-block',
+                                        padding: '0.2rem 0.6rem',
+                                        borderRadius: '999px',
+                                        fontSize: '0.75rem',
+                                        fontWeight: '700',
+                                        background: '#f3f4f6',
+                                        color: '#9ca3af',
+                                        border: '1px solid #e5e7eb',
+                                        whiteSpace: 'nowrap',
+                                    }}>
+                                        {isArabic ? 'غير مشترك' : 'No Subscription'}
+                                    </span>
+                                )}
                                 </td>
                                 <td style={{ padding: '1rem' }}>
                                     <div style={{ fontSize: '0.85rem' }}>{isArabic ? 'تصاميم:' : 'Designs:'} {workshop._count.products}</div>
@@ -98,13 +123,28 @@ const Workshops = () => {
                                 </td>
                                 <td style={{ padding: '1rem' }}>
                                     <span style={{
+                                        display: 'inline-block',
                                         padding: '0.25rem 0.75rem',
                                         borderRadius: '999px',
-                                        fontSize: '0.85rem',
-                                        background: workshop.status === 'APPROVED' ? '#dcfce7' : workshop.status === 'REJECTED' || workshop.status === 'SUSPENDED' ? '#fee2e2' : '#fef9c3',
-                                        color: workshop.status === 'APPROVED' ? '#15803d' : workshop.status === 'REJECTED' || workshop.status === 'SUSPENDED' ? '#991b1b' : '#a16207'
+                                        fontSize: '0.78rem',
+                                        fontWeight: '700',
+                                        whiteSpace: 'nowrap',
+                                        background:
+                                            workshop.status === 'APPROVED'        ? '#dcfce7' :
+                                            workshop.status === 'REJECTED'        ? '#fee2e2' :
+                                            workshop.status === 'SUSPENDED'       ? '#ffedd5' :
+                                            workshop.status === 'PENDING_PAYMENT' ? '#fef9c3' : '#f3f4f6',
+                                        color:
+                                            workshop.status === 'APPROVED'        ? '#15803d' :
+                                            workshop.status === 'REJECTED'        ? '#991b1b' :
+                                            workshop.status === 'SUSPENDED'       ? '#c2410c' :
+                                            workshop.status === 'PENDING_PAYMENT' ? '#a16207' : '#6b7280',
                                     }}>
-                                        {workshop.status}
+                                        {workshop.status === 'APPROVED'        ? (isArabic ? 'مقبول'           : 'Approved') :
+                                         workshop.status === 'REJECTED'        ? (isArabic ? 'مرفوض'           : 'Rejected') :
+                                         workshop.status === 'SUSPENDED'       ? (isArabic ? 'موقوف'           : 'Suspended') :
+                                         workshop.status === 'PENDING_PAYMENT' ? (isArabic ? 'بانتظار الدفع'  : 'Pending Payment') :
+                                         (isArabic ? 'في الانتظار' : 'Pending')}
                                     </span>
                                 </td>
                                 <td style={{ padding: '1rem', display: 'flex', gap: '0.5rem' }}>
