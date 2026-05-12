@@ -5,6 +5,22 @@ import { Eye, CheckCircle, XCircle, Search, Rocket, X } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
 
+// ── Helpers ──────────────────────────────────────────────
+const formatDate = (dateStr) => {
+    if (!dateStr) return '-';
+    return new Date(dateStr).toLocaleDateString('en-GB', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+};
+
+const getEndDate = (promo) => {
+    if (!promo?.durationDays || !promo?.createdAt) return '-';
+    const start = new Date(promo.createdAt);
+    const end = new Date(start.getTime() + promo.durationDays * 24 * 60 * 60 * 1000);
+    return formatDate(end);
+};
+// ─────────────────────────────────────────────────────────
+
 const Promotions = () => {
     const { token } = useAuth();
     const { isArabic, t } = useLanguage();
@@ -15,6 +31,15 @@ const Promotions = () => {
     const [adminNote, setAdminNote] = useState('');
     const [search, setSearch] = useState('');
     const [filterStatus, setFilterStatus] = useState('ALL');
+
+    const statusLabel = (status) => {
+        const map = {
+            APPROVED:  isArabic ? 'مقبول'       : 'Approved',
+            REJECTED:  isArabic ? 'مرفوض'       : 'Rejected',
+            PENDING:   isArabic ? 'في الانتظار' : 'Pending',
+        };
+        return map[status] || status;
+    };
 
     useEffect(() => {
         fetchPromotions();
@@ -116,51 +141,87 @@ const Promotions = () => {
             <div className="card" style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
-                        <tr style={{ textAlign: 'right', borderBottom: '1px solid var(--gray-200)' }}>
-                            <th style={{ padding: '1rem' }}>{isArabic ? 'الورشة' : 'Workshop'}</th>
-                            <th style={{ padding: '1rem' }}>{isArabic ? 'التصميم' : 'Design'}</th>
-                            <th style={{ padding: '1rem' }}>{isArabic ? 'المدة / المبلغ' : 'Duration / Amount'}</th>
-                            <th style={{ padding: '1rem' }}>{isArabic ? 'الحالة' : 'Status'}</th>
-                            <th style={{ padding: '1rem' }}>{isArabic ? 'التاريخ' : 'Date'}</th>
-                            <th style={{ padding: '1rem' }}>{isArabic ? 'إجراءات' : 'Actions'}</th>
+                        <tr style={{ borderBottom: '1px solid var(--gray-200)', textAlign: 'left' }}>
+                            <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{isArabic ? 'الورشة' : 'Workshop'}</th>
+                            <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{isArabic ? 'التصميم' : 'Design'}</th>
+                            <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{isArabic ? 'المدة' : 'Duration'}</th>
+                            <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{isArabic ? 'المبلغ' : 'Amount'}</th>
+                            <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{isArabic ? 'الحالة' : 'Status'}</th>
+                            <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{isArabic ? 'تاريخ الطلب' : 'Request Date'}</th>
+                            <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{isArabic ? 'تاريخ الانتهاء' : 'End Date'}</th>
+                            <th style={{ padding: '1rem', whiteSpace: 'nowrap' }}>{isArabic ? 'إجراءات' : 'Actions'}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredPromotions.map(promo => (
                             <tr key={promo.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
-                                <td style={{ padding: '1rem' }}>
-                                    <div style={{ fontWeight: 'bold' }}>{promo.workshop?.name}</div>
+                                {/* Workshop */}
+                                <td style={{ padding: '1rem', fontWeight: '700', whiteSpace: 'nowrap' }}>
+                                    {promo.workshop?.name || '-'}
                                 </td>
-                                <td style={{ padding: '1rem' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                                        <Rocket size={14} color="#f59e0b" />
-                                        {promo.product?.title}
+
+                                {/* Design */}
+                                <td style={{ padding: '1rem', whiteSpace: 'nowrap' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                        <Rocket size={13} color="#f59e0b" />
+                                        {promo.product?.title || '-'}
                                     </div>
                                 </td>
-                                <td style={{ padding: '1rem' }}>
-                                    <div>{promo.durationDays} {isArabic ? 'يوم' : 'days'}</div>
-                                    <div style={{ fontWeight: 'bold', color: 'var(--primary)' }}>{promo.amount.toLocaleString()} {t('products.currency') || 'د.ج'}</div>
+
+                                {/* Duration */}
+                                <td style={{ padding: '1rem', whiteSpace: 'nowrap' }}>
+                                    {promo.durationDays} {isArabic ? 'يوم' : 'days'}
                                 </td>
+
+                                {/* Amount — separate column, null-safe */}
+                                <td style={{ padding: '1rem', whiteSpace: 'nowrap', fontWeight: '700', color: 'var(--primary)' }}>
+                                    {promo.amount != null
+                                        ? `${Number(promo.amount).toLocaleString()} ${t('products.currency') || 'د.ج'}`
+                                        : '-'}
+                                </td>
+
+                                {/* Status — translated badge */}
                                 <td style={{ padding: '1rem' }}>
                                     <span style={{
-                                        padding: '0.25rem 0.5rem',
-                                        borderRadius: '4px',
-                                        fontSize: '0.8rem',
-                                        background: promo.status === 'APPROVED' ? '#dcfce7' : promo.status === 'REJECTED' ? '#fee2e2' : '#fef9c3',
-                                        color: promo.status === 'APPROVED' ? '#15803d' : promo.status === 'REJECTED' ? '#991b1b' : '#a16207'
+                                        display: 'inline-block',
+                                        padding: '0.3rem 0.7rem',
+                                        borderRadius: '999px',
+                                        fontSize: '0.78rem',
+                                        fontWeight: '700',
+                                        whiteSpace: 'nowrap',
+                                        background:
+                                            promo.status === 'APPROVED' ? '#dcfce7' :
+                                            promo.status === 'REJECTED' ? '#fee2e2' : '#fef9c3',
+                                        color:
+                                            promo.status === 'APPROVED' ? '#15803d' :
+                                            promo.status === 'REJECTED' ? '#991b1b' : '#a16207',
                                     }}>
-                                        {promo.status}
+                                        {statusLabel(promo.status)}
                                     </span>
                                 </td>
-                                <td style={{ padding: '1rem', fontSize: '0.85rem' }}>
-                                    {new Date(promo.createdAt).toLocaleDateString('ar-DZ')}
+
+                                {/* Request Date — DD/MM/YYYY format */}
+                                <td style={{ padding: '1rem', fontSize: '0.85rem', whiteSpace: 'nowrap', color: 'var(--text-muted)' }}>
+                                    {formatDate(promo.createdAt)}
                                 </td>
+
+                                {/* End Date = createdAt + durationDays */}
+                                <td style={{ padding: '1rem', fontSize: '0.85rem', whiteSpace: 'nowrap', color: 'var(--text-muted)' }}>
+                                    {getEndDate(promo)}
+                                </td>
+
+                                {/* Actions */}
                                 <td style={{ padding: '1rem' }}>
                                     <button
                                         onClick={() => setSelectedPromo(promo)}
-                                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer', border: '1px solid var(--gray-200)', background: 'white' }}
+                                        style={{
+                                            display: 'flex', alignItems: 'center', gap: '0.5rem',
+                                            padding: '0.45rem 0.9rem', borderRadius: '6px',
+                                            cursor: 'pointer', border: '1px solid var(--gray-200)',
+                                            background: 'white', whiteSpace: 'nowrap', fontSize: '0.875rem'
+                                        }}
                                     >
-                                        <Eye size={16} /> {isArabic ? 'معاينة' : 'View'}
+                                        <Eye size={15} /> {isArabic ? 'معاينة' : 'View'}
                                     </button>
                                 </td>
                             </tr>
