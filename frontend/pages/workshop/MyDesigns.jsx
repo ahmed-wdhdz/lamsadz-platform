@@ -97,9 +97,26 @@ const MyDesigns = () => {
 
     const handleFileChange = (e) => {
         const selectedFiles = Array.from(e.target.files);
-        setFiles(selectedFiles);
-        const urls = selectedFiles.map(file => URL.createObjectURL(file));
-        setPreviewUrls(urls);
+        const totalFiles = files.length + selectedFiles.length;
+        
+        if (totalFiles > 5) {
+            alert(isArabic ? 'يمكنك رفع 5 صور كحد أقصى' : 'You can upload up to 5 images maximum');
+            const allowedFiles = selectedFiles.slice(0, 5 - files.length);
+            setFiles(prev => [...prev, ...allowedFiles]);
+            const newUrls = allowedFiles.map(file => URL.createObjectURL(file));
+            setPreviewUrls(prev => [...prev, ...newUrls]);
+        } else {
+            setFiles(prev => [...prev, ...selectedFiles]);
+            const newUrls = selectedFiles.map(file => URL.createObjectURL(file));
+            setPreviewUrls(prev => [...prev, ...newUrls]);
+        }
+        
+        e.target.value = null; // Reset input so same file can be selected again
+    };
+
+    const removeImage = (indexToRemove) => {
+        setFiles(files.filter((_, index) => index !== indexToRemove));
+        setPreviewUrls(previewUrls.filter((_, index) => index !== indexToRemove));
     };
 
     const handleSubmit = async (e) => {
@@ -867,23 +884,48 @@ const MyDesigns = () => {
                                     {previewUrls.length > 0 && (
                                         <div style={{
                                             display: 'flex',
-                                            gap: '0.5rem',
+                                            gap: '0.75rem',
                                             marginTop: '1rem',
                                             flexWrap: 'wrap'
                                         }}>
                                             {previewUrls.map((url, idx) => (
-                                                <img
-                                                    key={idx}
-                                                    src={url}
-                                                    alt="Preview"
-                                                    style={{
-                                                        width: '70px',
-                                                        height: '70px',
-                                                        objectFit: 'cover',
-                                                        borderRadius: '8px',
-                                                        border: '2px solid #e5e7eb'
-                                                    }}
-                                                />
+                                                <div key={idx} style={{ position: 'relative' }}>
+                                                    <img
+                                                        src={url}
+                                                        alt="Preview"
+                                                        style={{
+                                                            width: '80px',
+                                                            height: '80px',
+                                                            objectFit: 'cover',
+                                                            borderRadius: '8px',
+                                                            border: '2px solid #e5e7eb'
+                                                        }}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeImage(idx)}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: '-8px',
+                                                            right: '-8px',
+                                                            background: '#ef4444',
+                                                            color: 'white',
+                                                            border: 'none',
+                                                            borderRadius: '50%',
+                                                            width: '24px',
+                                                            height: '24px',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            cursor: 'pointer',
+                                                            padding: 0,
+                                                            boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                                                        }}
+                                                        title={isArabic ? 'إزالة الصورة' : 'Remove Image'}
+                                                    >
+                                                        <X size={14} />
+                                                    </button>
+                                                </div>
                                             ))}
                                         </div>
                                     )}
