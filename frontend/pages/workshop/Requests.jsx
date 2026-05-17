@@ -379,7 +379,7 @@ const Requests = () => {
                                                     <MapPin size={14} /> {delivery.lead?.wilaya || (isArabic ? 'غير محدد' : 'Not specified')}
                                                 </span>
                                                 <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                                                    <Clock size={14} /> {new Date(delivery.deliveredAt).toLocaleDateString('ar-DZ')}
+                                                    <Clock size={14} /> {new Date(delivery.createdAt || delivery.lead?.createdAt || Date.now()).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                                                 </span>
                                             </div>
                                         </div>
