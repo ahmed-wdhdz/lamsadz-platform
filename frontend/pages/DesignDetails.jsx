@@ -6,6 +6,7 @@ import ReviewList from '../components/ReviewList';
 import ReviewForm from '../components/ReviewForm';
 import { useAuth } from '../context/AuthContext';
 import { getOptimizedImage } from '../utils/optimizeImage';
+import { wilayas } from '../utils/wilayas';
 import { useQuery } from '@tanstack/react-query';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://lamsadz-api.onrender.com/api';
@@ -325,12 +326,9 @@ const DesignDetails = () => {
                                                 style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.5rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', transition: 'border 0.2s', fontSize: '1rem', background: 'white', appearance: 'none' }}
                                             >
                                                 <option value="">اختر الولاية...</option>
-                                                <option value="الجزائر">الجزائر</option>
-                                                <option value="وهران">وهران</option>
-                                                <option value="قسنطينة">قسنطينة</option>
-                                                <option value="سطيف">سطيف</option>
-                                                <option value="باتنة">باتنة</option>
-                                                {/* Add more common wilayas */}
+                                                {wilayas.map(w => (
+                                                    <option key={w} value={w}>{w}</option>
+                                                ))}
                                             </select>
                                             <MapPin size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
                                         </div>
