@@ -14,6 +14,7 @@ const CustomRequests = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [activeFilter, setActiveFilter] = useState('all');
     const [updating, setUpdating] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
 
     const filteredLeads = leads.filter(entry => {
         if (activeFilter === 'all') return true;
@@ -273,7 +274,8 @@ const CustomRequests = () => {
                                         <img
                                             src={String(images[0]).startsWith('http') ? images[0] : `${API_URL.replace('/api', '')}/uploads/${images[0]}`}
                                             alt="Reference"
-                                            style={{ width: '80px', height: '80px', borderRadius: '10px', objectFit: 'cover', border: '1px solid var(--border)' }}
+                                            onClick={() => setSelectedImage(String(images[0]).startsWith('http') ? images[0] : `${API_URL.replace('/api', '')}/uploads/${images[0]}`)}
+                                            style={{ width: '80px', height: '80px', borderRadius: '10px', objectFit: 'cover', border: '1px solid var(--border)', cursor: 'pointer' }}
                                         />
                                     </div>
                                 )}
@@ -381,6 +383,41 @@ const CustomRequests = () => {
                             </div>
                         );
                     })}
+                </div>
+            )}
+
+            {/* Image Modal */}
+            {selectedImage && (
+                <div 
+                    style={{
+                        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                        backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 9999,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        padding: '1rem'
+                    }}
+                    onClick={() => setSelectedImage(null)}
+                >
+                    <div style={{ position: 'relative', maxWidth: '90%', maxHeight: '90%' }}>
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); setSelectedImage(null); }}
+                            style={{
+                                position: 'absolute', top: '-15px', right: '-15px',
+                                background: 'white', color: 'black', border: 'none',
+                                borderRadius: '50%', width: '30px', height: '30px',
+                                fontSize: '16px', fontWeight: 'bold', cursor: 'pointer',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                boxShadow: '0 2px 10px rgba(0,0,0,0.3)'
+                            }}
+                        >
+                            ✕
+                        </button>
+                        <img 
+                            src={selectedImage} 
+                            alt="Enlarged" 
+                            style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain', borderRadius: '8px' }} 
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    </div>
                 </div>
             )}
 
