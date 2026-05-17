@@ -1,11 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, ArrowLeft, Star } from 'lucide-react';
+import { ArrowLeft, Star } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const FurnitureCard = ({ id, image, title, price, category, workshop, featuredUntil }) => {
     const { t, isArabic } = useLanguage();
-    const [liked, setLiked] = React.useState(false);
 
     const isFeatured = featuredUntil && new Date(featuredUntil) > new Date();
 
@@ -87,34 +86,6 @@ const FurnitureCard = ({ id, image, title, price, category, workshop, featuredUn
                     )}
                 </div>
             </Link>
-
-            {/* Like Button */}
-            <button
-                onClick={(e) => {
-                    e.preventDefault();
-                    setLiked(!liked);
-                }}
-                style={{
-                    position: 'absolute',
-                    top: '1rem',
-                    left: isArabic ? '1rem' : 'auto',
-                    right: isArabic ? 'auto' : '1rem',
-                    width: '36px',
-                    height: '36px',
-                    backgroundColor: liked ? 'var(--error)' : 'var(--bg-card)',
-                    color: liked ? 'white' : 'var(--text-muted)',
-                    borderRadius: 'var(--radius-full)',
-                    border: 'none',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: 'var(--shadow-sm)',
-                    transition: 'all var(--transition-fast)',
-                }}
-            >
-                <Heart size={18} fill={liked ? 'currentColor' : 'none'} />
-            </button>
 
             {/* Content */}
             <div style={{ padding: '1.25rem' }}>
